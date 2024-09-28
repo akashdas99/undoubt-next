@@ -1,11 +1,12 @@
 import React from "react";
+import { Skeleton } from "../ui/skeleton";
 
 const QuestionLoadingCard = () => {
   return (
-    <div className="q-card neo" style={{ height: 130 }}>
-      <div className="title skeleton" style={{ height: 34 }}></div>
-      <div className="author-section skeleton" style={{ height: 22 }}></div>
-      <div className="card-footer skeleton" style={{ height: 17 }}></div>
+    <div className="p-[1em] neo flex flex-col gap-2">
+      <Skeleton className="w-full h-6" />
+      <Skeleton className="w-80 h-6" />
+      <Skeleton className="w-20 h-6" />
     </div>
   );
 };
