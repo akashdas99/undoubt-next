@@ -1,28 +1,16 @@
 "use client";
-import Link from "next/link";
-import SelectSearch from "./selectSearch";
-import { useEffect, useState } from "react";
-import { getQuestions } from "@/actions/getQuestions";
 import useDebounce from "@/hooks/useDebounce";
+import { useGetAllQuestionsByKeywordQuery } from "@/lib/store/questions/questionApi";
+import Link from "next/link";
+import { useState } from "react";
+import SelectSearch from "./selectSearch";
 
 const Header: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedValue, setSelectedValue] = useState<string>("");
-  const [data, setData] = useState<{ value: string; label: string }[]>();
   const searchQuestion = useDebounce(searchValue, 1500);
-  const isLoading = false;
-  useEffect(() => {
-    const fn = async () => {
-      const data = await getQuestions(searchQuestion);
-      setData(
-        data.map((question: { description: string; _id: string }) => ({
-          label: question?.description,
-          value: question?._id,
-        }))
-      );
-    };
-    fn();
-  }, [searchQuestion]);
+
+  const { data, isLoading } = useGetAllQuestionsByKeywordQuery(searchQuestion);
 
   const handleChange = async (search: string) => {
     setSearchValue(search);

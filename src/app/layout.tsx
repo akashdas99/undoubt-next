@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/common/header";
+import StoreProvider from "./StoreProvider";
 
 export const metadata: Metadata = {
   title: "Undoubt",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        {children}
+        <StoreProvider>
+          <Header />
+          {children}
+        </StoreProvider>
       </body>
     </html>
   );
