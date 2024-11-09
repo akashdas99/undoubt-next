@@ -32,7 +32,7 @@ const Header: React.FC = () => {
         isLoading={isLoading}
         emptyMessage="No question found."
       />
-      <div className="h-full flex items-center justify-between grow">
+      <div className="h-full flex items-center justify-end gap-8 w-1/3">
         <Link className="link" href="/">
           Home
         </Link>

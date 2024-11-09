@@ -68,7 +68,7 @@ export default function SelectSearch<T extends string>({
   };
 
   return (
-    <div className="flex items-center w-1/2">
+    <div className="flex items-center grow">
       <Popover open={open} onOpenChange={setOpen}>
         <Command shouldFilter={false}>
           <PopoverAnchor asChild>
