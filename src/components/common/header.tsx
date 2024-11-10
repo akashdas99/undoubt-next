@@ -32,7 +32,7 @@ const Header: React.FC = () => {
         isLoading={isLoading}
         emptyMessage="No question found."
       />
-      <div className="h-full flex items-center justify-end gap-8 w-1/3">
+      <div className="h-full flex items-center justify-end gap-8">
         <Link className="link" href="/">
           Home
         </Link>
@@ -40,10 +40,10 @@ const Header: React.FC = () => {
           Add Question
         </Link>
         <Link className="link" href="/signin">
-          SignIn
+          Sign In
         </Link>
-        <Link className="link" href="/signup">
-          SignUp
+        <Link className="link" href="/register">
+          Register
         </Link>
       </div>
     </div>
