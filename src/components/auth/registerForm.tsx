@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { registerUser } from "@/actions/auth";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -41,21 +42,27 @@ const RegisterForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       username: "",
+      password: "",
+      profession: "",
+      city: "",
+      country: "",
     },
   });
   // 2. Define a submit handler.
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    const res = await registerUser(values);
+    console.log(res);
   };
   return (
     <div className="mx-[30%] mt-8 h-full">
       <div className="neo p-8 rounded-xl">
         <h1 className="text-xl mb-6">Create Account</h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="name"
@@ -89,7 +96,7 @@ const RegisterForm: React.FC = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />{" "}
+            />
             <FormField
               control={form.control}
               name="password"
@@ -106,7 +113,7 @@ const RegisterForm: React.FC = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />{" "}
+            />
             <FormField
               control={form.control}
               name="profession"
@@ -123,7 +130,7 @@ const RegisterForm: React.FC = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />{" "}
+            />
             <FormField
               control={form.control}
               name="city"
@@ -140,7 +147,7 @@ const RegisterForm: React.FC = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />{" "}
+            />
             <FormField
               control={form.control}
               name="country"
@@ -158,7 +165,9 @@ const RegisterForm: React.FC = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" className="mt-2">
+              Submit
+            </Button>
           </form>
         </Form>
       </div>
