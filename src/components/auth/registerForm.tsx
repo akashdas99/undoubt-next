@@ -57,13 +57,12 @@ const RegisterForm: React.FC = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setServerError("");
-    const res = await registerUser(values);
+    const res: { error?: string } = await registerUser(values);
+    console.log(res);
     if (typeof res.error === "string") {
       form.setError("username", {
         message: res?.error,
       });
-    } else if (typeof res.error === "object") {
-      setServerError(res?.error?.message);
     }
   };
   return (
