@@ -65,6 +65,7 @@ const RegisterForm: React.FC = () => {
       });
     }
   };
+  console.log(document.cookie);
   return (
     <div className="mx-[30%] mt-8 h-full">
       <div className="neo p-8 rounded-xl">

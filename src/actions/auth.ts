@@ -3,6 +3,9 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+
 dbConnect();
 
 export async function registerUser(userData: {
@@ -27,6 +30,14 @@ export async function registerUser(userData: {
       password: hashedPassword,
     });
     const savedUser = await newUser.save();
+    const tokenData = {
+      id: savedUser?._id,
+      username: savedUser?.username,
+    };
+    const token = jwt.sign(tokenData, process.env.SECRET!, {
+      expiresIn: "10h",
+    });
+    cookies().set("token", token, { httpOnly: true });
     return {
       message: "Welcome to undoubt",
       name: savedUser?.name,
