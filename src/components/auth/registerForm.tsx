@@ -15,7 +15,6 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { registerUser } from "@/actions/auth";
-import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -39,7 +38,6 @@ const formSchema = z.object({
 });
 
 const RegisterForm: React.FC = () => {
-  const [serverError, setServerError] = useState("");
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,16 +54,21 @@ const RegisterForm: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    setServerError("");
-    const res: { error?: string } = await registerUser(values);
-    console.log(res);
-    if (typeof res.error === "string") {
+    const res: Partial<{
+      type: string;
+      message: string;
+    }> = await registerUser(values);
+
+    if (res?.type === "username")
       form.setError("username", {
-        message: res?.error,
+        message: res?.message,
       });
-    }
+    else if (res?.type === "serverError")
+      form.setError("root", {
+        message: res?.message,
+      });
   };
-  console.log(document.cookie);
+
   return (
     <div className="mx-[30%] mt-8 h-full">
       <div className="neo p-8 rounded-xl">
@@ -174,7 +177,11 @@ const RegisterForm: React.FC = () => {
                 </FormItem>
               )}
             />
-            <p className="text-[0.8rem] text-destructive">{serverError}</p>
+            {form?.formState?.errors?.root?.message && (
+              <p className="text-[0.8rem] text-destructive">
+                {form?.formState?.errors?.root?.message}
+              </p>
+            )}
             <Button type="submit" className="mt-2">
               Submit
             </Button>
