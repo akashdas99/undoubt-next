@@ -1,6 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
+import { UserSchema, User as UserType } from "@/lib/types";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -9,15 +10,17 @@ import { redirect } from "next/navigation";
 
 dbConnect();
 
-export async function registerUser(userData: {
-  name: string;
-  username: string;
-  password: string;
-  profession: string;
-  city: string;
-  country: string;
-}) {
+export async function registerUser(userData: UserType) {
   try {
+    //validate userData
+    const validatedUser = UserSchema.safeParse({
+      ...userData,
+    });
+    if (!validatedUser?.success) {
+      return {
+        errors: validatedUser?.error?.flatten()?.fieldErrors,
+      };
+    }
     //if user exists
     const user = await User.findOne({ username: userData?.username });
     if (user)

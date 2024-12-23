@@ -1,13 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { User as UserType } from "@/lib/types";
 
-export interface User extends Document {
-  name: string;
-  username: string;
-  password: string;
-  profession: string;
-  city: string;
-  country: string;
-}
+export interface User extends UserType, Document {}
+
 const userSchema: Schema<User> = new Schema(
   {
     name: {

@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 //Components
 import {
@@ -15,32 +14,11 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { registerUser } from "@/actions/auth";
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-  profession: z.string().min(2, {
-    message: "Profession must be at least 2 characters.",
-  }),
-  city: z.string().min(2, {
-    message: "City must be at least 2 characters.",
-  }),
-  country: z.string().min(2, {
-    message: "Country must be at least 2 characters.",
-  }),
-});
+import { User, UserSchema } from "@/lib/types";
 
 const RegisterForm: React.FC = () => {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<User>({
+    resolver: zodResolver(UserSchema),
     defaultValues: {
       name: "",
       username: "",
@@ -50,10 +28,7 @@ const RegisterForm: React.FC = () => {
       country: "",
     },
   });
-  // 2. Define a submit handler.
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  const onSubmit = async (values: User) => {
     const res: Partial<{
       type: string;
       message: string;
