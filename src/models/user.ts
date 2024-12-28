@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { User as UserType } from "@/lib/types";
+import { UserType } from "@/lib/types";
 
 export interface User extends UserType, Document {}
 

@@ -1,11 +1,10 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import { UserSchema, User as UserType } from "@/lib/types";
+import { createSession } from "@/lib/session";
+import { UserSchema, UserType } from "@/lib/types";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 dbConnect();
@@ -40,10 +39,7 @@ export async function registerUser(userData: UserType) {
       id: savedUser?._id,
       username: savedUser?.username,
     };
-    const token = jwt.sign(tokenData, process.env.SECRET!, {
-      expiresIn: "10h",
-    });
-    cookies().set("token", token, { httpOnly: true });
+    createSession(tokenData);
   } catch (e) {
     console.log(e);
     return {

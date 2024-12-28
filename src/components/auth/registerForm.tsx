@@ -14,10 +14,10 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { registerUser } from "@/actions/auth";
-import { User, UserSchema } from "@/lib/types";
+import { UserType, UserSchema } from "@/lib/types";
 
 const RegisterForm: React.FC = () => {
-  const form = useForm<User>({
+  const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
       name: "",
@@ -28,7 +28,7 @@ const RegisterForm: React.FC = () => {
       country: "",
     },
   });
-  const onSubmit = async (values: User) => {
+  const onSubmit = async (values: UserType) => {
     const res: Partial<{
       type: string;
       message: string;
