@@ -18,7 +18,7 @@ const Header: React.FC = () => {
   return (
     <div className="flex items-center px-[10%] gap-[20px] h-[60px] bg-[--dark-background] text-white">
       <Link
-        className="bg-blue-500 font-semibold rounded-tl-lg rounded-br-lg border-2 w-[82px] text-center"
+        className="bg-blue-500 font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center"
         href="/"
       >
         UNdoubt
