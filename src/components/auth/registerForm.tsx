@@ -45,7 +45,7 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="mx-[30%] mt-8 h-full">
+    <div className="mx-[30%] mt-8">
       <div className="neo p-8 rounded-xl">
         <h1 className="text-xl mb-6">Create Account</h1>
         <Form {...form}>

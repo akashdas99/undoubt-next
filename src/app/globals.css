@@ -87,8 +87,9 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  html,
+  body {
+    @apply h-screen;
   }
   body {
     @apply bg-background text-foreground;
