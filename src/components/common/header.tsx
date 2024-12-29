@@ -4,7 +4,6 @@ import { getSession } from "@/lib/session";
 
 export default async function Header(): Promise<JSX.Element> {
   const session = await getSession();
-  console.log(session);
   return (
     <div className="flex items-center px-[10%] gap-[20px] h-[60px] bg-[--dark-background] text-white">
       <Link
@@ -32,8 +31,8 @@ export default async function Header(): Promise<JSX.Element> {
           </>
         ) : (
           <>
-            <Link className="link" href="/signin">
-              Sign In
+            <Link className="link" href="/login">
+              LogIn
             </Link>
             <Link className="link" href="/register">
               Register
