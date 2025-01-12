@@ -94,6 +94,7 @@ const RegisterForm: React.FC = () => {
                     <Input
                       className="bg-white focus-visible:ring-blue-500"
                       placeholder="Password"
+                      type="password"
                       {...field}
                     />
                   </FormControl>
