@@ -33,3 +33,8 @@ export const LoginSchema = z.object({
 });
 
 export type LoginType = z.infer<typeof LoginSchema>;
+export type MenuItem = {
+  title: string;
+  href: string;
+  allowedFor: "all" | "loggedInUsers" | "loggedOutUsers";
+};
