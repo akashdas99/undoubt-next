@@ -15,7 +15,7 @@ const QuestionList: React.FC = async () => {
 
   return (
     <div className="px-[8vw] mt-8">
-      <div className="active-neo section-heading">Recent Questions</div>
+      <div className="active-neo section-heading mb-2">Recent Questions</div>
       {questions.length === 0 ? (
         <p>No Questions</p>
       ) : (

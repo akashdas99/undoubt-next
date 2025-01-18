@@ -21,8 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={prata.className}>
         <StoreProvider>
-          <Header />
-          {children}
+          <div className="h-screen flex flex-col">
+            <Header />
+            {children}
+          </div>
         </StoreProvider>
       </body>
     </html>

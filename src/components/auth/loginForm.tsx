@@ -51,7 +51,7 @@ const LoginForm: React.FC = () => {
     }
   };
   return (
-    <div className="flex items-center justify-center h-[calc(100%-60px)]">
+    <div className="flex items-center justify-center grow">
       <div className="neo p-8 rounded-xl max-w-xs w-4/5">
         <h1 className={`${croissantOne?.className} text-xl mb-6`}>
           Welcome Back
