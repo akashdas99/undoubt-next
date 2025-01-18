@@ -4,14 +4,19 @@ import { getSession } from "@/lib/session";
 import HamburgerMenu from "./menu";
 import { MenuItem } from "@/lib/types";
 import MenuBar from "./menubar";
+import { Righteous } from "next/font/google";
 
+const abrilFatface = Righteous({
+  weight: "400",
+  subsets: ["latin"],
+});
 export default async function Header(): Promise<JSX.Element> {
   const menuItems: MenuItem[] = [
-    { title: "Home", href: "/", allowedFor: "all" },
+    // { title: "Home", href: "/", allowedFor: "all" },
     { title: "Add Question", href: "/addquestion", allowedFor: "all" },
     { title: "Profile", href: "/profile", allowedFor: "loggedInUsers" },
     { title: "Logout", href: "#", allowedFor: "loggedInUsers" },
-    { title: "LogIn", href: "/login", allowedFor: "loggedOutUsers" },
+    { title: "Log in", href: "/login", allowedFor: "loggedOutUsers" },
     { title: "Register", href: "/register", allowedFor: "loggedOutUsers" },
   ];
 
@@ -20,12 +25,14 @@ export default async function Header(): Promise<JSX.Element> {
   return (
     <div className="flex items-center px-[6vw] gap-[20px] h-[60px] bg-[--dark-background] text-white">
       <Link
-        className="bg-blue-500 font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center"
+        className={`${abrilFatface.className} bg-[--chefchaouen-blue] font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center`}
         href="/"
       >
         UNdoubt
       </Link>
-      <QuestionSearch />
+      <div className="flex items-center grow">
+        <QuestionSearch />
+      </div>
       <MenuBar menuItems={menuItems} isLoggedIn={isLoggedIn} />
       <HamburgerMenu menuItems={menuItems} isLoggedIn={isLoggedIn} />
     </div>

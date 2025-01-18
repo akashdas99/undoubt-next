@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { MenuItem } from "@/lib/types";
 import { Menu } from "lucide-react";
 import { useState } from "react";
@@ -36,7 +41,9 @@ export default function HamburgerMenu({
                 (menu?.allowedFor === "loggedInUsers" && isLoggedIn)
             )
             ?.map((item) => (
-              <MenuItemComponent key={item.title} item={item} />
+              <SheetClose key={item.title}>
+                <MenuItemComponent item={item} />{" "}
+              </SheetClose>
             ))}
         </nav>
       </SheetContent>

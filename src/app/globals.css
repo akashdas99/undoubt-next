@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #e0e5ec;
-  --dark-background: #1f1f1f;
-  --foreground: #171717;
+  --background: #f8f9fd;
+  --dark-background: #3f403fff;
+  --foreground: #3f403f;
+  --chefchaouen-blue: #4392f1ff;
+  --celadon: #aef6c7ff;
+  --onyx: hsl(120, 1%, 25%);
+  --lavender-blush: #eee5e9ff;
+  --bittersweet: #fe5f55ff;
 }
 
 /* @media (prefers-color-scheme: dark) {

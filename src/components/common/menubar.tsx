@@ -9,7 +9,7 @@ export default function MenuBar({
   isLoggedIn: boolean;
 }) {
   return (
-    <div className="hidden md:flex h-full items-center justify-end gap-[2vw] whitespace-nowrap">
+    <div className="hidden md:flex h-full items-center justify-end gap-[2em] whitespace-nowrap px-2">
       {menuItems
         ?.filter(
           (menu) =>

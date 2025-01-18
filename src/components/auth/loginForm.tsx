@@ -15,7 +15,13 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { loginUser } from "@/actions/auth";
 import { LoginSchema, LoginType } from "@/lib/types";
+import { Righteous } from "next/font/google";
+import Link from "next/link";
 
+const croissantOne = Righteous({
+  weight: "400",
+  subsets: ["latin"],
+});
 const LoginForm: React.FC = () => {
   const form = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
@@ -45,9 +51,11 @@ const LoginForm: React.FC = () => {
     }
   };
   return (
-    <div className="mx-[30%] mt-8">
-      <div className="neo p-8 rounded-xl">
-        <h1 className="text-xl mb-6">Login</h1>
+    <div className="flex items-center justify-center h-[calc(100%-60px)]">
+      <div className="neo p-8 rounded-xl max-w-xs w-4/5">
+        <h1 className={`${croissantOne?.className} text-xl mb-6`}>
+          Welcome Back
+        </h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -91,11 +99,25 @@ const LoginForm: React.FC = () => {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <Button type="submit" className="mt-2">
-              Submit
+            <Button type="submit" className="mt-3">
+              Login
             </Button>
           </form>
         </Form>
+        <div className="relative flex py-2 items-center">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-gray-400">Or</span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+        <div className="text-xs">
+          <Link
+            className="text-[--chefchaouen-blue] underline font-semibold"
+            href={"/register"}
+          >
+            Register
+          </Link>{" "}
+          if you donot have an account
+        </div>
       </div>
     </div>
   );

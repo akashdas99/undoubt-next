@@ -15,7 +15,13 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { registerUser } from "@/actions/auth";
 import { UserType, UserSchema } from "@/lib/types";
+import { Righteous } from "next/font/google";
+import Link from "next/link";
 
+const croissantOne = Righteous({
+  weight: "400",
+  subsets: ["latin"],
+});
 const RegisterForm: React.FC = () => {
   const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
@@ -45,9 +51,11 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="mx-[30%] mt-8">
-      <div className="neo p-8 rounded-xl">
-        <h1 className="text-xl mb-6">Create Account</h1>
+    <div className="flex items-center justify-center h-[calc(100%-60px)]">
+      <div className="neo p-8 rounded-xl max-w-xs w-4/5">
+        <h1 className={`${croissantOne?.className} text-xl mb-6`}>
+          Register Account
+        </h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -163,6 +171,20 @@ const RegisterForm: React.FC = () => {
             </Button>
           </form>
         </Form>
+        <div className="relative flex py-2 items-center">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-gray-400">Or</span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+        <div className="text-xs">
+          <Link
+            className="text-[--chefchaouen-blue] underline font-semibold"
+            href={"/login"}
+          >
+            Login
+          </Link>{" "}
+          if you already have an account
+        </div>
       </div>
     </div>
   );
