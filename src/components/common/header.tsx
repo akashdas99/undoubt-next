@@ -21,7 +21,8 @@ export default async function Header(): Promise<JSX.Element> {
   ];
 
   const session = await getSession();
-  const isLoggedIn = session?.username?.length === 0;
+  const isLoggedIn =
+    typeof session?.username === "string" && session?.username?.length >= 0;
   return (
     <div className="flex items-center px-[6vw] gap-[20px] h-[60px] bg-[--dark-background] text-white">
       <Link
