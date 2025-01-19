@@ -50,6 +50,15 @@ const LoginForm: React.FC = () => {
       });
     }
   };
+  const onGuestLogin = async () => {
+    const username = process.env.NEXT_PUBLIC_GUEST_USERNAME;
+    const password = process.env.NEXT_PUBLIC_GUEST_PASSWORD;
+    if (!username || !password)
+      return form.setError("root", {
+        message: "Guest User is not available",
+      });
+    await loginUser({ username, password });
+  };
   return (
     <div className="flex items-center justify-center grow">
       <div className="neo p-8 rounded-xl max-w-xs w-4/5">
@@ -95,12 +104,15 @@ const LoginForm: React.FC = () => {
             />
 
             {form?.formState?.errors?.root?.message && (
-              <p className="text-[0.8rem] text-destructive">
+              <p className="text-[0.6rem] text-destructive font-medium">
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
             <Button type="submit" className="mt-3">
               Login
+            </Button>
+            <Button type="button" className="mt-3 ms-2" onClick={onGuestLogin}>
+              Login as Guest
             </Button>
           </form>
         </Form>
