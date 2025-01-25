@@ -14,8 +14,8 @@ const QuestionList: React.FC = async () => {
   const questions: Question[] = await data.json();
 
   return (
-    <div className="px-[10%]">
-      <div className="active-neo section-heading">Recent Questions</div>
+    <div className="px-[8vw] mt-8">
+      <div className="active-neo section-heading mb-2">Recent Questions</div>
       {questions.length === 0 ? (
         <p>No Questions</p>
       ) : (

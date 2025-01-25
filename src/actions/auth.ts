@@ -2,7 +2,7 @@
 
 import dbConnect from "@/lib/dbConnect";
 import { createSession } from "@/lib/session";
-import { UserSchema, UserType } from "@/lib/types";
+import { LoginSchema, LoginType, UserSchema, UserType } from "@/lib/types";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
 import { redirect } from "next/navigation";
@@ -38,6 +38,47 @@ export async function registerUser(userData: UserType) {
     const tokenData = {
       id: savedUser?._id,
       username: savedUser?.username,
+    };
+    createSession(tokenData);
+  } catch (e) {
+    console.log(e);
+    return {
+      type: "serverError",
+      message: "Something went wrong",
+    };
+  }
+  redirect("/");
+}
+export async function loginUser(loginData: LoginType) {
+  try {
+    //validate userData
+    const validatedLoginData = LoginSchema.safeParse({
+      ...loginData,
+    });
+    if (!validatedLoginData?.success) {
+      throw new Error(
+        JSON.stringify(validatedLoginData?.error?.flatten()?.fieldErrors)
+      );
+    }
+    const { username, password } = validatedLoginData?.data;
+    //if user exists
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return {
+        type: "username",
+        message: "Username doesnot exist exists",
+      };
+    }
+    const validPassword = await bcryptjs.compare(password, user?.password);
+    if (!validPassword) {
+      return {
+        type: "password",
+        message: "Wrong password",
+      };
+    }
+    const tokenData = {
+      id: user?._id,
+      username: user?.username,
     };
     createSession(tokenData);
   } catch (e) {

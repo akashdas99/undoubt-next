@@ -8,10 +8,12 @@ export function createSession(tokenData: Partial<UserType>) {
   });
   cookies().set("token", token, { httpOnly: true });
 }
-export async function getSession() {
+export async function getSession(): Promise<
+  (Partial<UserType> & jwt.JwtPayload) | null
+> {
   const token = await cookies().get("token")?.value;
   if (!token) return null;
-  return jwt.verify(token, process.env.SECRET!);
+  return jwt.verify(token, process.env.SECRET!) as Partial<UserType>;
 }
 export async function removeSession() {
   await cookies().delete("token");

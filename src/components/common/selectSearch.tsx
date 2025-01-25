@@ -68,65 +68,63 @@ export default function SelectSearch<T extends string>({
   };
 
   return (
-    <div className="flex items-center grow">
-      <Popover open={open} onOpenChange={setOpen}>
-        <Command shouldFilter={false}>
-          <PopoverAnchor asChild>
-            <CommandPrimitive.Input
-              asChild
-              value={searchValue}
-              onValueChange={onSearchValueChange}
-              onKeyDown={(e) => setOpen(e.key !== "Escape")}
-              onMouseDown={() => setOpen((open) => !!searchValue || !open)}
-              onFocus={() => setOpen(true)}
-              onBlur={onInputBlur}
-            >
-              <Input placeholder={placeholder} />
-            </CommandPrimitive.Input>
-          </PopoverAnchor>
-          {!open && <CommandList aria-hidden="true" className="hidden" />}
-          <PopoverContent
+    <Popover open={open} onOpenChange={setOpen}>
+      <Command shouldFilter={false}>
+        <PopoverAnchor asChild>
+          <CommandPrimitive.Input
             asChild
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            onInteractOutside={(e) => {
-              if (
-                e.target instanceof Element &&
-                e.target.hasAttribute("cmdk-input")
-              ) {
-                e.preventDefault();
-              }
-            }}
-            className="w-[--radix-popover-trigger-width] p-0"
+            value={searchValue}
+            onValueChange={onSearchValueChange}
+            onKeyDown={(e) => setOpen(e.key !== "Escape")}
+            onMouseDown={() => setOpen((open) => !!searchValue || !open)}
+            onFocus={() => setOpen(true)}
+            onBlur={onInputBlur}
           >
-            <CommandList>
-              {isLoading && (
-                <CommandPrimitive.Loading>
-                  <div className="p-1">
-                    <Skeleton className="h-6 w-full" />
-                  </div>
-                </CommandPrimitive.Loading>
-              )}
-              {items.length > 0 && !isLoading ? (
-                <CommandGroup>
-                  {items.map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onSelect={onSelectItem}
-                    >
-                      {option.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : null}
-              {!isLoading ? (
-                <CommandEmpty>{emptyMessage ?? "No items."}</CommandEmpty>
-              ) : null}
-            </CommandList>
-          </PopoverContent>
-        </Command>
-      </Popover>
-    </div>
+            <Input placeholder={placeholder} />
+          </CommandPrimitive.Input>
+        </PopoverAnchor>
+        {!open && <CommandList aria-hidden="true" className="hidden" />}
+        <PopoverContent
+          asChild
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onInteractOutside={(e) => {
+            if (
+              e.target instanceof Element &&
+              e.target.hasAttribute("cmdk-input")
+            ) {
+              e.preventDefault();
+            }
+          }}
+          className="w-[--radix-popover-trigger-width] p-0"
+        >
+          <CommandList>
+            {isLoading && (
+              <CommandPrimitive.Loading>
+                <div className="p-1">
+                  <Skeleton className="h-6 w-full" />
+                </div>
+              </CommandPrimitive.Loading>
+            )}
+            {items.length > 0 && !isLoading ? (
+              <CommandGroup>
+                {items.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.value}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onSelect={onSelectItem}
+                  >
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ) : null}
+            {!isLoading ? (
+              <CommandEmpty>{emptyMessage ?? "No items."}</CommandEmpty>
+            ) : null}
+          </CommandList>
+        </PopoverContent>
+      </Command>
+    </Popover>
   );
 }

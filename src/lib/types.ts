@@ -22,3 +22,19 @@ export const UserSchema = z.object({
 });
 
 export type UserType = z.infer<typeof UserSchema>;
+
+export const LoginSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+
+export type LoginType = z.infer<typeof LoginSchema>;
+export type MenuItem = {
+  title: string;
+  href: string;
+  allowedFor: "all" | "loggedInUsers" | "loggedOutUsers";
+};
