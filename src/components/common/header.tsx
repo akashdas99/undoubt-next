@@ -12,7 +12,7 @@ const abrilFatface = Righteous({
 });
 export default async function Header(): Promise<JSX.Element> {
   const menuItems: MenuItem[] = [
-    // { title: "Home", href: "/", allowedFor: "all" },
+    { title: "Home", href: "/", allowedFor: "all" },
     { title: "Add Question", href: "/addquestion", allowedFor: "all" },
     { title: "Profile", href: "/profile", allowedFor: "loggedInUsers" },
     { title: "Logout", href: "#", allowedFor: "loggedInUsers" },

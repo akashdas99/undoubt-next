@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import { createSession } from "@/lib/session";
+import { createSession, removeSession } from "@/lib/session";
 import { LoginSchema, LoginType, UserSchema, UserType } from "@/lib/types";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
@@ -89,4 +89,15 @@ export async function loginUser(loginData: LoginType) {
     };
   }
   redirect("/");
+}
+export async function logoutUser() {
+  try {
+    await removeSession();
+  } catch (e) {
+    console.log(e);
+    return {
+      type: "serverError",
+      message: "Something went wrong",
+    };
+  }
 }

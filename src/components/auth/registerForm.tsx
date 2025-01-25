@@ -162,7 +162,7 @@ const RegisterForm: React.FC = () => {
               )}
             />
             {form?.formState?.errors?.root?.message && (
-              <p className="text-[0.8rem] text-destructive">
+              <p className="text-[0.6rem] text-destructive font-medium">
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
