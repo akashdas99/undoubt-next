@@ -32,7 +32,7 @@ export default function HamburgerMenu({
         side="left"
         className="w-[240px] sm:w-[300px] bg-[color:--background]"
       >
-        <nav className="flex flex-col space-y-4">
+        <nav className="flex flex-col space-y-4 mt-5">
           {menuItems
             ?.filter(
               (menu) =>
@@ -41,8 +41,8 @@ export default function HamburgerMenu({
                 (menu?.allowedFor === "loggedInUsers" && isLoggedIn)
             )
             ?.map((item) => (
-              <SheetClose key={item.title}>
-                <MenuItemComponent item={item} />{" "}
+              <SheetClose key={item.title} asChild>
+                <MenuItemComponent item={item} />
               </SheetClose>
             ))}
         </nav>
