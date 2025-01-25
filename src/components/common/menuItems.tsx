@@ -5,7 +5,12 @@ import { MenuItem } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function MenuItemComponent({ item }: { item: MenuItem }) {
+export default function MenuItemComponent({
+  item,
+  ...restProps
+}: {
+  item: MenuItem;
+}) {
   const router = useRouter();
   return (
     <Link
@@ -13,10 +18,11 @@ export default function MenuItemComponent({ item }: { item: MenuItem }) {
       className="link"
       onClick={async () => {
         if (item.title === "Logout") {
-          logoutUser();
+          await logoutUser();
           router.refresh();
         }
       }}
+      {...restProps}
     >
       {item.title}
     </Link>

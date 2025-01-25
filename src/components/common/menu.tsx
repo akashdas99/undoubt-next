@@ -5,6 +5,8 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuItem } from "@/lib/types";
@@ -32,6 +34,9 @@ export default function HamburgerMenu({
         side="left"
         className="w-[240px] sm:w-[300px] bg-[color:--background]"
       >
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
         <nav className="flex flex-col space-y-4 mt-5">
           {menuItems
             ?.filter(
@@ -40,8 +45,8 @@ export default function HamburgerMenu({
                 (menu?.allowedFor === "loggedOutUsers" && !isLoggedIn) ||
                 (menu?.allowedFor === "loggedInUsers" && isLoggedIn)
             )
-            ?.map((item) => (
-              <SheetClose key={item.title} asChild>
+            ?.map((item, index) => (
+              <SheetClose key={index} asChild>
                 <MenuItemComponent item={item} />
               </SheetClose>
             ))}
