@@ -17,12 +17,15 @@ import { loginUser } from "@/actions/auth";
 import { LoginSchema, LoginType } from "@/lib/types";
 import { Righteous } from "next/font/google";
 import Link from "next/link";
+import { useState } from "react";
 
 const croissantOne = Righteous({
   weight: "400",
   subsets: ["latin"],
 });
-const LoginForm: React.FC = () => {
+export default function LoginForm(): JSX.Element {
+  const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
+  const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
   const form = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -31,10 +34,13 @@ const LoginForm: React.FC = () => {
     },
   });
   const onSubmit = async (values: LoginType) => {
+    setLoadingLogin(true);
     const res: Partial<{
       type: string;
       message: string;
     }> = await loginUser(values);
+
+    setLoadingLogin(false);
 
     if (res?.type === "serverError") {
       form.setError("root", {
@@ -57,7 +63,19 @@ const LoginForm: React.FC = () => {
       return form.setError("root", {
         message: "Guest User is not available",
       });
-    await loginUser({ username, password });
+
+    setLoadingGuestLogin(true);
+    const res: Partial<{
+      type: string;
+      message: string;
+    }> = await loginUser({ username, password });
+
+    if (res?.type === "serverError") {
+      form.setError("root", {
+        message: res?.message,
+      });
+    }
+    setLoadingGuestLogin(false);
   };
   return (
     <div className="flex items-center justify-center grow">
@@ -108,12 +126,19 @@ const LoginForm: React.FC = () => {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <Button type="submit" className="mt-3">
-              Login
-            </Button>
-            <Button type="button" className="mt-3 ms-2" onClick={onGuestLogin}>
-              Login as Guest
-            </Button>
+            <div className="flex">
+              <Button type="submit" className="mt-3" loading={loadingLogin}>
+                Login
+              </Button>
+              <Button
+                type="button"
+                className="mt-3 ms-2"
+                onClick={onGuestLogin}
+                loading={loadingGuestLogin}
+              >
+                Guest Login
+              </Button>
+            </div>
           </form>
         </Form>
         <div className="relative flex py-2 items-center">
@@ -133,6 +158,4 @@ const LoginForm: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default LoginForm;
+}
