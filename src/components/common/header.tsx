@@ -24,9 +24,9 @@ export default async function Header(): Promise<JSX.Element> {
   const isLoggedIn =
     typeof session?.username === "string" && session?.username?.length >= 0;
   return (
-    <div className="flex items-center px-[6vw] gap-[20px] h-[60px] bg-[--dark-background] text-white">
+    <div className="flex items-center px-[6vw] gap-[20px] h-[60px] bg-foreground text-white">
       <Link
-        className={`${abrilFatface.className} bg-[--chefchaouen-blue] font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center`}
+        className={`${abrilFatface.className} bg-primary font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center`}
         href="/"
       >
         UNdoubt

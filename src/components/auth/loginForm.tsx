@@ -148,7 +148,7 @@ export default function LoginForm(): JSX.Element {
         </div>
         <div className="text-xs">
           <Link
-            className="text-[--chefchaouen-blue] underline font-semibold"
+            className="text-primary underline font-semibold"
             href={"/register"}
           >
             Register

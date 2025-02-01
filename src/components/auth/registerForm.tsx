@@ -178,7 +178,7 @@ const RegisterForm: React.FC = () => {
         </div>
         <div className="text-xs">
           <Link
-            className="text-[--chefchaouen-blue] underline font-semibold"
+            className="text-primary underline font-semibold"
             href={"/login"}
           >
             Login

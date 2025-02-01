@@ -32,7 +32,7 @@ export default function HamburgerMenu({
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="w-[240px] sm:w-[300px] bg-[color:--background]"
+        className="w-[240px] sm:w-[300px] bg-background"
       >
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
