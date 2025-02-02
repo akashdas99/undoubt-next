@@ -3,21 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 //Components
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { loginUser } from "@/actions/auth";
+import { Form, InputField } from "@/components/ui/form";
 import { LoginSchema, LoginType } from "@/lib/types";
 import { Righteous } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
+import { Button } from "../ui/button";
 
 const croissantOne = Righteous({
   weight: "400",
@@ -85,40 +77,18 @@ export default function LoginForm(): JSX.Element {
         </h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
+            <InputField
               control={form.control}
               name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Username"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Username"
+              placeholder="Username"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              placeholder="Password"
+              type="password"
             />
 
             {form?.formState?.errors?.root?.message && (

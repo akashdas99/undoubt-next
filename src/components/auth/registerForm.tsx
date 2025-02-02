@@ -3,26 +3,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 //Components
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { registerUser } from "@/actions/auth";
-import { UserType, UserSchema } from "@/lib/types";
+import { Form, InputField } from "@/components/ui/form";
+import { UserSchema, UserType } from "@/lib/types";
 import { Righteous } from "next/font/google";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { useState } from "react";
 
 const croissantOne = Righteous({
   weight: "400",
   subsets: ["latin"],
 });
 const RegisterForm: React.FC = () => {
+  const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
+
   const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
@@ -35,10 +30,13 @@ const RegisterForm: React.FC = () => {
     },
   });
   const onSubmit = async (values: UserType) => {
+    setLoadingSignup(true);
+
     const res: Partial<{
       type: string;
       message: string;
     }> = await registerUser(values);
+    setLoadingSignup(false);
 
     if (res?.type === "username")
       form.setError("username", {
@@ -58,115 +56,50 @@ const RegisterForm: React.FC = () => {
         </h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
+            <InputField
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Name"
+              placeholder="Name"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Username"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Username"
+              placeholder="Username"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              placeholder="Password"
+              type="password"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="profession"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Profession</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Profession"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Profession"
+              placeholder="Profession"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="City"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="City"
+              placeholder="City"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500focus-visible:ring-blue-500"
-                      placeholder="Country"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Country"
+              placeholder="Country"
             />
+
             {form?.formState?.errors?.root?.message && (
               <p className="text-[0.6rem] text-destructive font-medium">
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <Button type="submit" className="mt-2">
+            <Button type="submit" className="mt-2" loading={loadingSignup}>
               Submit
             </Button>
           </form>
