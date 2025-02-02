@@ -3,7 +3,7 @@
 import useDebounce from "@/hooks/useDebounce";
 import { useGetAllQuestionsByKeywordQuery } from "@/lib/store/questions/questionApi";
 import { useState } from "react";
-import SelectSearch from "../common/selectSearch";
+import SelectSearch from "../ui/selectSearch";
 
 export default function QuestionSearch(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");

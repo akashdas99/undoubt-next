@@ -1,7 +1,7 @@
 import Link from "next/link";
 import QuestionSearch from "../question/questionSearch";
 import { getSession } from "@/lib/session";
-import HamburgerMenu from "./menu";
+import Sidebar from "./sidebar";
 import { MenuItem } from "@/lib/types";
 import MenuBar from "./menubar";
 import { Righteous } from "next/font/google";
@@ -35,7 +35,7 @@ export default async function Header(): Promise<JSX.Element> {
         <QuestionSearch />
       </div>
       <MenuBar menuItems={menuItems} isLoggedIn={isLoggedIn} />
-      <HamburgerMenu menuItems={menuItems} isLoggedIn={isLoggedIn} />
+      <Sidebar menuItems={menuItems} isLoggedIn={isLoggedIn} />
     </div>
   );
 }

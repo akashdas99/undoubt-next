@@ -14,7 +14,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import MenuItemComponent from "./menuItems";
 
-export default function HamburgerMenu({
+export default function Sidebar({
   menuItems,
   isLoggedIn,
 }: {
