@@ -5,6 +5,8 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MenuItem } from "@/lib/types";
@@ -12,7 +14,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import MenuItemComponent from "./menuItems";
 
-export default function HamburgerMenu({
+export default function Sidebar({
   menuItems,
   isLoggedIn,
 }: {
@@ -30,8 +32,11 @@ export default function HamburgerMenu({
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="w-[240px] sm:w-[300px] bg-[color:--background]"
+        className="w-[240px] sm:w-[300px] bg-background"
       >
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
         <nav className="flex flex-col space-y-4 mt-5">
           {menuItems
             ?.filter(
@@ -40,8 +45,8 @@ export default function HamburgerMenu({
                 (menu?.allowedFor === "loggedOutUsers" && !isLoggedIn) ||
                 (menu?.allowedFor === "loggedInUsers" && isLoggedIn)
             )
-            ?.map((item) => (
-              <SheetClose key={item.title} asChild>
+            ?.map((item, index) => (
+              <SheetClose key={index} asChild>
                 <MenuItemComponent item={item} />
               </SheetClose>
             ))}
