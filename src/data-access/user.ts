@@ -10,7 +10,6 @@ export async function getUser() {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.log("getUserError:", error);
     return new Error("Page not available");
   }
 }
