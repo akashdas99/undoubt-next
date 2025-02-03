@@ -96,13 +96,14 @@ export default function LoginForm(): JSX.Element {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <div className="flex">
+            <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
               <Button type="submit" className="mt-3" loading={loadingLogin}>
                 Login
               </Button>
               <Button
                 type="button"
-                className="mt-3 ms-2"
+                className="mt-3"
+                variant={"outline"}
                 onClick={onGuestLogin}
                 loading={loadingGuestLogin}
               >
