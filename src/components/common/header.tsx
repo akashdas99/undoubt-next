@@ -4,12 +4,7 @@ import { getSession } from "@/lib/session";
 import Sidebar from "./sidebar";
 import { MenuItem } from "@/lib/types";
 import MenuBar from "./menubar";
-import { Righteous } from "next/font/google";
 
-const abrilFatface = Righteous({
-  weight: "400",
-  subsets: ["latin"],
-});
 export default async function Header(): Promise<JSX.Element> {
   const menuItems: MenuItem[] = [
     { title: "Home", href: "/", allowedFor: "all" },
@@ -26,7 +21,7 @@ export default async function Header(): Promise<JSX.Element> {
   return (
     <div className="flex items-center px-[6vw] py-[1vw] gap-[20px] bg-foreground text-white">
       <Link
-        className={`${abrilFatface.className} bg-primary font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center`}
+        className={`font-righteous bg-primary font-semibold rounded-tl-lg rounded-br-lg border-2 px-2 text-center`}
         href="/"
       >
         UNdoubt

@@ -6,15 +6,10 @@ import { useForm } from "react-hook-form";
 import { loginUser } from "@/actions/auth";
 import { Form, InputField } from "@/components/ui/form";
 import { LoginSchema, LoginType } from "@/lib/types";
-import { Righteous } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
-const croissantOne = Righteous({
-  weight: "400",
-  subsets: ["latin"],
-});
 export default function LoginForm(): JSX.Element {
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
@@ -72,9 +67,7 @@ export default function LoginForm(): JSX.Element {
   return (
     <div className="flex items-center justify-center grow">
       <div className="neo p-8 rounded-xl max-w-xs w-4/5">
-        <h1 className={`${croissantOne?.className} text-xl mb-6`}>
-          Welcome Back
-        </h1>
+        <h1 className={`font-righteous text-xl mb-6`}>Welcome Back</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <InputField
