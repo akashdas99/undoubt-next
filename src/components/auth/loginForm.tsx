@@ -3,26 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 //Components
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { loginUser } from "@/actions/auth";
+import { Form, InputField } from "@/components/ui/form";
 import { LoginSchema, LoginType } from "@/lib/types";
-import { Righteous } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
+import { Button } from "../ui/button";
 
-const croissantOne = Righteous({
-  weight: "400",
-  subsets: ["latin"],
-});
 export default function LoginForm(): JSX.Element {
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
@@ -80,45 +67,21 @@ export default function LoginForm(): JSX.Element {
   return (
     <div className="flex items-center justify-center grow">
       <div className="neo p-8 rounded-xl max-w-xs w-4/5">
-        <h1 className={`${croissantOne?.className} text-xl mb-6`}>
-          Welcome Back
-        </h1>
+        <h1 className={`font-righteous text-xl mb-6`}>Welcome Back</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
+            <InputField
               control={form.control}
               name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Username"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Username"
+              placeholder="Username"
             />
-            <FormField
+            <InputField
               control={form.control}
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-white focus-visible:ring-blue-500"
-                      placeholder="Password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              placeholder="Password"
+              type="password"
             />
 
             {form?.formState?.errors?.root?.message && (
@@ -126,13 +89,14 @@ export default function LoginForm(): JSX.Element {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <div className="flex">
+            <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
               <Button type="submit" className="mt-3" loading={loadingLogin}>
                 Login
               </Button>
               <Button
                 type="button"
-                className="mt-3 ms-2"
+                className="mt-3"
+                variant={"outline"}
                 onClick={onGuestLogin}
                 loading={loadingGuestLogin}
               >
