@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   description: "Undoubt a QnA forum",
 };
 const montserrat = Montserrat({
-  weight: "400",
   subsets: ["latin"],
   variable: "--font-montserrat",
 });
