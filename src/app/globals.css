@@ -77,7 +77,7 @@
 
   html,
   body {
-    @apply h-screen bg-background text-foreground text-base;
+    @apply bg-background text-foreground text-base;
   }
 }
 @layer utilities {
