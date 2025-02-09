@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const questionApi = createApi({
   reducerPath: "getQuestions",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_VERCEL_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_BASEURL }),
   endpoints: (builder) => ({
     getAllQuestionsByKeyword: builder.query({
       query: (keyword) => `api/questions?keyword=${keyword}`,
