@@ -38,3 +38,9 @@ export type MenuItem = {
   href: string;
   allowedFor: "all" | "loggedInUsers" | "loggedOutUsers";
 };
+export const QuestionSchema = z.object({
+  description: z.string().min(2, {
+    message: "Description of the Question is Required!",
+  }),
+});
+export type QuestionType = z.infer<typeof QuestionSchema>;

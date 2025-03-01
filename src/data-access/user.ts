@@ -1,14 +1,22 @@
+import { pick } from "@/lib/functions";
 import { getSession } from "@/lib/session";
+import UserModel from "@/models/user";
 
 export async function getUser() {
   const session = await getSession();
   if (!session) return new Error("Page not available");
   try {
-    const res = await fetch(
-      `${process.env.REACT_APP_BACKEND}/user/${session?.id}`
-    );
-    const data = await res.json();
-    return data;
+    const user = await UserModel.findById(session?.id).lean();
+    if (!user) return new Error("User not available");
+
+    return pick(user, [
+      "name",
+      "username",
+      "profession",
+      "city",
+      "country",
+      "_id",
+    ]);
   } catch (error) {
     return new Error("Page not available");
   }

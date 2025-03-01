@@ -10,19 +10,21 @@ export default function MenuItemComponent({
   ...restProps
 }: {
   item: MenuItem;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }) {
   const router = useRouter();
+
   return (
     <Link
       href={item.href}
       className="link"
-      onClick={async () => {
+      onClick={async (e) => {
+        if (restProps.onClick) restProps.onClick(e);
         if (item.title === "Logout") {
           await logoutUser();
           router.refresh();
         }
       }}
-      {...restProps}
     >
       {item.title}
     </Link>

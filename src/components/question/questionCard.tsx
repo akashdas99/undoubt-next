@@ -1,23 +1,25 @@
-interface Props {
+import dayjs from "dayjs";
+
+type Props = {
   question: {
     description: string;
     author: {
       name: string;
     };
-    createdAt: Date;
+    createdAt: string;
     answers: string[];
   };
-}
+};
 const QuestionCard = ({ question }: Props) => {
   return (
     <div className="p-[1em] neo">
       <div className="title">{question.description}</div>
       <div className="author-section">
         <div className="author">
-          - {question.author.name}
-          <span className="date">
+          - <span className="font-semibold"> {question.author.name}</span> |
+          <span className="date text-[16px] font-light">
             {" "}
-            | on {new Date(question.createdAt).toLocaleDateString()}
+            {dayjs(question?.createdAt).format("MMM D, YYYY h:mm A")}
           </span>
         </div>
       </div>

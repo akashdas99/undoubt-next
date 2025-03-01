@@ -6,7 +6,7 @@ interface Question {
   author: {
     name: string;
   };
-  createdAt: Date;
+  createdAt: string;
   answers: string[];
 }
 const QuestionList: React.FC = async () => {
