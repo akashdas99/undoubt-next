@@ -2,7 +2,7 @@ import { getUser } from "@/data-access/user";
 import { User } from "@/models/user";
 
 export default async function Profile(): Promise<JSX.Element> {
-  const data: User & { createdAt: string | number | Date } = await getUser();
+  const data: User = await getUser();
 
   return (
     <div className="flex items-center justify-center grow">

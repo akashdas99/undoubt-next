@@ -16,6 +16,7 @@ export async function getUser() {
       "city",
       "country",
       "_id",
+      "createdAt",
     ]);
   } catch (error) {
     return new Error("Page not available");
