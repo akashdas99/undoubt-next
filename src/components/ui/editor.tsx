@@ -44,7 +44,6 @@ const Editor = ({ className, content, onChange }: EditorProps) => {
       onChange(editor.getText() ? editor.getHTML() : "");
     },
   });
-  console.count("editor render");
   return (
     <>
       <EditorToolBar editor={editor} />

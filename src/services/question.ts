@@ -39,7 +39,7 @@ export async function addQuestion(questionData: QuestionType) {
       );
     }
     const userSession = await getUser();
-    console.log("validatedQuestion", validatedQuestion);
+
     const question = new QuestionModel({
       title: validatedQuestion?.data?.title,
     });
@@ -47,7 +47,6 @@ export async function addQuestion(questionData: QuestionType) {
       question.description = sanitizeHtml(validatedQuestion?.data?.description);
 
     question.author = userSession._id;
-    console.log(question);
 
     const res = await question.save();
     return JSON.parse(JSON.stringify({ res }));

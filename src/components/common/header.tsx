@@ -8,7 +8,7 @@ import MenuBar from "./menubar";
 export default async function Header(): Promise<JSX.Element> {
   const menuItems: MenuItem[] = [
     { title: "Home", href: "/", allowedFor: "all" },
-    { title: "Add Question", href: "/question", allowedFor: "all" },
+    { title: "Add Question", href: "/question", allowedFor: "loggedInUsers" },
     { title: "Profile", href: "/profile", allowedFor: "loggedInUsers" },
     { title: "Logout", href: "#", allowedFor: "loggedInUsers" },
     { title: "Log in", href: "/login", allowedFor: "loggedOutUsers" },
