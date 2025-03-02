@@ -1,18 +1,17 @@
+import { getQuestions } from "@/services/question";
 import QuestionCard from "./questionCard";
+import { User } from "@/models/user";
 
 interface Question {
   _id: string;
   description: string;
-  author: {
-    name: string;
-  };
+  author: User;
   createdAt: string;
   answers: string[];
 }
 const QuestionList: React.FC = async () => {
-  const data = await fetch(`${process.env.REACT_APP_BACKEND}/questions`);
-  const questions: Question[] = await data.json();
-
+  const questions: Question[] = await getQuestions();
+  console.log(questions);
   return (
     <div className="px-[8vw] mt-8">
       <div className="active-neo section-heading mb-2">Recent Questions</div>

@@ -1,4 +1,9 @@
+import { getUser } from "@/data-access/user";
+import dbConnect from "@/lib/dbConnect";
+import { QuestionSchema, QuestionType } from "@/lib/types";
 import QuestionModel from "@/models/question";
+
+dbConnect();
 
 export const getQuestions = async () => {
   try {
@@ -21,3 +26,34 @@ export const searchQuestions = async (keyword: string) => {
     throw err;
   }
 };
+export async function addQuestion(questionData: QuestionType) {
+  try {
+    //validate question
+    const validatedQuestion = QuestionSchema.safeParse({
+      ...questionData,
+    });
+    if (!validatedQuestion?.success) {
+      throw new Error(
+        JSON.stringify(validatedQuestion?.error?.flatten()?.fieldErrors)
+      );
+    }
+    const userSession = await getUser();
+    console.log("validatedQuestion", validatedQuestion);
+    const question = new QuestionModel({
+      title: validatedQuestion?.data?.title,
+    });
+    if (validatedQuestion?.data?.description)
+      question.description = validatedQuestion?.data?.description;
+
+    question.author = userSession._id;
+    console.log(question);
+
+    const res = await question.save();
+    return JSON.parse(JSON.stringify({ res }));
+  } catch (e) {
+    console.log(e);
+    return {
+      error: { type: "serverError", message: "Something went wrong" },
+    };
+  }
+}

@@ -1,6 +1,9 @@
+import dbConnect from "@/lib/dbConnect";
 import { pick } from "@/lib/functions";
 import { getSession } from "@/lib/session";
 import UserModel from "@/models/user";
+
+dbConnect();
 
 export async function getUser() {
   const session = await getSession();

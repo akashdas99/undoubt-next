@@ -10,11 +10,17 @@ export interface Question extends QuestionType, Document {
 
 const questionSchema: Schema<Question> = new Schema(
   {
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+      required: true,
+    },
     description: {
       type: String,
       trim: true,
       maxlength: 800,
-      required: true,
+      required: false,
     },
     author: {
       type: Schema.Types.ObjectId,
