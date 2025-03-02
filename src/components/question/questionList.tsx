@@ -1,17 +1,9 @@
 import { getQuestions } from "@/services/question";
 import QuestionCard from "./questionCard";
-import { User } from "@/models/user";
 
-interface Question {
-  _id: string;
-  description: string;
-  author: User;
-  createdAt: string;
-  answers: string[];
-}
 const QuestionList: React.FC = async () => {
-  const questions: Question[] = await getQuestions();
-  console.log(questions);
+  const questions = await getQuestions();
+
   return (
     <div className="px-[8vw] mt-8">
       <div className="active-neo section-heading mb-2">Recent Questions</div>
@@ -19,8 +11,8 @@ const QuestionList: React.FC = async () => {
         <p>No Questions</p>
       ) : (
         <div className="flex flex-col gap-5">
-          {questions.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+          {questions.map((question, i) => (
+            <QuestionCard key={i} question={question} />
           ))}
         </div>
       )}

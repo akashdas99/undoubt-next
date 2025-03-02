@@ -1,30 +1,38 @@
+import { Question } from "@/models/question";
+import { User } from "@/models/user";
 import dayjs from "dayjs";
+import UserImage from "../ui/userImage";
+import { CalendarDays, CircleUserRound } from "lucide-react";
 
-type Props = {
-  question: {
-    description: string;
-    author: {
-      name: string;
-    };
-    createdAt: string;
-    answers: string[];
+const QuestionCard = ({
+  question,
+}: {
+  question: Omit<Question, "author"> & {
+    author: User;
   };
-};
-const QuestionCard = ({ question }: Props) => {
+}) => {
   return (
     <div className="p-[1em] neo">
-      <div className="title">{question.description}</div>
-      <div className="author-section">
-        <div className="author">
-          - <span className="font-semibold"> {question.author.name}</span> |
-          <span className="date text-[16px] font-light">
-            {" "}
-            {dayjs(question?.createdAt).format("MMM D, YYYY h:mm A")}
-          </span>
+      <div className="flex gap-2 items-center mb-2">
+        <UserImage name={question?.author?.name} />
+        <div>
+          <div className="text-primary font-semibold text-lg">
+            {question?.title}
+          </div>
+          <div className="flex text-xs opacity-50 gap-3">
+            <div className="flex items-center gap-1">
+              <CircleUserRound className="w-3" />
+              {question?.author?.name}
+            </div>
+            <div className="flex items-center gap-1">
+              <CalendarDays className="w-3" />
+              {dayjs(question?.createdAt).format("MMM D, YYYY")}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="card-footer">{question.answers.length} Answers</div>
+      <div className="text-xs">{question?.answers?.length || "No"} Answers</div>
     </div>
   );
 };

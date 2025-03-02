@@ -2,15 +2,16 @@ import { getUser } from "@/data-access/user";
 import dbConnect from "@/lib/dbConnect";
 import { QuestionSchema, QuestionType } from "@/lib/types";
 import QuestionModel from "@/models/question";
+import { User } from "@/models/user";
+import sanitizeHtml from "sanitize-html";
 
 dbConnect();
 
 export const getQuestions = async () => {
   try {
     const data = await QuestionModel.find()
-      .populate("author")
-      .sort([["_id", "asc"]])
-      .lean();
+      .populate<{ author: User }>("author")
+      .sort([["_id", "asc"]]);
     return data;
   } catch (err) {
     throw err;
@@ -43,7 +44,7 @@ export async function addQuestion(questionData: QuestionType) {
       title: validatedQuestion?.data?.title,
     });
     if (validatedQuestion?.data?.description)
-      question.description = validatedQuestion?.data?.description;
+      question.description = sanitizeHtml(validatedQuestion?.data?.description);
 
     question.author = userSession._id;
     console.log(question);
