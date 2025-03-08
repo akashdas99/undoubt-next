@@ -19,12 +19,11 @@ export default function AddQuestion() {
   });
   const onSubmit = async (values: QuestionType) => {
     setLoading(true);
-    const { error } = await addQuestionAction(values);
-
+    const res = await addQuestionAction(values);
     setLoading(false);
-    if (error?.type === "serverError") {
+    if (res?.error?.type === "serverError") {
       form.setError("root", {
-        message: error?.message,
+        message: res?.error?.message,
       });
     }
   };
