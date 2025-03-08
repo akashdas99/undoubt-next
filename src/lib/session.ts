@@ -5,7 +5,7 @@ import { UserType } from "./types";
 export async function createSession(tokenData: Partial<UserType>) {
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const token = await new SignJWT(tokenData)
-    .setProtectedHeader({ alg: "dir", enc: "A128CBC-HS256" })
+    .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("10h")
     .sign(jwtKey);
