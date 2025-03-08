@@ -17,7 +17,7 @@ export async function getSession() {
   if (!token) return null;
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const { payload } = await jwtVerify(token, jwtKey);
-  return payload as Partial<UserType>;
+  return payload as Partial<UserType & { id: string }>;
 }
 export async function removeSession() {
   await cookies().delete("token");
