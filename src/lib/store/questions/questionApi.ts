@@ -6,9 +6,9 @@ export const questionApi = createApi({
   endpoints: (builder) => ({
     getAllQuestionsByKeyword: builder.query({
       query: (keyword) => `api/questions?keyword=${keyword}`,
-      transformResponse: (response: { description: string; _id: string }[]) =>
-        response?.map((question: { description: string; _id: string }) => ({
-          label: question?.description,
+      transformResponse: (response: { title: string; _id: string }[]) =>
+        response?.map((question: { title: string; _id: string }) => ({
+          label: question?.title,
           value: question?._id,
         })),
     }),

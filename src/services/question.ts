@@ -20,7 +20,7 @@ export const getQuestions = async () => {
 export const searchQuestions = async (keyword: string) => {
   try {
     const data = await QuestionModel.find({
-      description: { $regex: keyword, $options: "i" },
+      title: { $regex: keyword, $options: "i" },
     }).lean();
     return data;
   } catch (err) {
