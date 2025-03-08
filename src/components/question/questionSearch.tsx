@@ -8,9 +8,9 @@ import SelectSearch from "../ui/selectSearch";
 export default function QuestionSearch(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedValue, setSelectedValue] = useState<string>("");
-  const searchQuestion = useDebounce(searchValue, 1500);
+  const searchQuestion = useDebounce(searchValue, 300);
 
-  const { data, isLoading } = useGetAllQuestionsByKeywordQuery(searchQuestion);
+  const { data, isFetching } = useGetAllQuestionsByKeywordQuery(searchQuestion);
 
   const handleChange = async (search: string) => {
     setSearchValue(search);
@@ -22,7 +22,7 @@ export default function QuestionSearch(): JSX.Element {
       searchValue={searchValue}
       onSearchValueChange={handleChange}
       items={data ?? []}
-      isLoading={isLoading}
+      isLoading={isFetching}
       emptyMessage="No question found."
     />
   );

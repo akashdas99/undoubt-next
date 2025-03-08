@@ -9,7 +9,6 @@ import {
 import { useMemo, useState } from "react";
 import { Popover, PopoverAnchor, PopoverContent } from "../ui/popover";
 import { Command as CommandPrimitive } from "cmdk";
-import { Skeleton } from "../ui/skeleton";
 import { Input } from "../ui/input";
 
 type Props<T extends string> = {
@@ -100,8 +99,8 @@ export default function SelectSearch<T extends string>({
           <CommandList>
             {isLoading && (
               <CommandPrimitive.Loading>
-                <div className="p-1">
-                  <Skeleton className="h-6 w-full" />
+                <div className="p-2">
+                  <div className="spinner-loader place-self-center bg-primary !w-5"></div>
                 </div>
               </CommandPrimitive.Loading>
             )}
