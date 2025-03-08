@@ -16,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
+import Editor from "./editor";
 
 const Form = FormProvider;
 
@@ -209,6 +210,34 @@ const InputField = <
     />
   );
 };
+const EditorField = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
+  control,
+  name,
+  label,
+}: InputFieldProps<TFieldValues, TName>) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Editor
+              className="bg-white focus-visible:ring-blue-500"
+              content={field.value}
+              onChange={field.onChange}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
 export {
   Form,
   FormControl,
@@ -218,5 +247,6 @@ export {
   FormLabel,
   FormMessage,
   InputField,
+  EditorField,
   useFormField,
 };

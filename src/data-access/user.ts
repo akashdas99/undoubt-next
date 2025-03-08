@@ -1,6 +1,9 @@
+import dbConnect from "@/lib/dbConnect";
 import { pick } from "@/lib/functions";
 import { getSession } from "@/lib/session";
 import UserModel from "@/models/user";
+
+dbConnect();
 
 export async function getUser() {
   const session = await getSession();
@@ -16,6 +19,7 @@ export async function getUser() {
       "city",
       "country",
       "_id",
+      "createdAt",
     ]);
   } catch (error) {
     return new Error("Page not available");

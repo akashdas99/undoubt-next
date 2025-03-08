@@ -39,8 +39,9 @@ export type MenuItem = {
   allowedFor: "all" | "loggedInUsers" | "loggedOutUsers";
 };
 export const QuestionSchema = z.object({
-  description: z.string().min(2, {
-    message: "Description of the Question is Required!",
+  title: z.string().min(10, {
+    message: "Title of the Question cannot be less than 10 characters",
   }),
+  description: z.string().optional(),
 });
 export type QuestionType = z.infer<typeof QuestionSchema>;
