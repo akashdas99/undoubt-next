@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "./lib/session";
 
-export function middleware(request: NextRequest) {
+const PROTECTED_ROUTES = ["/question"];
+export async function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const cspHeader = `
     default-src 'self';
@@ -22,14 +24,10 @@ export function middleware(request: NextRequest) {
     .replace(/\s{2,}/g, " ")
     .trim();
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-nonce", nonce);
+  //create response based on request path
+  const response = await createResponse(request, nonce);
 
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  //set csp header
   response.headers.set(
     "Content-Security-Policy",
     contentSecurityPolicyHeaderValue
@@ -55,4 +53,25 @@ export const config = {
       ],
     },
   ],
+};
+
+const createResponse = async (request: NextRequest, nonce: string) => {
+  const { pathname } = request.nextUrl;
+
+  if (PROTECTED_ROUTES.includes(pathname)) {
+    const session = await getSession();
+
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 };

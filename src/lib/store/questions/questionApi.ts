@@ -5,11 +5,11 @@ export const questionApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_BASEURL }),
   endpoints: (builder) => ({
     getAllQuestionsByKeyword: builder.query({
-      query: (keyword) => `api/questions?keyword=${keyword}`,
-      transformResponse: (response: { description: string; _id: string }[]) =>
-        response?.map((question: { description: string; _id: string }) => ({
-          label: question?.description,
-          value: question?._id,
+      query: (keyword) => `/api/questions?keyword=${keyword}`,
+      transformResponse: (response: { title: string; slug: string }[]) =>
+        response?.map((question: { title: string; slug: string }) => ({
+          label: question?.title,
+          value: question?.slug,
         })),
     }),
   }),

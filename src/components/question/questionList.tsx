@@ -1,5 +1,6 @@
 import { getQuestions } from "@/services/question";
 import QuestionCard from "./questionCard";
+import Link from "next/link";
 
 const QuestionList: React.FC = async () => {
   const questions = await getQuestions();
@@ -12,7 +13,9 @@ const QuestionList: React.FC = async () => {
       ) : (
         <div className="flex flex-col gap-5">
           {questions.map((question, i) => (
-            <QuestionCard key={i} question={question} />
+            <Link key={i} href={"question/" + question?.slug}>
+              <QuestionCard question={question} />
+            </Link>
           ))}
         </div>
       )}
