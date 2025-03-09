@@ -13,7 +13,7 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const question = await getQuestionBySlug(params?.slug);
-  console.log(question);
+
   if (!question) return notFound();
   return (
     <div className="px-[8vw] mt-8">
