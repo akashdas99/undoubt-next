@@ -1,8 +1,8 @@
 import { Question } from "@/models/question";
 import { User } from "@/models/user";
 import dayjs from "dayjs";
-import UserImage from "../ui/userImage";
 import { CalendarDays, CircleUserRound } from "lucide-react";
+import UserImage from "../ui/userImage";
 
 const QuestionCard = ({
   question,

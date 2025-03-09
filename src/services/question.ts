@@ -17,6 +17,16 @@ export const getQuestions = async () => {
     throw err;
   }
 };
+export const getQuestionBySlug = async (slug: string) => {
+  try {
+    const data = await QuestionModel.findOne({ slug }).populate<{
+      author: User;
+    }>("author");
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
 export const searchQuestions = async (keyword: string) => {
   try {
     const data = await QuestionModel.find({
