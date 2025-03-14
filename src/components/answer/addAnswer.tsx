@@ -55,7 +55,15 @@ export default function AddAnswer() {
                 )}
                 <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
                   <Button type="submit" className="mt-3" loading={loading}>
-                    <Plus /> Answer
+                    Submit
+                  </Button>
+                  <Button
+                    onClick={() => setShowEditor(false)}
+                    className="mt-3"
+                    variant={"destructive"}
+                    loading={loading}
+                  >
+                    Cancel
                   </Button>
                 </div>
               </form>

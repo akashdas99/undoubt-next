@@ -6,7 +6,49 @@ import QuestionModel from "@/models/question";
 import sanitizeHtml from "sanitize-html";
 
 dbConnect();
+export async function getAnswersByQuestionSlug(slug: string) {
+  try {
+    const answers = await QuestionModel.aggregate([
+      {
+        $match: {
+          slug: slug,
+        },
+      },
+      {
+        $lookup: {
+          from: "answers",
+          localField: "answers",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "_id",
+                pipeline: [{ $project: { name: 1 } }],
+                as: "author",
+              },
+            },
+            {
+              $unwind: "$author",
+            },
+          ],
+          as: "answers",
+        },
+      },
 
+      {
+        $unwind: "$answers",
+      },
+    ]);
+    return JSON.parse(JSON.stringify(answers?.map((a) => a?.answers)));
+  } catch (e) {
+    console.log(e);
+    return {
+      error: { type: "serverError", message: "Something went wrong" },
+    };
+  }
+}
 export async function addAnswer(slug: string, answerData: AnswerType) {
   try {
     //validate question
