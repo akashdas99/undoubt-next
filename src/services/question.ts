@@ -10,7 +10,7 @@ dbConnect();
 export const getQuestions = async () => {
   try {
     const data = await QuestionModel.find()
-      .populate<{ author: User }>("author")
+      .populate<{ author: User }>("author", "name")
       .sort([["_id", "asc"]]);
     return data;
   } catch (err) {
