@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./lib/session";
 
-const PROTECTED_ROUTES = ["/question"];
+const PROTECTED_ROUTES = ["/question", "/profile"];
 export async function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const cspHeader = `
