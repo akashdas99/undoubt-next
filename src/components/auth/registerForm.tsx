@@ -9,9 +9,11 @@ import { UserSchema, UserType } from "@/lib/types";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const RegisterForm: React.FC = () => {
   const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
+  const router = useRouter();
 
   const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
@@ -41,6 +43,7 @@ const RegisterForm: React.FC = () => {
       form.setError("root", {
         message: res?.message,
       });
+    router.refresh();
   };
 
   return (
