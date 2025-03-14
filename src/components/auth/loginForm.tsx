@@ -9,8 +9,11 @@ import { LoginSchema, LoginType } from "@/lib/types";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm(): JSX.Element {
+  const router = useRouter();
+
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
   const form = useForm<LoginType>({
@@ -42,6 +45,7 @@ export default function LoginForm(): JSX.Element {
         message: res?.message,
       });
     }
+    router.refresh();
   };
   const onGuestLogin = async () => {
     const username = process.env.NEXT_PUBLIC_GUEST_USERNAME;
@@ -63,6 +67,7 @@ export default function LoginForm(): JSX.Element {
       });
     }
     setLoadingGuestLogin(false);
+    router.refresh();
   };
   return (
     <div className="flex items-center justify-center grow">
