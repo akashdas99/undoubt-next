@@ -1,3 +1,4 @@
+import AddAnswer from "@/components/answer/addAnswer";
 import QuestionCard from "@/components/question/questionCard";
 import { getQuestionBySlug, getQuestions } from "@/services/question";
 import { notFound } from "next/navigation";
@@ -19,6 +20,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <div className="px-[8vw] mt-8">
       <div className="flex flex-col gap-5">
         <QuestionCard question={question} />
+        <AddAnswer />
       </div>
     </div>
   );

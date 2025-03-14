@@ -174,7 +174,7 @@ interface InputFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > extends UseControllerProps<TFieldValues, TName> {
-  label: string;
+  label?: string;
   placeholder?: string;
   type?: "text" | "password" | "number";
 }
