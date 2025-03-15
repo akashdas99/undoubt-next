@@ -7,10 +7,11 @@ dbConnect();
 
 export async function getUser() {
   const session = await getSession();
-  if (!session) return new Error("Page not available");
+  if (!session) throw new Error("Page not available");
+
   try {
     const user = await UserModel.findById(session?.id).lean();
-    if (!user) return new Error("User not available");
+    if (!user) throw new Error("User not available");
 
     return pick(user, [
       "name",
@@ -22,6 +23,6 @@ export async function getUser() {
       "createdAt",
     ]);
   } catch (error) {
-    return new Error("Page not available");
+    throw new Error("Page not available");
   }
 }
