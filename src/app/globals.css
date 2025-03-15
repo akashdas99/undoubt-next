@@ -22,7 +22,7 @@
 
 @layer base {
   :root {
-    --background: 228 56% 98%;
+    --background: 225, 15%, 95%;
     --foreground: 120 1% 25%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -85,7 +85,7 @@
     text-wrap: balance;
   }
   .neo {
-    box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #fff;
+    box-shadow: 6px 6px 8px 2px #cecece, -6px -6px 8px 2px #fff;
   }
   .spinner-loader {
     width: 50px;

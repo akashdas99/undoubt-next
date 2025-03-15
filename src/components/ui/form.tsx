@@ -227,7 +227,7 @@ const EditorField = <
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Editor
-              className="bg-white focus-visible:ring-blue-500"
+              className="bg-white focus-visible:ring-blue-500 min-h-32"
               content={field.value}
               onChange={field.onChange}
             />

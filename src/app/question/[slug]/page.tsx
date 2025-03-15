@@ -33,7 +33,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <QuestionCard question={question} />
         {session && <AddAnswer />}
 
-        <div className="active-neo section-heading mb-2">Recent Questions</div>
+        <div className="active-neo section-heading mb-2 font-righteous text-xl">
+          Recent Answers
+        </div>
 
         {answers.length === 0 ? (
           <p>No Questions</p>

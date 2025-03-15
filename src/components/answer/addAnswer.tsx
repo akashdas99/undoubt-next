@@ -60,8 +60,7 @@ export default function AddAnswer() {
                   <Button
                     onClick={() => setShowEditor(false)}
                     className="mt-3"
-                    variant={"destructive"}
-                    loading={loading}
+                    variant={"outline"}
                   >
                     Cancel
                   </Button>
