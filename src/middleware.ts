@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} *.amazonaws.com;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} *.vercel-storage.com;
 `;
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
