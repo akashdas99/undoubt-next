@@ -1,6 +1,10 @@
-import { getSession } from "@/lib/session";
+import { getSessionFromToken, getSessionToken } from "@/lib/session";
+import UserModel from "@/models/user";
+import { copy } from "@vercel/blob";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
@@ -9,32 +13,45 @@ export async function POST(request: Request): Promise<NextResponse> {
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (
-        pathname
-        /* clientPayload */
-      ) => {
+      onBeforeGenerateToken: async (pathname) => {
         // Generate a client token for the browser to upload the file
 
-        const session = await getSession();
+        const session = await getSessionToken();
         if (!session || !pathname.startsWith("public/"))
           throw new Error("Could not upload file");
 
         return {
-          allowedContentTypes: ["image/jpeg", "image/png", "image/gif"],
+          allowedContentTypes: ["image/*"],
           tokenPayload: JSON.stringify({
             session,
           }),
+          maximumSizeInBytes: 1024 * 1024,
+          validUntil: 20 * 1000,
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         // Get notified of client upload completion
 
-        console.log("blob upload completed", blob, tokenPayload);
+        if (!tokenPayload) throw new Error("Could not upload file");
+        const session = await getSessionFromToken(tokenPayload);
 
         try {
-          // Run any logic after the file upload completed
-          // const { userId } = JSON.parse(tokenPayload);
-          // await db.update({ avatar: blob.url, userId });
+          const user = await UserModel.findById(session?.id);
+          if (!user) throw new Error("User not found");
+          const userPathName =
+            "user/" +
+            user?._id?.toString() +
+            "/" +
+            uuidv4() +
+            path.extname(blob?.pathname);
+
+          console.log("pathname", userPathName);
+
+          const copiedBlog = await copy(blob?.url, userPathName, {
+            access: "public",
+          });
+          user.profilePicture = copiedBlog?.pathname;
+          await user.save();
         } catch (error) {
           throw new Error("Could not update user");
         }
