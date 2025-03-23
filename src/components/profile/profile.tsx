@@ -1,17 +1,20 @@
 import { getUser } from "@/data-access/user";
 import { User } from "@/models/user";
 import UserImage from "../ui/userImage";
+import ImageUpload from "./imageUpload";
 
 export default async function Profile(): Promise<JSX.Element> {
   const data: User = await getUser();
 
   return (
     <div className="flex items-center justify-center grow">
-      <div className="neo p-8 rounded-xl max-w-sm w-4/5">
+      <div className="neo p-5 rounded-xl max-w-sm w-4/5">
         <h1 className={`font-righteous text-xl mb-6`}>Profile Information</h1>
         <div className="flex flex-col gap-5 sm:flex-row sm:gap-2 sm:justify-between">
-          <UserImage name={data?.name} />
-
+          <div>
+            <UserImage name={data?.name} />
+            <ImageUpload />
+          </div>
           <div className="grid grid-cols-2 text-sm gap-y-2 gap-x-2">
             <div className="font-medium opacity-70">Name</div>
             <div>{data?.name}</div>
