@@ -14,7 +14,7 @@ const QuestionCard = ({
   return (
     <div className="p-[1em] neo">
       <div className="flex gap-2 items-center mb-2">
-        <UserImage name={question?.author?.name} />
+        <UserImage user={question?.author} />
         <div>
           <div className="text-primary font-semibold text-lg">
             {question?.title}
