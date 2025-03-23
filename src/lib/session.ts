@@ -19,6 +19,15 @@ export async function getSession() {
   const { payload } = await jwtVerify(token, jwtKey);
   return payload as Partial<UserType & { id: string }>;
 }
+export async function getSessionToken() {
+  const token = await cookies().get("token")?.value;
+  return token;
+}
+export async function getSessionFromToken(token: string) {
+  const jwtKey = new TextEncoder().encode(process.env.SECRET!);
+  const { payload } = await jwtVerify(token, jwtKey);
+  return payload as Partial<UserType & { id: string }>;
+}
 export async function removeSession() {
   await cookies().delete("token");
 }

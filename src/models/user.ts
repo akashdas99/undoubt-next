@@ -3,6 +3,7 @@ import { UserType } from "@/lib/types";
 
 export interface User extends UserType, Document {
   createdAt: Date;
+  profilePicture: string;
 }
 
 const userSchema: Schema<User> = new Schema(
@@ -37,6 +38,9 @@ const userSchema: Schema<User> = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    profilePicture: {
+      type: String,
     },
   },
   { timestamps: true }

@@ -1,42 +1,33 @@
 "use client";
 
-import { type PutBlobResult } from "@vercel/blob";
 import { upload } from "@vercel/blob/client";
-import { useState } from "react";
+import { Pencil } from "lucide-react";
 
 export default function AvatarUploadPage() {
-  const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.files);
     if (!event?.target?.files) {
-      throw new Error("No file selected");
+      return;
     }
 
     const file = event.target.files[0];
 
-    const newBlob = await upload("public/" + file.name, file, {
+    await upload("public/" + file.name, file, {
       access: "public",
       handleUploadUrl: "/api/user/image",
     });
 
-    setBlob(newBlob);
+    event.target.value = "";
   };
   return (
     <>
       <label
         role="button"
         htmlFor="uploadfile"
-        className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary hover:text-primary-foregrounds"
+        className="absolute bottom-0 right-0 bg-primary rounded-full p-1"
       >
-        Upload Image
+        <Pencil className="w-2 h-2" color="#ffffff" />
       </label>
       <input id="uploadfile" type="file" hidden onChange={handleUpload} />
-
-      {blob && (
-        <div>
-          Blob url: <a href={blob.url}>{blob.url}</a>
-        </div>
-      )}
     </>
   );
 }
