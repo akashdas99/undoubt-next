@@ -31,12 +31,15 @@ export async function POST(request: Request): Promise<NextResponse> {
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         // Get notified of client upload completion
-
+        console.log("blob upload completed", blob, tokenPayload);
         if (!tokenPayload) throw new Error("Could not upload file");
         const session = await getSessionFromToken(tokenPayload);
+        console.log("blob upload session", session);
 
         try {
           const user = await UserModel.findById(session?.id);
+          console.log("user", user);
+
           if (!user) throw new Error("User not found");
           const userPathName =
             "user/" +
