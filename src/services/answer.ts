@@ -5,9 +5,9 @@ import AnswerModel from "@/models/answer";
 import QuestionModel from "@/models/question";
 import sanitizeHtml from "sanitize-html";
 
-dbConnect();
 export async function getAnswersByQuestionSlug(slug: string) {
   try {
+    await dbConnect();
     const answers = await QuestionModel.aggregate([
       {
         $match: {
@@ -51,6 +51,7 @@ export async function getAnswersByQuestionSlug(slug: string) {
 }
 export async function addAnswer(slug: string, answerData: AnswerType) {
   try {
+    await dbConnect();
     //validate question
     const validatedQuestion = AnswerSchema.safeParse({
       ...answerData,

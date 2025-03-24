@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/dbConnect";
 import { getSessionFromToken, getSessionToken } from "@/lib/session";
 import UserModel from "@/models/user";
 import { copy } from "@vercel/blob";
@@ -30,6 +31,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
+        await dbConnect();
         // Get notified of client upload completion
         console.log("blob upload completed", blob, tokenPayload);
         if (!tokenPayload) throw new Error("Could not upload file");

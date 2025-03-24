@@ -7,10 +7,9 @@ import User from "@/models/user";
 import bcryptjs from "bcryptjs";
 import { redirect } from "next/navigation";
 
-dbConnect();
-
 export async function registerUser(userData: UserType) {
   try {
+    await dbConnect();
     //validate userData
     const validatedUser = UserSchema.safeParse({
       ...userData,
@@ -51,6 +50,7 @@ export async function registerUser(userData: UserType) {
 }
 export async function loginUser(loginData: LoginType) {
   try {
+    await dbConnect();
     //validate userData
     const validatedLoginData = LoginSchema.safeParse({
       ...loginData,
