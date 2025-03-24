@@ -26,7 +26,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             session,
           }),
           maximumSizeInBytes: 1024 * 1024,
-          validUntil: 20 * 1000,
+          validUntil: Date.now() + 60 * 1000,
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {

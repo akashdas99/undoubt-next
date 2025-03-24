@@ -10,12 +10,12 @@ export default async function Profile(): Promise<JSX.Element> {
     <div className="flex items-center justify-center grow">
       <div className="neo p-5 rounded-xl max-w-sm w-4/5">
         <h1 className={`font-righteous text-xl mb-6`}>Profile Information</h1>
-        <div className="flex flex-col gap-5 sm:flex-row sm:gap-2 sm:justify-between items-start">
+        <div className="flex flex-col gap-5 sm:flex-row sm:justify-between items-start">
           <div className="relative">
             <UserImage user={data} />
             <ImageUpload />
           </div>
-          <div className="grid grid-cols-2 text-sm gap-y-2 gap-x-2">
+          <div className="grid grid-cols-[min-content_auto] text-sm gap-y-2 gap-x-2 flex-1">
             <div className="font-medium opacity-70">Name</div>
             <div>{data?.name}</div>
             <div className="font-medium opacity-70">Username</div>
