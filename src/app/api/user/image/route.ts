@@ -33,7 +33,9 @@ export async function POST(request: Request): Promise<NextResponse> {
         // Get notified of client upload completion
         console.log("blob upload completed", blob, tokenPayload);
         if (!tokenPayload) throw new Error("Could not upload file");
-        const session = await getSessionFromToken(tokenPayload);
+        const session = await getSessionFromToken(
+          JSON.parse(tokenPayload)?.session
+        );
         console.log("blob upload session", session);
 
         try {
