@@ -5,10 +5,9 @@ import QuestionModel from "@/models/question";
 import { User } from "@/models/user";
 import sanitizeHtml from "sanitize-html";
 
-dbConnect();
-
 export const getQuestions = async () => {
   try {
+    await dbConnect();
     const data = await QuestionModel.find()
       .populate<{ author: User }>("author", "name")
       .sort([["_id", "asc"]]);
@@ -29,6 +28,7 @@ export const getQuestionBySlug = async (slug: string) => {
 };
 export const searchQuestions = async (keyword: string) => {
   try {
+    await dbConnect();
     const data = await QuestionModel.find({
       title: { $regex: keyword, $options: "i" },
     }).lean();
@@ -39,6 +39,7 @@ export const searchQuestions = async (keyword: string) => {
 };
 export async function addQuestion(questionData: QuestionType) {
   try {
+    await dbConnect();
     //validate question
     const validatedQuestion = QuestionSchema.safeParse({
       ...questionData,
