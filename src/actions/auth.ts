@@ -62,7 +62,7 @@ export async function loginUser(loginData: LoginType) {
     }
     const { username, password } = validatedLoginData?.data;
     //if user exists
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: username }).select("+password");
     if (!user) {
       return {
         type: "username",
