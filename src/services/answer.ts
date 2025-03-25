@@ -25,7 +25,7 @@ export async function getAnswersByQuestionSlug(slug: string) {
                 from: "users",
                 localField: "author",
                 foreignField: "_id",
-                pipeline: [{ $project: { name: 1 } }],
+                pipeline: [{ $project: { name: 1, profilePicture: 1 } }],
                 as: "author",
               },
             },
