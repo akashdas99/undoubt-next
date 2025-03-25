@@ -9,7 +9,7 @@ export const getQuestions = async () => {
   try {
     await dbConnect();
     const data = await QuestionModel.find()
-      .populate<{ author: User }>("author", "name")
+      .populate<{ author: User }>("author", "name profilePicture")
       .sort([["_id", "asc"]]);
     return data;
   } catch (err) {
@@ -20,7 +20,7 @@ export const getQuestionBySlug = async (slug: string) => {
   try {
     const data = await QuestionModel.findOne({ slug }).populate<{
       author: User;
-    }>("author");
+    }>("author", "name profilePicture");
     return data;
   } catch (err) {
     throw err;

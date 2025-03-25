@@ -2,8 +2,10 @@
 
 import { upload } from "@vercel/blob/client";
 import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AvatarUploadPage() {
+  const router = useRouter();
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event?.target?.files) {
       return;
@@ -15,7 +17,7 @@ export default function AvatarUploadPage() {
       access: "public",
       handleUploadUrl: "/api/user/image",
     });
-
+    router.refresh();
     event.target.value = "";
   };
   return (
