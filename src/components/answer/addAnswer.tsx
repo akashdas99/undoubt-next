@@ -1,13 +1,13 @@
 "use client";
-import React, { useState } from "react";
-import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
-import { EditorField, Form } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AnswerSchema, AnswerType } from "@/lib/types";
 import { addAnswerAction } from "@/actions/answer";
+import { AnswerSchema, AnswerType } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FilePenLine } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { EditorField, Form } from "../ui/form";
 
 export default function AddAnswer() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,12 +34,12 @@ export default function AddAnswer() {
       {!showEditor ? (
         <Button
           type="button"
-          className="mt-3 neo"
+          className="neo"
           variant={"default"}
           size={"sm"}
           onClick={() => setShowEditor(true)}
         >
-          <Plus /> Answer
+          <FilePenLine /> Answer
         </Button>
       ) : (
         <div className="flex items-center justify-center grow">

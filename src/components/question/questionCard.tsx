@@ -4,16 +4,16 @@ import dayjs from "dayjs";
 import { CalendarDays, CircleUserRound } from "lucide-react";
 import UserImage from "../ui/userImage";
 
-const QuestionCard = ({
+export default async function QuestionCard({
   question,
 }: {
   question: Omit<Question, "author"> & {
     author: User;
   };
-}) => {
+}) {
   return (
     <div className="p-[1em] neo">
-      <div className="flex gap-2 items-center mb-2">
+      <div className="flex gap-2 items-start mb-3">
         <UserImage user={question?.author} />
         <div>
           <div className="text-primary font-semibold text-lg">
@@ -31,10 +31,7 @@ const QuestionCard = ({
           </div>
         </div>
       </div>
-
       <div className="text-xs">{question?.answers?.length || "No"} Answers</div>
     </div>
   );
-};
-
-export default QuestionCard;
+}
