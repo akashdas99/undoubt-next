@@ -1,9 +1,17 @@
 import { getQuestions } from "@/services/question";
 import QuestionCard from "./questionCard";
 import Link from "next/link";
-
+import { unstable_cache } from "next/cache";
+const getCachedQuestions = unstable_cache(
+  async () => getQuestions(),
+  [`questions`],
+  {
+    tags: ["questions"],
+    revalidate: 600,
+  }
+);
 const QuestionList: React.FC = async () => {
-  const questions = await getQuestions();
+  const questions = await getCachedQuestions();
 
   return (
     <div className="px-[8vw] mt-8">
