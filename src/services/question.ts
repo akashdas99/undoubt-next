@@ -18,6 +18,7 @@ export const getQuestions = async () => {
 };
 export const getQuestionBySlug = async (slug: string) => {
   try {
+    await dbConnect();
     const data = await QuestionModel.findOne({ slug }).populate<{
       author: User;
     }>("author", "name profilePicture");
