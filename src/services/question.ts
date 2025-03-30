@@ -7,6 +7,7 @@ import sanitizeHtml from "sanitize-html";
 
 export const getQuestions = async () => {
   try {
+    console.log(Date());
     await dbConnect();
     const data = await QuestionModel.find()
       .populate<{ author: User }>("author", "name profilePicture")
