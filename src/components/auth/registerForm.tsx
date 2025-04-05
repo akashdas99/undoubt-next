@@ -47,11 +47,16 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center grow overflow-hidden">
-      <div className="bordered-card p-8 rounded-xl max-w-xs w-4/5">
-        <h1 className={`font-righteous text-xl mb-6`}>Register Account</h1>
+    <div className="flex items-center justify-center grow">
+      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-8">
+        <h1 className={`font-righteous text-xl mb-3 md:mb-6`}>
+          Register Account
+        </h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="md:grid grid-cols-2 gap-x-3"
+          >
             <InputField
               control={form.control}
               name="name"
@@ -95,8 +100,12 @@ const RegisterForm: React.FC = () => {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <Button type="submit" className="mt-2" loading={loadingSignup}>
-              Submit
+            <Button
+              type="submit"
+              className="mt-5 justify-self-center col-span-2 w-full"
+              loading={loadingSignup}
+            >
+              Create Account
             </Button>
           </form>
         </Form>

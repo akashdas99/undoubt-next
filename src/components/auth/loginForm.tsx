@@ -71,8 +71,8 @@ export default function LoginForm(): JSX.Element {
   };
   return (
     <div className="flex items-center justify-center grow">
-      <div className="bordered-card p-8 rounded-xl max-w-xs w-4/5">
-        <h1 className={`font-righteous text-xl mb-6`}>Welcome Back</h1>
+      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12">
+        <h1 className={`font-righteous text-xl mb-3 md:mb-6`}>Welcome Back</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <InputField
