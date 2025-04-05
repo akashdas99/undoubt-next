@@ -20,7 +20,7 @@ const AnswerCard = ({
     className: "border-0 min-h-auto",
   });
   return (
-    <div className="p-[1em] neo">
+    <div className="p-[1em] bordered-card">
       <div className="flex gap-2 items-center mb-2">
         <UserImage user={answer?.author} />
         <div className="grow">

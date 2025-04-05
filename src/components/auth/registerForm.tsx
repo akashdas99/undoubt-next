@@ -48,7 +48,7 @@ const RegisterForm: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center grow overflow-hidden">
-      <div className="neo p-8 rounded-xl max-w-xs w-4/5">
+      <div className="bordered-card p-8 rounded-xl max-w-xs w-4/5">
         <h1 className={`font-righteous text-xl mb-6`}>Register Account</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

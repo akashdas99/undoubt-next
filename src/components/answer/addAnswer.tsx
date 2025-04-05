@@ -34,7 +34,7 @@ export default function AddAnswer() {
       {!showEditor ? (
         <Button
           type="button"
-          className="neo"
+          className="bordered-card"
           variant={"default"}
           size={"sm"}
           onClick={() => setShowEditor(true)}
@@ -43,7 +43,7 @@ export default function AddAnswer() {
         </Button>
       ) : (
         <div className="flex items-center justify-center grow">
-          <div className="neo p-8 rounded-xl  w-full">
+          <div className="bordered-card p-8 rounded-xl  w-full">
             <h1 className={`font-righteous text-xl mb-6`}>Add Answer</h1>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
