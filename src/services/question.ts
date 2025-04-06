@@ -1,4 +1,4 @@
-import { getUser } from "@/data-access/user";
+import { getUser } from "@/services/user";
 import dbConnect from "@/lib/dbConnect";
 import { QuestionSchema, QuestionType } from "@/lib/types";
 import QuestionModel from "@/models/question";

@@ -1,10 +1,10 @@
 "use client";
 
 import useDebounce from "@/hooks/useDebounce";
-import { useGetAllQuestionsByKeywordQuery } from "@/lib/store/questions/questionApi";
+import { useGetAllQuestionsByKeywordQuery } from "@/lib/store/questions/question";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SelectSearch from "../ui/selectSearch";
-import { useRouter } from "next/navigation";
 
 export default function QuestionSearch(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");

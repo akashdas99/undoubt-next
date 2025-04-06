@@ -1,4 +1,4 @@
-import { getUser } from "@/data-access/user";
+import { getUser } from "@/services/user";
 import { User } from "@/models/user";
 import UserImage from "../ui/userImage";
 import ImageUpload from "./imageUpload";
