@@ -104,4 +104,33 @@
       transform: rotate(1turn);
     }
   }
+  .animate-wave {
+    position: relative;
+    overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+  .animate-wave::after {
+    content: "";
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 80%
+    );
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    animation: animation-wave 1s linear infinite;
+  }
+  @keyframes animation-wave {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }

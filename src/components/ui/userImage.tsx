@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { User } from "@/models/user";
+import { CircleUserRound } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -7,9 +8,10 @@ export default function UserImage({
   user,
   className,
 }: {
-  user: User;
+  user?: User;
   className?: string;
 }) {
+  if (!user) return <CircleUserRound />;
   return (
     <div
       className={cn(

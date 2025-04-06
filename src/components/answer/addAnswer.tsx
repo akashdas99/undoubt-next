@@ -34,7 +34,6 @@ export default function AddAnswer() {
       {!showEditor ? (
         <Button
           type="button"
-          className="bordered-card"
           variant={"default"}
           size={"sm"}
           onClick={() => setShowEditor(true)}
