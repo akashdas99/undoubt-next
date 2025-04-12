@@ -85,7 +85,7 @@
     text-wrap: balance;
   }
   .bordered-card {
-    @apply border-2 border-solid rounded-xl border-primary/20;
+    @apply border-2 border-solid rounded-xl border-primary/50;
   }
   .spinner-loader {
     width: 50px;
