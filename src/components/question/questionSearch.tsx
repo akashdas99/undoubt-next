@@ -12,7 +12,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { Input } from "../ui/input";
 
-export default function QuestionSearch(): JSX.Element {
+export default function QuestionSearch({
+  onClick,
+}: {
+  onClick?: () => void;
+}): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchQuestion: string = useDebounce(searchValue, 300);
   const { data, isLoading } = useGetAllQuestionsByKeywordQuery(
@@ -21,22 +25,20 @@ export default function QuestionSearch(): JSX.Element {
   const dispatch = useAppDispatch();
   const handleChange = async (search: string) => {
     setSearchValue(search);
-    if (search) {
+    if (search === "") {
       dispatch(
         questionApi.util.updateQueryData(
           "getAllQuestionsByKeyword",
-          undefined,
+          searchQuestion,
           () => {
-            console.log("invalidate");
-
             return [];
-          }
+          },
+          true
         )
       );
     }
   };
 
-  console.log(data);
   return (
     <div className="font-montserrat text-base p-2">
       <Input
@@ -48,13 +50,17 @@ export default function QuestionSearch(): JSX.Element {
       <div className="divide-y-2 flex flex-col max-h-52 overflow-auto">
         {!searchQuestion ? (
           <div className="flex items-center justify-center h-52">
-            <div>Type something to begin your search.</div>
+            <div className="text-center">
+              Type something to begin your search.
+            </div>
           </div>
         ) : isLoading ? (
-          <Loader2 className="animate-spin" />
+          <div className="flex items-center justify-center h-52">
+            <Loader2 className="animate-spin" />
+          </div>
         ) : data?.length === 0 ? (
           <div className="flex items-center justify-center h-52">
-            <div>No results for your search.</div>
+            <div className="text-center">No results for your search.</div>
           </div>
         ) : (
           data?.map((question, index) => (
@@ -62,6 +68,7 @@ export default function QuestionSearch(): JSX.Element {
               key={index}
               className="p-3 "
               href={"/question/" + question?.value}
+              onClick={onClick}
             >
               {question?.label}
             </Link>

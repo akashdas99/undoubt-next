@@ -12,7 +12,9 @@ export default function SearchModal() {
         </Button>
       </DialogTrigger>
       <DialogContent className="w-10/12 sm:max-w-[425px] p-0" hideClose>
-        <QuestionSearch />
+        <DialogTrigger asChild>
+          <QuestionSearch />
+        </DialogTrigger>
       </DialogContent>
     </Dialog>
   );
