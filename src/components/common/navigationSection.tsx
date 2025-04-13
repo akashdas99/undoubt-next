@@ -3,7 +3,7 @@ import { useGetProfileQuery } from "@/lib/store/user/user";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import UserImage from "../ui/userImage";
+import { ProfileDropdown } from "./profileDropdown";
 import SearchModal from "./searchModal";
 
 export default function NavigationSection() {
@@ -24,9 +24,7 @@ export default function NavigationSection() {
           <Plus />
         </Link>
       </Button>
-      <Button variant="ghost" size={"icon"}>
-        <UserImage user={data} className="w-5" />
-      </Button>
+      <ProfileDropdown user={data} />
     </div>
   );
 }

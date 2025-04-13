@@ -15,7 +15,7 @@ export default function UserImage({
   return (
     <div
       className={cn(
-        "w-10 aspect-square shrink-0 bg-accent border-2 border-primary border-solid font-bold align-middle rounded-full flex justify-center items-center overflow-hidden relative",
+        "w-full aspect-square shrink-0 bg-accent border-2 border-primary border-solid font-bold align-middle rounded-full flex justify-center items-center overflow-hidden relative",
         className
       )}
     >

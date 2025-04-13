@@ -22,7 +22,7 @@ const AnswerCard = ({
   return (
     <div className="p-[1em] bordered-card">
       <div className="flex gap-2 items-center mb-2">
-        <UserImage user={answer?.author} />
+        <UserImage user={answer?.author} className="w-[26px]" />
         <div className="grow">
           <div className="flex text-xs opacity-50 gap-3">
             <div className="flex items-center gap-1">
