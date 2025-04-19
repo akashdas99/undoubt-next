@@ -1,3 +1,4 @@
+import { isEmpty } from "@/lib/functions";
 import { cn } from "@/lib/utils";
 import { User } from "@/models/user";
 import { CircleUserRound } from "lucide-react";
@@ -11,7 +12,8 @@ export default function UserImage({
   user?: User;
   className?: string;
 }) {
-  if (!user) return <CircleUserRound />;
+  console.log("user", user);
+  if (isEmpty(user)) return <CircleUserRound />;
   return (
     <div
       className={cn(

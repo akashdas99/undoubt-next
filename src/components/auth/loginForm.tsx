@@ -10,9 +10,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { userApi } from "@/lib/store/user/user";
+import { useDispatch } from "react-redux";
 
 export default function LoginForm(): JSX.Element {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
@@ -46,6 +49,7 @@ export default function LoginForm(): JSX.Element {
       });
     }
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
   };
   const onGuestLogin = async () => {
     const username = process.env.NEXT_PUBLIC_GUEST_USERNAME;
@@ -68,6 +72,7 @@ export default function LoginForm(): JSX.Element {
     }
     setLoadingGuestLogin(false);
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
   };
   return (
     <div className="flex items-center justify-center grow">

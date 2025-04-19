@@ -12,12 +12,17 @@ import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserImage from "../ui/userImage";
+import { userApi } from "@/lib/store/user/user";
+import { useDispatch } from "react-redux";
+import { isEmpty } from "@/lib/functions";
 
 export function ProfileDropdown({ user }: { user?: User }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     await logoutUser();
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
   };
   return (
     <DropdownMenu>
@@ -31,7 +36,7 @@ export function ProfileDropdown({ user }: { user?: User }) {
         <DropdownMenuLabel>Get Started</DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-primary/50 h-[2px]" />
 
-        {!user ? (
+        {isEmpty(user) ? (
           <>
             <DropdownMenuItem asChild>
               <Link href={"/register"}>

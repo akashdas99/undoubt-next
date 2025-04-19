@@ -5,8 +5,6 @@ export async function GET() {
     const profile = await getUser();
     return Response.json(profile);
   } catch (error) {
-    return Response.json(error instanceof Error && error?.message, {
-      status: 400,
-    });
+    return Response.json({});
   }
 }

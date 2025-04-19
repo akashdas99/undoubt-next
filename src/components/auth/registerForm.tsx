@@ -10,10 +10,13 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { userApi } from "@/lib/store/user/user";
+import { useDispatch } from "react-redux";
 
 const RegisterForm: React.FC = () => {
   const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
@@ -44,6 +47,7 @@ const RegisterForm: React.FC = () => {
         message: res?.message,
       });
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
   };
 
   return (
