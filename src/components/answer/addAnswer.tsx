@@ -35,7 +35,7 @@ export default function AddAnswer() {
         <Button
           type="button"
           variant={"default"}
-          size={"sm"}
+          size={"lg"}
           onClick={() => setShowEditor(true)}
         >
           <FilePenLine /> Answer
