@@ -10,7 +10,7 @@ export const getQuestions = async () => {
     await dbConnect();
     const data = await QuestionModel.find()
       .populate<{ author: User }>("author", "name profilePicture")
-      .sort([["_id", "asc"]]);
+      .sort({ updatedAt: -1 });
     return data;
   } catch (err) {
     throw err;

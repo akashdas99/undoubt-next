@@ -1,7 +1,7 @@
 import { Question } from "@/models/question";
 import { User } from "@/models/user";
 import dayjs from "dayjs";
-import { CalendarDays, CircleUserRound } from "lucide-react";
+import { CalendarDays, MessageSquare } from "lucide-react";
 import UserImage from "../ui/userImage";
 
 export default async function QuestionCard({
@@ -12,26 +12,22 @@ export default async function QuestionCard({
   };
 }) {
   return (
-    <div className="p-[1em] bordered-card">
-      <div className="flex gap-2 items-start mb-3">
-        <UserImage user={question?.author} className="w-[26px]" />
-        <div>
-          <div className="text-primary font-semibold text-sm md:text-lg">
-            {question?.title}
-          </div>
-          <div className="flex text-xs opacity-50 gap-3">
-            <div className="flex items-center gap-1">
-              <CircleUserRound className="w-3" />
-              {question?.author?.name}
-            </div>
-            <div className="flex items-center gap-1">
-              <CalendarDays className="w-3" />
-              {dayjs(question?.createdAt).format("MMM D, YYYY")}
-            </div>
-          </div>
+    <div className="p-[1em] bordered-card flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <UserImage user={question?.author} className="w-[30px]" />
+        <div className="font-montserrat font-medium">
+          {question?.author?.name}
+        </div>
+        <div className="flex items-center gap-1 text-xs opacity-50">
+          <CalendarDays className="w-3" />
+          {dayjs(question?.createdAt).format("MMM D, YYYY")}
         </div>
       </div>
-      <div className="text-xs">{question?.answers?.length || "No"} Answers</div>
+      <div className="font-semibold text-sm md:text-2xl">{question?.title}</div>
+      <div className="text-xs flex gap-2">
+        <MessageSquare size={16} strokeWidth={0.5} />
+        {question?.answers?.length || "No"} Answers
+      </div>
     </div>
   );
 }

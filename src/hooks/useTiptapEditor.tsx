@@ -18,7 +18,13 @@ const useTiptapEditor = ({
 }: EditorProps) =>
   useEditor({
     extensions: [
-      StarterKit.configure(),
+      StarterKit.configure({
+        codeBlock: {
+          HTMLAttributes: {
+            class: "bg-foreground text-white p-2",
+          },
+        },
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
