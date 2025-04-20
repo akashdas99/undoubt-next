@@ -40,6 +40,11 @@ export async function getAnswersByQuestionSlug(slug: string) {
       {
         $unwind: "$answers",
       },
+      {
+        $sort: {
+          "answers.updatedAt": -1,
+        },
+      },
     ]);
     return JSON.parse(JSON.stringify(answers?.map((a) => a?.answers)));
   } catch (e) {

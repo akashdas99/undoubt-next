@@ -10,7 +10,7 @@ const getCachedAnswersByQuestionSlug = (slug: string) =>
     async () => getAnswersByQuestionSlug(slug),
     [`answersByQuestionSlug:${slug}`],
     {
-      tags: ["answersByQuestionSlug"],
+      tags: [`answersByQuestionSlug:${slug}`],
       revalidate: 600,
     }
   );

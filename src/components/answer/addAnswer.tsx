@@ -27,7 +27,7 @@ export default function AddAnswer() {
       form.setError("root", {
         message: res?.error?.message,
       });
-    }
+    } else setShowEditor(false);
   };
   return (
     <div>
