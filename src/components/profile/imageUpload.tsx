@@ -1,11 +1,15 @@
 "use client";
 
+import { userApi } from "@/lib/store/user/user";
 import { upload } from "@vercel/blob/client";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 export default function AvatarUploadPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event?.target?.files) {
       return;
@@ -18,6 +22,8 @@ export default function AvatarUploadPage() {
       handleUploadUrl: "/api/user/image",
     });
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
+
     event.target.value = "";
   };
   return (

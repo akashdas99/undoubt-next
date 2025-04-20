@@ -5,7 +5,7 @@ import UserModel from "@/models/user";
 
 export async function getUser() {
   const session = await getSession();
-  if (!session) throw new Error("Page not available");
+  if (!session) throw new Error("Session not found");
 
   try {
     await dbConnect();
@@ -23,6 +23,6 @@ export async function getUser() {
       "profilePicture",
     ]);
   } catch (error) {
-    throw new Error("Page not available");
+    throw error;
   }
 }

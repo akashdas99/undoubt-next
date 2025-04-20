@@ -38,7 +38,7 @@ export async function registerUser(userData: UserType) {
       id: savedUser?._id,
       username: savedUser?.username,
     };
-    createSession(tokenData);
+    await createSession(tokenData);
   } catch (e) {
     console.log(e);
     return {
@@ -80,7 +80,7 @@ export async function loginUser(loginData: LoginType) {
       id: user?._id,
       username: user?.username,
     };
-    createSession(tokenData);
+    await createSession(tokenData);
   } catch (e) {
     console.log(e);
     return {

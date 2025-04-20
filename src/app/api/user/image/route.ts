@@ -33,16 +33,13 @@ export async function POST(request: Request): Promise<NextResponse> {
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         await dbConnect();
         // Get notified of client upload completion
-        console.log("blob upload completed", blob, tokenPayload);
         if (!tokenPayload) throw new Error("Could not upload file");
         const session = await getSessionFromToken(
           JSON.parse(tokenPayload)?.session
         );
-        console.log("blob upload session", session);
 
         try {
           const user = await UserModel.findById(session?.id);
-          console.log("user", user);
 
           if (!user) throw new Error("User not found");
           const userPathName =
@@ -51,8 +48,6 @@ export async function POST(request: Request): Promise<NextResponse> {
             "/" +
             uuidv4() +
             path.extname(blob?.pathname);
-
-          console.log("pathname", userPathName);
 
           const copiedBlog = await copy(blob?.url, userPathName, {
             access: "public",

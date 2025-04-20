@@ -12,11 +12,11 @@ export default async function QuestionCard({
   };
 }) {
   return (
-    <div className="p-[1em] neo">
+    <div className="p-[1em] bordered-card">
       <div className="flex gap-2 items-start mb-3">
-        <UserImage user={question?.author} />
+        <UserImage user={question?.author} className="w-[26px]" />
         <div>
-          <div className="text-primary font-semibold text-lg">
+          <div className="text-primary font-semibold text-sm md:text-lg">
             {question?.title}
           </div>
           <div className="flex text-xs opacity-50 gap-3">

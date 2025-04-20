@@ -10,10 +10,13 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { userApi } from "@/lib/store/user/user";
+import { useDispatch } from "react-redux";
 
 const RegisterForm: React.FC = () => {
   const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const form = useForm<UserType>({
     resolver: zodResolver(UserSchema),
@@ -44,14 +47,20 @@ const RegisterForm: React.FC = () => {
         message: res?.message,
       });
     router.refresh();
+    dispatch(userApi.util.invalidateTags(["profile"]));
   };
 
   return (
-    <div className="flex items-center justify-center grow overflow-hidden">
-      <div className="neo p-8 rounded-xl max-w-xs w-4/5">
-        <h1 className={`font-righteous text-xl mb-6`}>Register Account</h1>
+    <div className="flex items-center justify-center grow">
+      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-8">
+        <h1 className={`font-righteous text-xl mb-3 md:mb-6`}>
+          Register Account
+        </h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="md:grid grid-cols-2 gap-x-3"
+          >
             <InputField
               control={form.control}
               name="name"
@@ -95,8 +104,12 @@ const RegisterForm: React.FC = () => {
                 {form?.formState?.errors?.root?.message}
               </p>
             )}
-            <Button type="submit" className="mt-2" loading={loadingSignup}>
-              Submit
+            <Button
+              type="submit"
+              className="mt-5 justify-self-center col-span-2 w-full"
+              loading={loadingSignup}
+            >
+              Create Account
             </Button>
           </form>
         </Form>

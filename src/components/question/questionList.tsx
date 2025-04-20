@@ -14,7 +14,7 @@ const QuestionList: React.FC = async () => {
   const questions = await getCachedQuestions();
 
   return (
-    <div className="px-[8vw] mt-8">
+    <div className="px-[8vw] my-3 md:my-8">
       <div className="active-neo section-heading mb-2 font-righteous text-xl">
         Recent Questions
       </div>

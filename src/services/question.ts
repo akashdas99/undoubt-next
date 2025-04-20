@@ -1,4 +1,4 @@
-import { getUser } from "@/data-access/user";
+import { getUser } from "@/services/user";
 import dbConnect from "@/lib/dbConnect";
 import { QuestionSchema, QuestionType } from "@/lib/types";
 import QuestionModel from "@/models/question";
@@ -7,7 +7,6 @@ import sanitizeHtml from "sanitize-html";
 
 export const getQuestions = async () => {
   try {
-    console.log(Date());
     await dbConnect();
     const data = await QuestionModel.find()
       .populate<{ author: User }>("author", "name profilePicture")

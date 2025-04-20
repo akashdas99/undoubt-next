@@ -9,7 +9,7 @@ export default function MenuBar({
   isLoggedIn: boolean;
 }) {
   return (
-    <ul className="hidden md:flex text-xs lg:text-base h-full items-center justify-end md:gap-[1em] lg:gap-[2em] whitespace-nowrap px-2">
+    <ul className="flex text-xs lg:text-base h-full items-center justify-end md:gap-[1em] lg:gap-[2em] whitespace-nowrap px-2">
       {menuItems
         ?.filter(
           (menu) =>
