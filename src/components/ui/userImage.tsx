@@ -4,15 +4,19 @@ import { User } from "@/models/user";
 import { CircleUserRound } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { Skeleton } from "./skeleton";
 
 export default function UserImage({
   user,
   className,
+  isLoading = false,
 }: {
   user?: User;
   className?: string;
+  isLoading?: boolean;
 }) {
-  console.log("user", user);
+  if (isLoading)
+    return <Skeleton className={cn("aspect-square rounded-full", className)} />;
   if (isEmpty(user)) return <CircleUserRound />;
   return (
     <div
