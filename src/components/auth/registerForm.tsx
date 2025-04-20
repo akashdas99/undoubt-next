@@ -53,7 +53,7 @@ const RegisterForm: React.FC = () => {
   return (
     <div className="flex items-center justify-center grow">
       <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-8">
-        <h1 className={`font-righteous text-xl mb-3 md:mb-6`}>
+        <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
           Register Account
         </h1>
         <Form {...form}>

@@ -43,7 +43,9 @@ export default function AddAnswer() {
       ) : (
         <div className="flex items-center justify-center grow">
           <div className="bordered-card p-8 rounded-xl  w-full">
-            <h1 className={`font-righteous text-xl mb-6`}>Add Answer</h1>
+            <h1 className={`font-righteous text-xl md:text-3xl mb-6`}>
+              Add Answer
+            </h1>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <EditorField control={form.control} name="description" />

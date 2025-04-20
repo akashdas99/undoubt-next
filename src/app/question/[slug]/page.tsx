@@ -16,7 +16,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <div className="flex flex-col gap-5">
         <QuestionSection slug={params?.slug} />
         {session && <AddAnswer />}
-        <div className="active-neo section-heading mb-2 font-righteous text-xl">
+        <div className="active-neo section-heading mb-2 font-righteous text-xl ">
           Recent Answers
         </div>
         <AnswerList slug={params?.slug} />
