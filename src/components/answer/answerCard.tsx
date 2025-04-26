@@ -1,10 +1,8 @@
-"use client";
-import useTiptapEditor from "@/hooks/useTiptapEditor";
 import { Answer } from "@/models/answer";
 import { User } from "@/models/user";
-import { EditorContent } from "@tiptap/react";
 import dayjs from "dayjs";
 import { CalendarDays } from "lucide-react";
+import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 
 const AnswerCard = ({
@@ -14,11 +12,6 @@ const AnswerCard = ({
     author: User;
   };
 }) => {
-  const editor = useTiptapEditor({
-    content: answer?.description,
-    editable: false,
-    className: "border-0 min-h-auto",
-  });
   return (
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
       <div className="flex items-center gap-2">
@@ -31,7 +24,7 @@ const AnswerCard = ({
           {dayjs(answer?.createdAt).format("MMM D, YYYY")}
         </div>
       </div>
-      <EditorContent editor={editor} />
+      <TextEditorContent content={answer?.description} />
     </div>
   );
 };
