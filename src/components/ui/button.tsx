@@ -29,18 +29,11 @@ const buttonVariants = cva(
         icon: "h-9 w-9",
       },
       loading: {
-        true: "null",
+        true: "px-3",
         false: null,
       },
     },
-    compoundVariants: [
-      {
-        variant: "default",
-        size: "default",
-        loading: true,
-        class: "px-4",
-      },
-    ],
+
     defaultVariants: {
       variant: "default",
       size: "default",

@@ -77,7 +77,7 @@
 
   html,
   body {
-    @apply bg-background text-foreground text-base;
+    @apply bg-background text-foreground text-base antialiased;
   }
 }
 @layer utilities {
