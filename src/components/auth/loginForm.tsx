@@ -75,62 +75,60 @@ export default function LoginForm(): JSX.Element {
     dispatch(userApi.util.invalidateTags(["profile"]));
   };
   return (
-    <div className="flex items-center justify-center grow">
-      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12">
-        <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6 `}>
-          Welcome Back
-        </h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <InputField
-              control={form.control}
-              name="username"
-              label="Username"
-              placeholder="Username"
-            />
-            <InputField
-              control={form.control}
-              name="password"
-              label="Password"
-              placeholder="Password"
-              type="password"
-            />
+    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
+      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6 `}>
+        Welcome Back
+      </h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <InputField
+            control={form.control}
+            name="username"
+            label="Username"
+            placeholder="Username"
+          />
+          <InputField
+            control={form.control}
+            name="password"
+            label="Password"
+            placeholder="Password"
+            type="password"
+          />
 
-            {form?.formState?.errors?.root?.message && (
-              <p className="text-[0.6rem] text-destructive font-medium">
-                {form?.formState?.errors?.root?.message}
-              </p>
-            )}
-            <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-              <Button type="submit" className="mt-3" loading={loadingLogin}>
-                Login
-              </Button>
-              <Button
-                type="button"
-                className="mt-3"
-                variant={"outline"}
-                onClick={onGuestLogin}
-                loading={loadingGuestLogin}
-              >
-                Guest Login
-              </Button>
-            </div>
-          </form>
-        </Form>
-        <div className="relative flex py-2 items-center">
-          <div className="flex-grow border-t border-gray-400"></div>
-          <span className="flex-shrink mx-4 text-gray-400">Or</span>
-          <div className="flex-grow border-t border-gray-400"></div>
-        </div>
-        <div className="text-xs">
-          <Link
-            className="text-primary underline font-semibold"
-            href={"/register"}
-          >
-            Register
-          </Link>{" "}
-          if you donot have an account
-        </div>
+          {form?.formState?.errors?.root?.message && (
+            <p className="text-[0.6rem] text-destructive font-medium">
+              {form?.formState?.errors?.root?.message}
+            </p>
+          )}
+          <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
+            <Button type="submit" className="mt-3" loading={loadingLogin}>
+              Login
+            </Button>
+            <Button
+              type="button"
+              className="mt-3"
+              variant={"outline"}
+              onClick={onGuestLogin}
+              loading={loadingGuestLogin}
+            >
+              Guest Login
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <div className="relative flex py-2 items-center">
+        <div className="flex-grow border-t border-gray-400"></div>
+        <span className="flex-shrink mx-4 text-gray-400">Or</span>
+        <div className="flex-grow border-t border-gray-400"></div>
+      </div>
+      <div className="text-xs">
+        <Link
+          className="text-primary underline font-semibold"
+          href={"/register"}
+        >
+          Register
+        </Link>{" "}
+        if you donot have an account
       </div>
     </div>
   );
