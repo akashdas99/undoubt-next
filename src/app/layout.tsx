@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className={`${montserrat.variable} ${righteous.variable}`}>
       <body>
         <StoreProvider>
-          <div className="min-h-svh flex flex-col font-montserrat">
+          <div className="min-h-svh flex flex-col items-center font-montserrat">
             <Header />
             {children}
           </div>

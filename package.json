@@ -34,6 +34,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "dayjs": "^1.11.13",
+    "html-react-parser": "^5.2.3",
     "jose": "^6.0.8",
     "lucide-react": "^0.441.0",
     "mongoose": "^8.9.0",

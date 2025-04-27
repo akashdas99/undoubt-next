@@ -51,82 +51,77 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center grow">
-      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-8">
-        <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
-          Register Account
-        </h1>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="md:grid grid-cols-2 gap-x-3"
-          >
-            <InputField
-              control={form.control}
-              name="name"
-              label="Name"
-              placeholder="Name"
-            />
-            <InputField
-              control={form.control}
-              name="username"
-              label="Username"
-              placeholder="Username"
-            />
-            <InputField
-              control={form.control}
-              name="password"
-              label="Password"
-              placeholder="Password"
-              type="password"
-            />
-            <InputField
-              control={form.control}
-              name="profession"
-              label="Profession"
-              placeholder="Profession"
-            />
-            <InputField
-              control={form.control}
-              name="city"
-              label="City"
-              placeholder="City"
-            />
-            <InputField
-              control={form.control}
-              name="country"
-              label="Country"
-              placeholder="Country"
-            />
+    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-auto">
+      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
+        Register Account
+      </h1>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="md:grid grid-cols-2 gap-x-3"
+        >
+          <InputField
+            control={form.control}
+            name="name"
+            label="Name"
+            placeholder="Name"
+          />
+          <InputField
+            control={form.control}
+            name="username"
+            label="Username"
+            placeholder="Username"
+          />
+          <InputField
+            control={form.control}
+            name="password"
+            label="Password"
+            placeholder="Password"
+            type="password"
+          />
+          <InputField
+            control={form.control}
+            name="profession"
+            label="Profession"
+            placeholder="Profession"
+          />
+          <InputField
+            control={form.control}
+            name="city"
+            label="City"
+            placeholder="City"
+          />
+          <InputField
+            control={form.control}
+            name="country"
+            label="Country"
+            placeholder="Country"
+          />
 
-            {form?.formState?.errors?.root?.message && (
-              <p className="text-[0.6rem] text-destructive font-medium">
-                {form?.formState?.errors?.root?.message}
-              </p>
-            )}
-            <Button
-              type="submit"
-              className="mt-5 justify-self-center col-span-2 w-full"
-              loading={loadingSignup}
-            >
-              Create Account
-            </Button>
-          </form>
-        </Form>
-        <div className="relative flex py-2 items-center">
-          <div className="flex-grow border-t border-gray-400"></div>
-          <span className="flex-shrink mx-4 text-gray-400">Or</span>
-          <div className="flex-grow border-t border-gray-400"></div>
-        </div>
-        <div className="text-xs">
-          <Link
-            className="text-primary underline font-semibold"
-            href={"/login"}
+          {form?.formState?.errors?.root?.message && (
+            <p className="text-[0.6rem] text-destructive font-medium">
+              {form?.formState?.errors?.root?.message}
+            </p>
+          )}
+          <Button
+            type="submit"
+            className="mt-5 justify-self-center col-span-2 w-full"
+            loading={loadingSignup}
           >
-            Login
-          </Link>{" "}
-          if you already have an account
-        </div>
+            Create Account
+          </Button>
+        </form>
+      </Form>
+      <div className="relative flex py-2 items-center">
+        <div className="flex-grow border-t border-gray-400"></div>
+        <span className="flex-shrink mx-4 text-gray-400">Or</span>
+        <div className="flex-grow border-t border-gray-400"></div>
+      </div>
+      <div className="text-xs">
+        <Link className="text-primary underline font-semibold" href={"/login"}>
+          Login
+        </Link>{" "}
+        if you already have an account
       </div>
     </div>
   );
