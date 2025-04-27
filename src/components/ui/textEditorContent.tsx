@@ -1,15 +1,8 @@
 "use client";
-import useTiptapEditor from "@/hooks/useTiptapEditor";
-import { EditorContent } from "@tiptap/react";
-import React from "react";
+import parse from "html-react-parser";
 
 const TextEditorContent = ({ content }: { content: string }) => {
-  const editor = useTiptapEditor({
-    content: content,
-    editable: false,
-    className: "border-0 min-h-auto p-0",
-  });
-  return <EditorContent editor={editor} />;
+  return parse(content);
 };
 
 export default TextEditorContent;

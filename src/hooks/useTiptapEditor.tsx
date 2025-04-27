@@ -24,6 +24,11 @@ const useTiptapEditor = ({
             class: "bg-foreground text-white p-2",
           },
         },
+        orderedList: {
+          HTMLAttributes: {
+            class: "list-decimal ml-3",
+          },
+        },
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
