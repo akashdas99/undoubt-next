@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 export default async function Page({ params }: { params: { slug: string } }) {
   const session = await getSession();
   return (
-    <div className="px-[8vw] mt-8">
+    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
       <div className="flex flex-col gap-5">
         <QuestionSection slug={params?.slug} />
         {session && <AddAnswer />}
