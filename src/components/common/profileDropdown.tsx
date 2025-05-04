@@ -27,7 +27,7 @@ export function ProfileDropdown() {
   };
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-[36px] inline-flex items-center justify-center gap-2">
+      <DropdownMenuTrigger className="w-[36px] inline-flex items-center justify-center gap-2 focus-visible:outline-none">
         <UserImage user={user} isLoading={isFetching} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
