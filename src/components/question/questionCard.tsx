@@ -49,9 +49,9 @@ export default async function QuestionCard({
       )}
       {isLoading ? (
         <>
-          <Skeleton className="h-6 w-full rounded-xl" />
-          <Skeleton className="h-6 w-full rounded-xl" />
-          <Skeleton className="h-6 w-full rounded-xl" />
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-full" />
         </>
       ) : (
         <>

@@ -1,4 +1,5 @@
 import AddAnswer from "@/components/answer/addAnswer";
+import AnswerCard from "@/components/answer/answerCard";
 import AnswerList from "@/components/answer/answerList";
 import QuestionCard from "@/components/question/questionCard";
 import QuestionSection from "@/components/question/questionSection";
@@ -24,7 +25,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           <div className="active-neo section-heading mb-2 font-righteous text-xl">
             Recent Answers
           </div>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={<AnswerCard isLoading={true} />}>
             <AnswerList slug={params?.slug} />
           </Suspense>
         </div>
