@@ -62,7 +62,7 @@ export default async function QuestionCard({
       )}
 
       <div className="flex mt-1">
-        <div className="text-xs flex gap-2 bordered-card py-1 px-2 font-semibold">
+        <div className="text-xs flex gap-2 py-1 px-2 font-semibold">
           <MessageSquare size={16} />
           {isLoading ? (
             <Skeleton className="h-[15px] w-[80px]" />
