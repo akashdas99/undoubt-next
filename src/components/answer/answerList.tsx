@@ -4,6 +4,7 @@ import { getAnswersByQuestionSlug } from "@/services/answer";
 import React from "react";
 import AnswerCard from "./answerCard";
 import { unstable_cache } from "next/cache";
+import { getUser } from "@/services/user";
 
 const getCachedAnswersByQuestionSlug = (slug: string) =>
   unstable_cache(
@@ -21,15 +22,22 @@ export default async function AnswerList({ slug }: { slug: string }) {
       author: User;
     }
   > = await getAnswers();
+  const data: User = await getUser();
 
   return (
     <>
       {answers.length === 0 ? (
-        <p>No Questions</p>
+        <p>No Answer</p>
       ) : (
         <div className="flex flex-col gap-5">
           {answers?.map((answer) => (
-            <AnswerCard key={answer?._id?.toString()} answer={answer} />
+            <AnswerCard
+              key={answer?._id?.toString()}
+              answer={answer}
+              isAuthor={
+                data?._id?.toString() === answer?.author?._id?.toString()
+              }
+            />
           ))}
         </div>
       )}
