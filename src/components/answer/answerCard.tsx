@@ -1,20 +1,21 @@
 "use client";
 
+import { updateAnswerAction } from "@/actions/answer";
+import { AnswerSchema, AnswerType } from "@/lib/types";
 import { Answer } from "@/models/answer";
 import { User } from "@/models/user";
+import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { CalendarDays, Pencil, Trash } from "lucide-react";
+import { CalendarDays, Pencil } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
-import { Skeleton } from "../ui/skeleton";
-import { Button } from "../ui/button";
-import { useState } from "react";
 import AnswerForm from "./answerForm";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AnswerSchema, AnswerType } from "@/lib/types";
-import { updateAnswerAction } from "@/actions/answer";
-import { useParams } from "next/navigation";
+// import DeleteAnswerModal from "./deleteAnswerModal";
 
 const AnswerCard = ({
   answer,
@@ -51,7 +52,7 @@ const AnswerCard = ({
       });
     } else setIsEditing(false);
   };
-  console.log(answer);
+
   return (
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
       <div className="flex items-center justify-between">
@@ -90,16 +91,8 @@ const AnswerCard = ({
                 className="group-hover:text-background text-foreground"
               />
             </Button>
-            <Button
-              variant={"ghost"}
-              size={"sm-icon"}
-              className="group hover:bg-destructive"
-            >
-              <Trash
-                size={20}
-                className="group-hover:text-background text-destructive"
-              />
-            </Button>
+
+            {/* <DeleteAnswerModal /> */}
           </div>
         )}
       </div>
