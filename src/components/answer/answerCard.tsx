@@ -1,6 +1,6 @@
 "use client";
 
-import { updateAnswerAction } from "@/actions/answer";
+import { deleteAnswerAction, updateAnswerAction } from "@/actions/answer";
 import { AnswerSchema, AnswerType } from "@/lib/types";
 import { Answer } from "@/models/answer";
 import { User } from "@/models/user";
@@ -8,14 +8,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { CalendarDays, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import AnswerForm from "./answerForm";
-// import DeleteAnswerModal from "./deleteAnswerModal";
+import DeleteAnswerModal from "./deleteAnswerModal";
 
 const AnswerCard = ({
   answer,
@@ -30,6 +30,8 @@ const AnswerCard = ({
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string>("");
   const params = useParams<{ slug: string }>();
 
   const form = useForm<AnswerType>({
@@ -52,7 +54,18 @@ const AnswerCard = ({
       });
     } else setIsEditing(false);
   };
+  const onDelete = async () => {
+    setIsDeleting(true);
+    const res = await deleteAnswerAction(answer?._id as string, params?.slug);
+    setIsDeleting(false);
 
+    if (res?.error?.type === "serverError") {
+      setDeleteError(res?.error?.message);
+    } else setIsEditing(false);
+  };
+  useEffect(() => {
+    if (!isEditing) form.reset();
+  }, [isEditing, form]);
   return (
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
       <div className="flex items-center justify-between">
@@ -92,7 +105,11 @@ const AnswerCard = ({
               />
             </Button>
 
-            {/* <DeleteAnswerModal /> */}
+            <DeleteAnswerModal
+              error={deleteError}
+              isDeleting={isDeleting}
+              onDelete={onDelete}
+            />
           </div>
         )}
       </div>

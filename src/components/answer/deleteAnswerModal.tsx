@@ -12,7 +12,15 @@ import {
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
 
-export default function DeleteAnswerModal() {
+export default function DeleteAnswerModal({
+  error,
+  isDeleting,
+  onDelete,
+}: {
+  error: string;
+  isDeleting: boolean;
+  onDelete: () => void;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,12 +40,25 @@ export default function DeleteAnswerModal() {
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
             This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            answer.
+            {error && (
+              <p className="text-[0.6rem] text-destructive font-medium">
+                {error}
+              </p>
+            )}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={onDelete}
+            loading={isDeleting}
+          >
+            Delete
+          </Button>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="outline">
               Close
             </Button>
           </DialogClose>

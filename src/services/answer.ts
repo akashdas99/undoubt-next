@@ -4,6 +4,7 @@ import { AnswerSchema, AnswerType } from "@/lib/types";
 import AnswerModel from "@/models/answer";
 import QuestionModel from "@/models/question";
 import sanitizeHtml from "sanitize-html";
+import { getSession } from "@/lib/session";
 
 export async function getAnswersByQuestionSlug(slug: string) {
   try {
@@ -90,7 +91,7 @@ export async function addAnswer(slug: string, answerData: AnswerType) {
 export async function updateAnswer(id: string, answerData: AnswerType) {
   try {
     await dbConnect();
-    //validate question
+    //validate answer
     const validatedAnswer = AnswerSchema.safeParse({
       ...answerData,
     });
@@ -111,6 +112,34 @@ export async function updateAnswer(id: string, answerData: AnswerType) {
     }
     answer.description = sanitizeHtml(validatedAnswer?.data?.description);
     const res = await answer.save();
+    return JSON.parse(JSON.stringify({ res }));
+  } catch (e) {
+    if (e instanceof Error) console.log(e?.message);
+    return {
+      error: { type: "serverError", message: "Something went wrong" },
+    };
+  }
+}
+export async function deleteAnswer(id: string, slug: string) {
+  try {
+    await dbConnect();
+
+    const userSession = await getSession();
+
+    const answer = await AnswerModel.findById(id);
+    if (!answer) {
+      throw new Error("Answer not found");
+    }
+
+    if (answer?.author?.toString() !== userSession?.id?.toString()) {
+      throw new Error("Unauthorised delete request");
+    }
+    const res = await answer.deleteOne();
+    await QuestionModel.findOneAndUpdate(
+      { slug },
+      { $pull: { answers: answer._id } },
+      { new: true }
+    );
     return JSON.parse(JSON.stringify({ res }));
   } catch (e) {
     if (e instanceof Error) console.log(e?.message);

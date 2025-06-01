@@ -5,6 +5,7 @@ import React from "react";
 import AnswerCard from "./answerCard";
 import { unstable_cache } from "next/cache";
 import { getUser } from "@/services/user";
+import { getSession } from "@/lib/session";
 
 const getCachedAnswersByQuestionSlug = (slug: string) =>
   unstable_cache(
@@ -16,13 +17,16 @@ const getCachedAnswersByQuestionSlug = (slug: string) =>
     }
   );
 export default async function AnswerList({ slug }: { slug: string }) {
-  const getAnswers = getCachedAnswersByQuestionSlug(slug);
-  const answers: Array<
-    Omit<Answer, "author"> & {
-      author: User;
-    }
-  > = await getAnswers();
-  const data: User = await getUser();
+  const getAnswers: () => Promise<
+    Array<
+      Omit<Answer, "author"> & {
+        author: User;
+      }
+    >
+  > = getCachedAnswersByQuestionSlug(slug);
+
+  const [answers, session] = await Promise.all([getAnswers(), getSession()]);
+  const data: User = session ? await getUser() : {};
 
   return (
     <>
