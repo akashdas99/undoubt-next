@@ -37,18 +37,18 @@ export default function DeleteAnswerModal({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-righteous font-normal">
+            Are you absolutely sure?
+          </DialogTitle>
+          <DialogDescription className="font-montserrat">
             This action cannot be undone. This will permanently delete your
             answer.
-            {error && (
-              <p className="text-[0.6rem] text-destructive font-medium">
-                {error}
-              </p>
-            )}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        {error && (
+          <p className="text-[0.6rem] text-destructive font-medium">{error}</p>
+        )}
+        <DialogFooter className="font-montserrat">
           <Button
             type="button"
             variant="destructive"
