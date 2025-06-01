@@ -4,7 +4,7 @@ import { AnswerSchema, AnswerType } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FilePenLine } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import AnswerForm from "./answerForm";
@@ -29,6 +29,10 @@ export default function AddAnswer() {
       });
     } else setShowEditor(false);
   };
+  useEffect(() => {
+    if (!showEditor) form.reset();
+  }, [showEditor, form]);
+
   return (
     <div>
       {!showEditor ? (
