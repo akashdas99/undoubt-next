@@ -4,10 +4,10 @@ import { AnswerSchema, AnswerType } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FilePenLine } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { EditorField, Form } from "../ui/form";
+import AnswerForm from "./answerForm";
 
 export default function AddAnswer() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -29,6 +29,10 @@ export default function AddAnswer() {
       });
     } else setShowEditor(false);
   };
+  useEffect(() => {
+    if (!showEditor) form.reset();
+  }, [showEditor, form]);
+
   return (
     <div>
       {!showEditor ? (
@@ -46,28 +50,13 @@ export default function AddAnswer() {
             <h1 className={`font-righteous text-xl md:text-3xl mb-6`}>
               Add Answer
             </h1>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <EditorField control={form.control} name="description" />
-                {form?.formState?.errors?.root?.message && (
-                  <p className="text-[0.6rem] text-destructive font-medium">
-                    {form?.formState?.errors?.root?.message}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-                  <Button type="submit" className="mt-3" loading={loading}>
-                    Submit
-                  </Button>
-                  <Button
-                    onClick={() => setShowEditor(false)}
-                    className="mt-3"
-                    variant={"outline"}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </Form>
+            <AnswerForm
+              form={form}
+              name="description"
+              onSubmit={onSubmit}
+              isLoading={loading}
+              onCancel={() => setShowEditor(false)}
+            />
           </div>
         </div>
       )}
