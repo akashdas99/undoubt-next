@@ -3,7 +3,7 @@ import { User } from "@/models/user";
 import UserImage from "../ui/userImage";
 import ImageUpload from "./imageUpload";
 
-export default async function Profile(): Promise<JSX.Element> {
+export default async function Profile() {
   const data: User = await getUser();
 
   return (

@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { userApi } from "@/lib/store/user/user";
 import { useDispatch } from "react-redux";
 
-export default function LoginForm(): JSX.Element {
+export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
 

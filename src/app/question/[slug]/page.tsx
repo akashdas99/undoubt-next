@@ -12,7 +12,8 @@ export async function generateStaticParams() {
   return questions.map((question) => ({ slug: question?.slug }));
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const session = await getSession();
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">

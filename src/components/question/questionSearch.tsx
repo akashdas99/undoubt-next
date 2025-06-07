@@ -12,11 +12,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Input } from "../ui/input";
 
-export default function QuestionSearch({
-  onClick,
-}: {
-  onClick?: () => void;
-}): JSX.Element {
+export default function QuestionSearch({ onClick }: { onClick?: () => void }) {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchQuestion: string = useDebounce(searchValue, 300);
   const { data, isLoading } = useGetAllQuestionsByKeywordQuery(
