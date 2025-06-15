@@ -13,14 +13,14 @@ export async function createSession(tokenData: Partial<UserType>) {
   (await cookies()).set("token", token, { httpOnly: true });
 }
 export async function getSession() {
-  const token = await (await cookies()).get("token")?.value;
+  const token = (await cookies()).get("token")?.value;
   if (!token) return null;
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const { payload } = await jwtVerify(token, jwtKey);
   return payload as Partial<UserType & { id: string }>;
 }
 export async function getSessionToken() {
-  const token = await (await cookies()).get("token")?.value;
+  const token = (await cookies()).get("token")?.value;
   return token;
 }
 export async function getSessionFromToken(token: string) {
@@ -29,5 +29,5 @@ export async function getSessionFromToken(token: string) {
   return payload as Partial<UserType & { id: string }>;
 }
 export async function removeSession() {
-  await (await cookies()).delete("token");
+  (await cookies()).delete("token");
 }
