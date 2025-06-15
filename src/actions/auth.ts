@@ -77,7 +77,7 @@ export async function loginUser(loginData: LoginType) {
       };
     }
     const tokenData = {
-      id: user?._id,
+      id: user?._id?.toString(),
       username: user?.username,
     };
     await createSession(tokenData);
