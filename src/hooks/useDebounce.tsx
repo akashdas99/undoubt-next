@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 
 const useDebounce = (value: string, timeout: number) => {
   const [debouncedValue, setDebouncedValue] = useState("");
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout>>(null);
   useEffect(() => {
     timer.current = setTimeout(() => setDebouncedValue(value), timeout);
 
     return () => {
-      clearTimeout(timer.current);
+      if (timer?.current) clearTimeout(timer.current);
     };
   }, [value, timeout]);
 
