@@ -28,10 +28,13 @@ export default function LoginForm() {
   });
   const onSubmit = async (values: LoginType) => {
     setLoadingLogin(true);
-    const res: Partial<{
-      type: string;
-      message: string;
-    }> = await loginUser(values);
+    const res: Partial<
+      | {
+          type: string;
+          message: string;
+        }
+      | undefined
+    > = await loginUser(values);
 
     setLoadingLogin(false);
 
@@ -47,9 +50,11 @@ export default function LoginForm() {
       form.setError("password", {
         message: res?.message,
       });
+    } else {
+      router.refresh();
+      dispatch(userApi.util.invalidateTags(["profile"]));
+      router.replace("/");
     }
-    router.refresh();
-    dispatch(userApi.util.invalidateTags(["profile"]));
   };
   const onGuestLogin = async () => {
     const username = process.env.NEXT_PUBLIC_GUEST_USERNAME;
@@ -60,19 +65,24 @@ export default function LoginForm() {
       });
 
     setLoadingGuestLogin(true);
-    const res: Partial<{
-      type: string;
-      message: string;
-    }> = await loginUser({ username, password });
+    const res: Partial<
+      | {
+          type: string;
+          message: string;
+        }
+      | undefined
+    > = await loginUser({ username, password });
 
     if (res?.type === "serverError") {
       form.setError("root", {
         message: res?.message,
       });
+    } else {
+      router.refresh();
+      dispatch(userApi.util.invalidateTags(["profile"]));
+      router.replace("/");
     }
     setLoadingGuestLogin(false);
-    router.refresh();
-    dispatch(userApi.util.invalidateTags(["profile"]));
   };
   return (
     <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
