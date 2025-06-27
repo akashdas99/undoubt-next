@@ -5,7 +5,6 @@ import { createSession, removeSession } from "@/lib/session";
 import { LoginSchema, LoginType, UserSchema, UserType } from "@/lib/types";
 import User from "@/models/user";
 import bcryptjs from "bcryptjs";
-import { redirect } from "next/navigation";
 
 export async function registerUser(userData: UserType) {
   try {
@@ -46,7 +45,6 @@ export async function registerUser(userData: UserType) {
       message: "Something went wrong",
     };
   }
-  redirect("/");
 }
 export async function loginUser(loginData: LoginType) {
   try {
@@ -77,7 +75,7 @@ export async function loginUser(loginData: LoginType) {
       };
     }
     const tokenData = {
-      id: user?._id,
+      id: user?._id?.toString(),
       username: user?.username,
     };
     await createSession(tokenData);
@@ -88,7 +86,6 @@ export async function loginUser(loginData: LoginType) {
       message: "Something went wrong",
     };
   }
-  redirect("/");
 }
 export async function logoutUser() {
   try {

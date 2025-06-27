@@ -55,6 +55,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           user.profilePicture = copiedBlog?.pathname;
           await user.save();
         } catch (error) {
+          console.log(error);
           throw new Error("Could not update user");
         }
       },

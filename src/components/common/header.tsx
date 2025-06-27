@@ -1,7 +1,7 @@
 import Link from "next/link";
 import NavigationSection from "./navigationSection";
 
-export default async function Header(): Promise<JSX.Element> {
+export default async function Header() {
   return (
     <div className="flex justify-center bg-foreground text-white w-full">
       <div className="flex items-center p-3 gap-[20px] justify-between w-full my-auto max-w-screen-lg px-3">

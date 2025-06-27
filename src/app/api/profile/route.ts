@@ -5,6 +5,7 @@ export async function GET() {
     const profile = await getUser();
     return Response.json(profile);
   } catch (error) {
+    console.log(error);
     return Response.json({});
   }
 }

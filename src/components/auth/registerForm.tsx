@@ -32,10 +32,13 @@ const RegisterForm: React.FC = () => {
   const onSubmit = async (values: UserType) => {
     setLoadingSignup(true);
 
-    const res: Partial<{
-      type: string;
-      message: string;
-    }> = await registerUser(values);
+    const res: Partial<
+      | {
+          type: string;
+          message: string;
+        }
+      | undefined
+    > = await registerUser(values);
     setLoadingSignup(false);
 
     if (res?.type === "username")
@@ -46,8 +49,11 @@ const RegisterForm: React.FC = () => {
       form.setError("root", {
         message: res?.message,
       });
-    router.refresh();
-    dispatch(userApi.util.invalidateTags(["profile"]));
+    else {
+      router.refresh();
+      dispatch(userApi.util.invalidateTags(["profile"]));
+      router.replace("/");
+    }
   };
 
   return (
