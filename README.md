@@ -1,81 +1,78 @@
-# Undoubt ![Vercel](https://vercelbadge.vercel.app/api/akashdas99/undoubt-next?style=for-the-badge)
+# **Undoubt**
 
-## Overview
+[![Vercel](https://vercelbadge.vercel.app/api/akashdas99/undoubt-next?style=for-the-badge)](https://undoubt.by-akashdas.com/)
 
-A Question and Answer website made using Next Js Framework.
+> A modern Q&A web application built with the **Next.js App Router**, featuring user authentication, real-time interactions, and a clean UI.
+
+---
+
+## 🚀 Live Demo
+
+🌐 [**Visit Undoubt**](https://undoubt.by-akashdas.com/)
+
+---
+
+## 📌 Overview
+
+**Undoubt** is a full-stack Question & Answer platform where users can:
+
+- Ask and answer questions
+- Manage their profile
+- Perform full CRUD operations
+- Search questions
+- Interact with content in a clean and responsive UI
+
+---
 
 ## ✨ Features
 
-- Lets User create account.
-- Search existing Questions.
-- Write Questions and Answers.
-- Update Questions and Answers.
-- Delete Questions and Answers.
-- View Profile.
-- Update user profile.
+- ✅ User registration and login
+- 🔍 Search existing questions
+- ✍️ Post new questions and answers
+- ✏️ Edit questions and answers
+- 🗑️ Delete your content
+- 👤 View other users' profiles
+- 🖼️ Upload or update profile image
 
-## Demo
+---
 
-https://undoubt.by-akashdas.com/
+## 🖼️ Screenshots
 
-## Screenshots
+### 📐 Design Preview
 
-#### Home Page
+[![Open in Figma](https://img.shields.io/badge/Open%20in-Figma-blue?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/rSfLDaZAtPxeVm1l3r8siU/Undoubt?node-id=0-1&t=JoEZ9oE3gQSNmXoc-1)
 
-<img src="https://user-images.githubusercontent.com/52244138/220142194-22ad51e9-aee3-40f9-8560-1b9a8ccc010a.jpg" width="720" height="360">
+| Desktop                                                                     | Mobile                                                                    |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| ![Desktop Screenshot](./src/public/assets/screenshots/desktop.png?raw=true) | ![Mobile Screenshot](./src/public/assets/screenshots/mobile.png?raw=true) |
 
-#### Profile Page
+---
 
-<img src="https://user-images.githubusercontent.com/52244138/220141687-741602c2-0ba8-4c07-ab2b-9a924fef2d32.jpg" width="720" height="360">
+## 🛠️ Technologies Used
 
-#### Question Page 1
+### 🧩 Backend
 
-<img src="https://user-images.githubusercontent.com/52244138/220142266-0d44c017-4222-4e55-b2bf-6e9fc494dd6a.jpg" width="720" height="360">
+- **Next.js API Routes** — for server-side logic
+- **Next.js Middleware** — for route protection
+- **Mongoose** — MongoDB ODM
+- **jose** — JWT-based authentication
+- **bcryptjs** — password hashing
 
-#### Question Page 2
+### 🎨 Frontend
 
-<img src="https://user-images.githubusercontent.com/52244138/220142273-66c87e91-486a-499a-8fa6-9d70429c1fd9.jpg" width="720" height="360">
+- **Next.js (App Router)** — SSR and routing
+- **Tailwind CSS** — utility-first styling
+- **TypeScript** — static type checking
+- **Shadcn/UI** — component library for modern UI
 
-#### SignUp Page
+---
 
-<img src="https://user-images.githubusercontent.com/52244138/220145131-63df9283-57cd-4e30-a4b4-5553af49abff.jpg" width="720" height="360">
+## 🧠 Core Concepts
 
-#### SignIn Page
+- Full **CRUD operations**
+- JWT-based **authentication system**
+- **Password encryption** using bcrypt
+- **Server-Side Rendering (SSR)**
+- **Incremental Static Regeneration (ISR)** for dynamic performance
 
-<img src="https://user-images.githubusercontent.com/52244138/220145123-9cdaf13e-7837-4141-8255-2cfc9b14c2aa.jpg" width="720" height="360">
-
-#### Edit Question
-
-<img src="https://user-images.githubusercontent.com/52244138/222906986-72ac8521-a98e-4d51-a4fe-877f474777ba.jpg" width="720" height="360">
-
-#### Edit Answer
-
-<img src="https://user-images.githubusercontent.com/52244138/222906983-0f35d8ef-1684-4fcd-bbe5-9f55f8d88694.jpg" width="720" height="360">
-
-## 💹 &nbsp; Technologies
-
-> Project is created with:
-
-#### Backend
-
-- Next API Routes
-- Next Middleware
-- Mongoose
-- Jose (For authentication)
-- bcryptjs (For password encryption)
-
-#### Frontend
-
-- Next Js (Server Side Rendering)
-- Next Router (To handle routing)
-- Tailwind css (For styling)
-- Typescript
-- Shadcn (UI components)
-
-## 💡 &nbsp; Key Concepts
-
-- CRUD operations
-- Authentication system
-- Encrypting passwords
-- Server Side Rendering
-- Incremental Static Regeneration
+---
