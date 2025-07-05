@@ -2,11 +2,12 @@
 
 import { AnswerType } from "@/lib/types";
 import { addAnswer, deleteAnswer, updateAnswer } from "@/services/answer";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export async function addAnswerAction(slug: string, answerData: AnswerType) {
   const result = await addAnswer(slug, answerData);
-  revalidatePath(`question/${slug}`);
+  revalidateTag(`questions`);
+  revalidateTag(`questionBySlug:${slug}`);
 
   return result;
 }
@@ -21,7 +22,8 @@ export async function updateAnswerAction(
 }
 export async function deleteAnswerAction(id: string, slug: string) {
   const result = await deleteAnswer(id, slug);
-  revalidatePath(`question/${slug}`);
+  revalidateTag(`questions`);
+  revalidateTag(`questionBySlug:${slug}`);
 
   return result;
 }

@@ -9,7 +9,7 @@ const getCachedQuestionBySlug = (slug: string) =>
     async () => getQuestionBySlug(slug),
     [`questionBySlug:${slug}`],
     {
-      tags: ["questionBySlug"],
+      tags: [`questionBySlug:${slug}`],
       revalidate: 600,
     }
   );
