@@ -1,51 +1,78 @@
-# Undoubt ![Vercel](https://vercelbadge.vercel.app/api/akashdas99/undoubt-next?style=for-the-badge)
+# **Undoubt**
 
-## Overview
+[![Vercel](https://vercelbadge.vercel.app/api/akashdas99/undoubt-next?style=for-the-badge)](https://undoubt.by-akashdas.com/)
 
-A Question and Answer website made using Next Js Framework.
+> A modern Q&A web application built with the **Next.js App Router**, featuring user authentication, real-time interactions, and a clean UI.
+
+---
+
+## 🚀 Live Demo
+
+🌐 [**Visit Undoubt**](https://undoubt.by-akashdas.com/)
+
+---
+
+## 📌 Overview
+
+**Undoubt** is a full-stack Question & Answer platform where users can:
+
+- Ask and answer questions
+- Manage their profile
+- Perform full CRUD operations
+- Search questions
+- Interact with content in a clean and responsive UI
+
+---
 
 ## ✨ Features
 
-- Lets User create account.
-- Search Existing Questions.
-- Write Questions and Answers.
-- Update Questions and Answers.
-- Delete Questions and Answers.
-- View Profile.
-- Update User Profile Image.
+- ✅ User registration and login
+- 🔍 Search existing questions
+- ✍️ Post new questions and answers
+- ✏️ Edit questions and answers
+- 🗑️ Delete your content
+- 👤 View other users' profiles
+- 🖼️ Upload or update profile image
 
-## Demo
+---
 
-https://undoubt.by-akashdas.com/
+## 🖼️ Screenshots
 
-## Screenshots
+### 📐 Design Preview
 
-#### Figma
+[![Open in Figma](https://img.shields.io/badge/Open%20in-Figma-blue?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/rSfLDaZAtPxeVm1l3r8siU/Undoubt?node-id=0-1&t=JoEZ9oE3gQSNmXoc-1)
 
-[![View in Figma](https://img.shields.io/badge/View%20in-Figma-blue?logo=figma)](https://www.figma.com/design/rSfLDaZAtPxeVm1l3r8siU/Undoubt?node-id=0-1&t=JoEZ9oE3gQSNmXoc-1)
+| Desktop                                                                     | Mobile                                                                    |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| ![Desktop Screenshot](./src/public/assets/screenshots/desktop.png?raw=true) | ![Mobile Screenshot](./src/public/assets/screenshots/mobile.png?raw=true) |
 
-## 💹 Technologies
+---
 
-#### Backend
+## 🛠️ Technologies Used
 
-- Next API Routes
-- Next Middleware
-- Mongoose
-- Jose (For authentication)
-- bcryptjs (For password encryption)
+### 🧩 Backend
 
-#### Frontend
+- **Next.js API Routes** — for server-side logic
+- **Next.js Middleware** — for route protection
+- **Mongoose** — MongoDB ODM
+- **jose** — JWT-based authentication
+- **bcryptjs** — password hashing
 
-- Next Js (Server Side Rendering)
-- Next Router (To handle routing)
-- Tailwind css (For styling)
-- Typescript
-- Shadcn (UI components)
+### 🎨 Frontend
 
-## 💡 Key Concepts
+- **Next.js (App Router)** — SSR and routing
+- **Tailwind CSS** — utility-first styling
+- **TypeScript** — static type checking
+- **Shadcn/UI** — component library for modern UI
 
-- CRUD operations
-- Authentication system
-- Encrypting passwords
-- Server Side Rendering
-- Incremental Static Regeneration
+---
+
+## 🧠 Core Concepts
+
+- Full **CRUD operations**
+- JWT-based **authentication system**
+- **Password encryption** using bcrypt
+- **Server-Side Rendering (SSR)**
+- **Incremental Static Regeneration (ISR)** for dynamic performance
+
+---
