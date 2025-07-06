@@ -29,9 +29,9 @@ export default function AddQuestion() {
   };
 
   return (
-    <div className="flex items-center justify-center grow">
-      <div className="bordered-card p-8 rounded-xl max-w-screen-lg">
-        <h1 className={`font-righteous text-xl mb-6 md:text-3xl`}>
+    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
+      <div className="bordered-card p-[1em]">
+        <h1 className={`font-righteous text-xl mb-2 md:text-3xl`}>
           Add Question
         </h1>
         <Form {...form}>
