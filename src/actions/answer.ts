@@ -8,6 +8,7 @@ export async function addAnswerAction(slug: string, answerData: AnswerType) {
   const result = await addAnswer(slug, answerData);
   revalidateTag(`questions`);
   revalidateTag(`questionBySlug:${slug}`);
+  revalidateTag(`answersByQuestionSlug:${slug}`);
 
   return result;
 }
@@ -24,6 +25,7 @@ export async function deleteAnswerAction(id: string, slug: string) {
   const result = await deleteAnswer(id, slug);
   revalidateTag(`questions`);
   revalidateTag(`questionBySlug:${slug}`);
+  revalidateTag(`answersByQuestionSlug:${slug}`);
 
   return result;
 }
