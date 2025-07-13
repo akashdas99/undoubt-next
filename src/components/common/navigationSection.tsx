@@ -9,7 +9,7 @@ export default function NavigationSection() {
   return (
     <div className="flex items-center gap-5 text-xs">
       <SearchModal />
-      <Button variant="ghost" size={"icon"}>
+      <Button variant="ghost" size={"icon"} className="hover:bg-transparent">
         <Link href={"/question"} prefetch={false} className="flex">
           <Plus />
         </Link>

@@ -110,8 +110,12 @@ export default function LoginForm() {
               {form?.formState?.errors?.root?.message}
             </p>
           )}
-          <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-            <Button type="submit" className="mt-3" loading={loadingLogin}>
+          <div className="flex flex-wrap gap-x-2 mt-2">
+            <Button
+              type="submit"
+              className="mt-3 flex-1"
+              loading={loadingLogin}
+            >
               Login
             </Button>
             <Button
