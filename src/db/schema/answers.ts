@@ -1,13 +1,13 @@
-import { pgTable, serial, text, uuid } from "drizzle-orm/pg-core";
-import { createdAt, updatedAt } from "../helpers/timestamps";
-import { users } from "./users"; // Assuming users schema is defined elsewhere
-import { questions } from "./questions";
 import { relations } from "drizzle-orm";
+import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { createdAt, updatedAt } from "../helpers/timestamps";
+import { questions } from "./questions";
+import { users } from "./users"; // Assuming users schema is defined elsewhere
 
 export const answers = pgTable("answers", {
   id: uuid("id").primaryKey().defaultRandom(),
   description: text("description").notNull(), // Answer content, can contain rich text or HTML
-  authorId: serial("author_id")
+  authorId: uuid("author_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }), // Foreign key to users.id
   questionId: uuid("question_id")

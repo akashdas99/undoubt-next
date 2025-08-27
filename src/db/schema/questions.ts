@@ -1,14 +1,14 @@
 import { relations } from "drizzle-orm";
-import { pgTable, serial, text, uuid, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../helpers/timestamps";
-import { users } from "./users"; // Assume users schema is defined elsewhere
 import { answers } from "./answers"; // Assume answers schema is defined in answers.ts
+import { users } from "./users"; // Assume users schema is defined elsewhere
 
 export const questions = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(), // To contain HTML from rich text editor
-  authorId: serial("author_id")
+  authorId: uuid("author_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
