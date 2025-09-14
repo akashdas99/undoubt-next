@@ -57,10 +57,10 @@ const AnswerCard = ({
   const onDelete = async () => {
     setIsDeleting(true);
     const res = await deleteAnswerAction(answer?._id as string, params?.slug);
-    setIsDeleting(false);
 
     if (res?.error?.type === "serverError") {
       setDeleteError(res?.error?.message);
+      setIsDeleting(false);
     } else setIsEditing(false);
   };
   useEffect(() => {
