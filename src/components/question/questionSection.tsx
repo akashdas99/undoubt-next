@@ -14,7 +14,12 @@ const getCachedQuestionBySlug = (slug: string) =>
     }
   );
 
-export default async function QuestionSection({ slug }: { slug: string }) {
+export default async function QuestionSection({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug = "" } = await params;
   const getQuestion = getCachedQuestionBySlug(slug);
   const question = await getQuestion();
   if (!question) return notFound();
