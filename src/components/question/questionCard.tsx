@@ -6,7 +6,7 @@ import UserImage from "../ui/userImage";
 import TextEditorContent from "../ui/textEditorContent";
 import { Skeleton } from "../ui/skeleton";
 
-export default async function QuestionCard({
+export default function QuestionCard({
   question,
   isLoading = false,
 }: {
