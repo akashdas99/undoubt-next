@@ -1,7 +1,6 @@
 import AddAnswerContainer from "@/components/answer/addAnswerContainer";
 import AnswerList from "@/components/answer/answerList";
 import QuestionSection from "@/components/question/questionSection";
-import QuestionCard from "@/components/question/questionCard";
 import { getQuestions } from "@/services/question";
 
 export async function generateStaticParams() {

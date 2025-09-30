@@ -11,7 +11,7 @@ export default async function AddAnswerContainer() {
 export const AddAnswerContainerSkeleton = () => {
   return (
     <div className="flex items-center justify-start">
-      <Skeleton className="h-10 w-32" />
+      <Skeleton className="h-10 w-[150px] rounded-md" />
     </div>
   );
 };

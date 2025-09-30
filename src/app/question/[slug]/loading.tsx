@@ -1,8 +1,5 @@
-import AddAnswerContainer from "@/components/answer/addAnswerContainer";
 import { AddAnswerContainerSkeleton } from "@/components/answer/addAnswerContainer";
-import AnswerCard from "@/components/answer/answerCard";
 import { AnswerCardSkeleton } from "@/components/answer/answerCard";
-import QuestionCard from "@/components/question/questionCard";
 import { QuestionCardSkeleton } from "@/components/question/questionCard";
 
 export default function Loading() {
@@ -15,6 +12,10 @@ export default function Loading() {
           <div className="active-neo section-heading mb-2 font-righteous text-xl">
             Recent Answers
           </div>
+          <AnswerCardSkeleton />
+          <AnswerCardSkeleton />
+          <AnswerCardSkeleton />
+          <AnswerCardSkeleton />
           <AnswerCardSkeleton />
         </div>
       </div>

@@ -46,7 +46,7 @@ export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
             isLoggedIn ? setShowEditor(true) : router.push("/login")
           }
         >
-          <FilePenLine /> Answer
+          <FilePenLine /> {isLoggedIn ? "Answer" : "Login"}
         </Button>
       ) : (
         <div className="flex items-center justify-center grow">
