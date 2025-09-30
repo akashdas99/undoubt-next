@@ -16,7 +16,12 @@ const getCachedAnswersByQuestionSlug = (slug: string) =>
       revalidate: 600,
     }
   );
-export default async function AnswerList({ slug }: { slug: string }) {
+export default async function AnswerList({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug = "" } = await params;
   const getAnswers: () => Promise<
     Array<
       Omit<Answer, "author"> & {

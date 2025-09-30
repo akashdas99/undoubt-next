@@ -9,14 +9,10 @@ import { Skeleton } from "./skeleton";
 export default function UserImage({
   user,
   className,
-  isLoading = false,
 }: {
   user?: User;
   className?: string;
-  isLoading?: boolean;
 }) {
-  if (isLoading)
-    return <Skeleton className={cn("aspect-square rounded-full", className)} />;
   if (isEmpty(user)) return <CircleUserRound />;
   return (
     <div
@@ -37,3 +33,7 @@ export default function UserImage({
     </div>
   );
 }
+
+export const UserImageSkeleton = ({ className }: { className?: string }) => (
+  <Skeleton className={cn("aspect-square rounded-full", className)} />
+);

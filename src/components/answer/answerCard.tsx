@@ -19,13 +19,11 @@ import DeleteAnswerModal from "./deleteAnswerModal";
 
 const AnswerCard = ({
   answer,
-  isLoading = false,
   isAuthor = false,
 }: {
-  answer?: Omit<Answer, "author"> & {
+  answer: Omit<Answer, "author"> & {
     author: User;
   };
-  isLoading?: boolean;
   isAuthor?: boolean;
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -70,26 +68,14 @@ const AnswerCard = ({
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <UserImage
-            user={answer?.author}
-            className="w-[30px]"
-            isLoading={isLoading}
-          />
-          {isLoading ? (
-            <Skeleton className="h-6 w-28" />
-          ) : (
-            <div className="font-montserrat font-medium">
-              {answer?.author?.name}
-            </div>
-          )}
-          {isLoading ? (
-            <Skeleton className="h-6 w-20" />
-          ) : (
-            <div className="flex items-center gap-1 text-xs opacity-50">
-              <CalendarDays className="w-3" />
-              {dayjs(answer?.createdAt).format("MMM D, YYYY")}
-            </div>
-          )}
+          <UserImage user={answer?.author} className="w-[30px]" />
+          <div className="font-montserrat font-medium">
+            {answer?.author?.name}
+          </div>
+          <div className="flex items-center gap-1 text-xs opacity-50">
+            <CalendarDays className="w-3" />
+            {dayjs(answer?.createdAt).format("MMM D, YYYY")}
+          </div>
         </div>
         {isAuthor && (
           <div className="flex items-center gap-2">
@@ -113,33 +99,44 @@ const AnswerCard = ({
           </div>
         )}
       </div>
-      {isLoading ? (
-        <>
-          <Skeleton className="h-6 w-full" />
-          <Skeleton className="h-6 w-full" />
-          <Skeleton className="h-6 w-full" />
-        </>
-      ) : (
-        <>
-          {isEditing ? (
-            <AnswerForm
-              form={form}
-              name="description"
-              onSubmit={onSubmit}
-              isLoading={loading}
-              onCancel={() => setIsEditing(false)}
-            />
-          ) : (
-            <>
-              {answer?.description && (
-                <TextEditorContent content={answer?.description} />
-              )}
-            </>
-          )}
-        </>
-      )}
+      <>
+        {isEditing ? (
+          <AnswerForm
+            form={form}
+            name="description"
+            onSubmit={onSubmit}
+            isLoading={loading}
+            onCancel={() => setIsEditing(false)}
+          />
+        ) : (
+          <>
+            {answer?.description && (
+              <TextEditorContent content={answer?.description} />
+            )}
+          </>
+        )}
+      </>
     </div>
   );
 };
 
 export default AnswerCard;
+export const AnswerCardSkeleton = () => {
+  return (
+    <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Skeleton className="rounded-full h-[30px] w-[30px]" />
+          <Skeleton className="h-6 w-28" />
+          <div className="flex items-center gap-1 text-xs opacity-50">
+            <CalendarDays className="w-3" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        </div>
+      </div>
+      <Skeleton className="h-6 w-full" />
+      <Skeleton className="h-6 w-full" />
+      <Skeleton className="h-6 w-full" />
+    </div>
+  );
+};
