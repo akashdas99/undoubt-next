@@ -34,7 +34,9 @@ export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
   useEffect(() => {
     if (!showEditor) form.reset();
   }, [showEditor, form]);
-
+  useEffect(() => {
+    if (!isLoggedIn) setShowEditor(false);
+  }, [isLoggedIn]);
   return (
     <div>
       {!showEditor ? (
