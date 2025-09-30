@@ -1,8 +1,7 @@
-import React from "react";
-import QuestionCard from "./questionCard";
 import { getQuestionBySlug } from "@/services/question";
-import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { notFound } from "next/navigation";
+import QuestionCard from "./questionCard";
 
 const getCachedQuestionBySlug = (slug: string) =>
   unstable_cache(

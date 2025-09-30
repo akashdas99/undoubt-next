@@ -8,11 +8,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import AnswerForm from "./answerForm";
+import { useRouter } from "next/navigation";
 
-export default function AddAnswer() {
+export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const form = useForm<AnswerType>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
@@ -40,7 +42,9 @@ export default function AddAnswer() {
           type="button"
           variant={"default"}
           size={"lg"}
-          onClick={() => setShowEditor(true)}
+          onClick={() =>
+            isLoggedIn ? setShowEditor(true) : router.push("/login")
+          }
         >
           <FilePenLine /> Answer
         </Button>

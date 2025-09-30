@@ -13,7 +13,7 @@ import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import UserImage from "../ui/userImage";
+import UserImage, { UserImageSkeleton } from "../ui/userImage";
 
 export function ProfileDropdown() {
   const router = useRouter();
@@ -28,7 +28,11 @@ export function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="w-[36px] inline-flex items-center justify-center gap-2 focus-visible:outline-none">
-        <UserImage user={user} isLoading={isFetching} />
+        {isFetching ? (
+          <UserImageSkeleton className="w-[36px]" />
+        ) : (
+          <UserImage user={user} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="font-montserrat bg-background p-2 border border-solid border-primary/50 rounded-lg"
