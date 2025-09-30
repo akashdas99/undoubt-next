@@ -12,11 +12,13 @@ export default function Loading() {
           <div className="active-neo section-heading mb-2 font-righteous text-xl">
             Recent Answers
           </div>
-          <AnswerCardSkeleton />
-          <AnswerCardSkeleton />
-          <AnswerCardSkeleton />
-          <AnswerCardSkeleton />
-          <AnswerCardSkeleton />
+          <div className="flex flex-col gap-5">
+            <AnswerCardSkeleton />
+            <AnswerCardSkeleton />
+            <AnswerCardSkeleton />
+            <AnswerCardSkeleton />
+            <AnswerCardSkeleton />
+          </div>
         </div>
       </div>
     </div>
