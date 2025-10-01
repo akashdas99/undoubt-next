@@ -13,6 +13,12 @@ const getCachedAnswersByQuestionSlug = (slug: string) =>
       revalidate: 600,
     }
   );
+/**
+ * Render a list of answers for the provided question slug.
+ *
+ * @param params - A promise that resolves to an object with a `slug` string identifying the question
+ * @returns A React fragment that contains either a paragraph with "No Answer" when there are no answers, or a vertically spaced list of `AnswerCard` components—one for each answer
+ */
 export default async function AnswerList({
   params,
 }: {

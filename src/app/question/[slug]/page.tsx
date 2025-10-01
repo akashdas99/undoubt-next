@@ -8,6 +8,12 @@ export async function generateStaticParams() {
   return questions.map((question) => ({ slug: question?.slug }));
 }
 
+/**
+ * Renders the question page with the question details, an add-answer form, and a recent answers list.
+ *
+ * @param params - A promise resolving to route parameters; expected shape: `{ slug: string }`.
+ * @returns The page's React element containing the question section, add-answer component, and recent answers list.
+ */
 export default function Page({
   params,
 }: {

@@ -18,6 +18,14 @@ import AnswerForm from "./answerForm";
 import DeleteAnswerModal from "./deleteAnswerModal";
 import { useGetProfileQuery } from "@/lib/store/user/user";
 
+/**
+ * Renders an answer card showing the author's avatar and name, the creation date, the answer content, and inline controls to edit or delete the answer when the current user is the author.
+ *
+ * The component manages local editing and deletion state, binds a form (validated by AnswerSchema) for updates, and resets the form when editing is canceled.
+ *
+ * @param answer - The answer to display. Must include an `author` property of type `User` and may contain `description`, `_id`, and `createdAt`.
+ * @returns A JSX element representing the answer card with view and author-only edit/delete UI.
+ */
 export default function AnswerCard({
   answer,
 }: {

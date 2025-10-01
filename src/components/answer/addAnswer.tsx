@@ -13,6 +13,13 @@ import { useGetProfileQuery } from "@/lib/store/user/user";
 import { isEmpty } from "@/lib/functions";
 import { Skeleton } from "../ui/skeleton";
 
+/**
+ * Render the "Add Answer" UI that lets authenticated users open an editor to submit an answer or directs unauthenticated users to login.
+ *
+ * Shows a skeleton while the profile is loading. When not showing the editor, displays a button that reads "Answer" for logged-in users (opens the editor) or "Login" for others (navigates to /login). When the editor is visible, renders a form with validation and submission handling: on successful submit the editor is closed; if the server returns an error a root form error is set. The form is reset whenever the editor is hidden, and the editor is automatically closed if the user becomes unauthenticated.
+ *
+ * @returns A JSX element representing the Add Answer UI.
+ */
 export default function AddAnswer() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
