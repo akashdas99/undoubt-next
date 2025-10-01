@@ -43,6 +43,7 @@ export default function AddAnswer() {
   useEffect(() => {
     if (isEmpty(user)) setShowEditor(false);
   }, [user]);
+
   return (
     <div className="flex items-center justify-start">
       {isFetching ? (
@@ -77,6 +78,7 @@ export default function AddAnswer() {
     </div>
   );
 }
+
 export const AddAnswerSkeleton = () => {
-  return <Skeleton className="h-10 w-[150px] rounded-md" />;
+  return <Skeleton className="h-10 w-[150px] rounded-md" data-testid="add-answer-skeleton" />;
 };
