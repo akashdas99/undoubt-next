@@ -16,21 +16,24 @@ import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import AnswerForm from "./answerForm";
 import DeleteAnswerModal from "./deleteAnswerModal";
+import { useGetProfileQuery } from "@/lib/store/user/user";
 
-const AnswerCard = ({
+export default function AnswerCard({
   answer,
-  isAuthor = false,
 }: {
   answer: Omit<Answer, "author"> & {
     author: User;
   };
-  isAuthor?: boolean;
-}) => {
+}) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
+  const { data: user, isLoading } = useGetProfileQuery();
+
   const params = useParams<{ slug: string }>();
+  const isAuthor =
+    !isLoading && answer?.author?._id?.toString() === user?._id?.toString();
 
   const form = useForm<AnswerType>({
     resolver: zodResolver(AnswerSchema),
@@ -118,9 +121,8 @@ const AnswerCard = ({
       </>
     </div>
   );
-};
+}
 
-export default AnswerCard;
 export const AnswerCardSkeleton = () => {
   return (
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
