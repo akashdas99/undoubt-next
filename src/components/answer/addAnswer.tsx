@@ -9,10 +9,15 @@ import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import AnswerForm from "./answerForm";
 import { useRouter } from "next/navigation";
+import { useGetProfileQuery } from "@/lib/store/user/user";
+import { isEmpty } from "@/lib/functions";
+import { Skeleton } from "../ui/skeleton";
 
-export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
+export default function AddAnswer() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
+  const { data: user, isFetching } = useGetProfileQuery();
+  const isLoggedIn = !isEmpty(user);
   const params = useParams<{ slug: string }>();
   const router = useRouter();
   const form = useForm<AnswerType>({
@@ -34,12 +39,15 @@ export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
   useEffect(() => {
     if (!showEditor) form.reset();
   }, [showEditor, form]);
+
   useEffect(() => {
-    if (!isLoggedIn) setShowEditor(false);
-  }, [isLoggedIn]);
+    if (isEmpty(user)) setShowEditor(false);
+  }, [user]);
   return (
-    <div>
-      {!showEditor ? (
+    <div className="flex items-center justify-start">
+      {isFetching ? (
+        <AddAnswerSkeleton />
+      ) : !showEditor ? (
         <Button
           type="button"
           variant={"default"}
@@ -69,3 +77,6 @@ export default function AddAnswer({ isLoggedIn }: { isLoggedIn?: boolean }) {
     </div>
   );
 }
+export const AddAnswerSkeleton = () => {
+  return <Skeleton className="h-10 w-[150px] rounded-md" />;
+};
