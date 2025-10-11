@@ -2,7 +2,10 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { UserType } from "./types";
 
-export async function createSession(tokenData: Partial<UserType>) {
+export async function createSession(tokenData: {
+  id: string;
+  userName: string;
+}) {
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const token = await new SignJWT(tokenData)
     .setProtectedHeader({ alg: "HS256" })

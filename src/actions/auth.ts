@@ -1,50 +1,16 @@
 "use server";
 
+import { registerUser } from "@/data/auth";
 import dbConnect from "@/lib/dbConnect";
-import { createSession, removeSession } from "@/lib/session";
-import { LoginSchema, LoginType, UserSchema, UserType } from "@/lib/types";
+import { removeSession } from "@/lib/session";
+import { LoginSchema, LoginType } from "@/lib/types";
 import User from "@/models/user";
+import { RegisterType } from "@/types/auth";
 import bcryptjs from "bcryptjs";
 
-export async function registerUser(userData: UserType) {
-  try {
-    await dbConnect();
-    //validate userData
-    const validatedUser = UserSchema.safeParse({
-      ...userData,
-    });
-    if (!validatedUser?.success) {
-      return {
-        errors: validatedUser?.error?.flatten()?.fieldErrors,
-      };
-    }
-    //if user exists
-    const user = await User.findOne({ username: userData?.username });
-    if (user)
-      return {
-        type: "username",
-        message: "Username already exists",
-      };
-
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(userData?.password, salt);
-    const newUser = new User({
-      ...userData,
-      password: hashedPassword,
-    });
-    const savedUser = await newUser.save();
-    const tokenData = {
-      id: savedUser?._id,
-      username: savedUser?.username,
-    };
-    await createSession(tokenData);
-  } catch (e) {
-    console.log(e);
-    return {
-      type: "serverError",
-      message: "Something went wrong",
-    };
-  }
+// registerUserAction to create new user
+export async function registerUserAction(userData: RegisterType) {
+  return await registerUser(userData);
 }
 export async function loginUser(loginData: LoginType) {
   try {
@@ -78,7 +44,7 @@ export async function loginUser(loginData: LoginType) {
       id: user?._id?.toString(),
       username: user?.username,
     };
-    await createSession(tokenData);
+    // await createSession(tokenData);
   } catch (e) {
     console.log(e);
     return {

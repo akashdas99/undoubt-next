@@ -3,58 +3,49 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 //Components
-import { registerUser } from "@/actions/auth";
+import { registerUserAction } from "@/actions/auth";
 import { Form, InputField } from "@/components/ui/form";
-import { UserSchema, UserType } from "@/lib/types";
-import Link from "next/link";
-import { Button } from "../ui/button";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { isEmpty } from "@/lib/functions";
 import { userApi } from "@/lib/store/user/user";
+import { RegisterType } from "@/types/auth";
+import { RegisterSchema } from "@/validations/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState } from "react";
 import { useDispatch } from "react-redux";
+import { Button } from "../ui/button";
 
 const RegisterForm: React.FC = () => {
-  const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const form = useForm<UserType>({
-    resolver: zodResolver(UserSchema),
+  const [res, handleRegister, loadingSignup] = useActionState(
+    async (_: any, userData: RegisterType) => {
+      const res = await registerUserAction(userData);
+      if (!isEmpty(res) && "success" in res && res?.success) {
+        router.replace("/");
+        router.refresh();
+        dispatch(userApi.util.invalidateTags(["profile"]));
+      }
+      return res;
+    },
+    { errors: {}, success: false }
+  );
+
+  const form = useForm<RegisterType>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: "",
-      username: "",
+      email: "",
+      userName: "",
       password: "",
-      profession: "",
-      city: "",
-      country: "",
     },
+    errors: res?.errors,
   });
-  const onSubmit = async (values: UserType) => {
-    setLoadingSignup(true);
-
-    const res: Partial<
-      | {
-          type: string;
-          message: string;
-        }
-      | undefined
-    > = await registerUser(values);
-    setLoadingSignup(false);
-
-    if (res?.type === "username")
-      form.setError("username", {
-        message: res?.message,
-      });
-    else if (res?.type === "serverError")
-      form.setError("root", {
-        message: res?.message,
-      });
-    else {
-      router.refresh();
-      dispatch(userApi.util.invalidateTags(["profile"]));
-      router.replace("/");
-    }
-  };
+  console.log(form?.formState?.errors);
+  const onSubmit = form.handleSubmit((values: RegisterType) => {
+    startTransition(() => handleRegister(values));
+  });
 
   return (
     <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-auto">
@@ -62,10 +53,7 @@ const RegisterForm: React.FC = () => {
         Register Account
       </h1>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="md:grid grid-cols-2 gap-x-3"
-        >
+        <form onSubmit={onSubmit} className="md:grid grid-cols-2 gap-x-3">
           <InputField
             control={form.control}
             name="name"
@@ -74,9 +62,15 @@ const RegisterForm: React.FC = () => {
           />
           <InputField
             control={form.control}
-            name="username"
+            name="userName"
             label="Username"
             placeholder="Username"
+          />
+          <InputField
+            control={form.control}
+            name="email"
+            label="Email"
+            placeholder="Email"
           />
           <InputField
             control={form.control}
@@ -85,25 +79,6 @@ const RegisterForm: React.FC = () => {
             placeholder="Password"
             type="password"
           />
-          <InputField
-            control={form.control}
-            name="profession"
-            label="Profession"
-            placeholder="Profession"
-          />
-          <InputField
-            control={form.control}
-            name="city"
-            label="City"
-            placeholder="City"
-          />
-          <InputField
-            control={form.control}
-            name="country"
-            label="Country"
-            placeholder="Country"
-          />
-
           {form?.formState?.errors?.root?.message && (
             <p className="text-[0.6rem] text-destructive font-medium">
               {form?.formState?.errors?.root?.message}
