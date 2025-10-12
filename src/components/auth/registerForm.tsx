@@ -40,9 +40,9 @@ const RegisterForm: React.FC = () => {
       userName: "",
       password: "",
     },
-    errors: res?.errors,
+    errors: ("errors" in res && res?.errors) || {},
   });
-  console.log(form?.formState?.errors);
+
   const onSubmit = form.handleSubmit((values: RegisterType) => {
     startTransition(() => handleRegister(values));
   });

@@ -1,5 +1,6 @@
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema/users";
+import { errorResponse, successResponse } from "@/lib/response";
 import { createSession } from "@/lib/session";
 import { RegisterType } from "@/types/auth";
 import { RegisterSchema } from "@/validations/auth";
@@ -18,11 +19,7 @@ export async function registerUser(userData: RegisterType) {
           { message: issue.message },
         ])
       );
-
-      return {
-        success: false,
-        errors,
-      };
+      return errorResponse(errors);
     }
     const validatedUser = parsed.data;
     // Check unique constraints (email or userName) in a single query
@@ -38,20 +35,15 @@ export async function registerUser(userData: RegisterType) {
       .limit(1);
 
     if (conflict) {
-      if (conflict.email === validatedUser.email) {
-        return {
-          success: false,
-          errors: {
-            email: { message: "Email already exists" },
-          },
-        };
-      }
-      return {
-        success: false,
-        errors: {
-          userName: { message: "UserName already exists" },
-        },
-      };
+      return errorResponse(
+        conflict.email === validatedUser.email
+          ? {
+              email: { message: "Email already exists" },
+            }
+          : {
+              userName: { message: "UserName already exists" },
+            }
+      );
     }
     //hash password
     const hashedPassword = await bcryptjs.hash(validatedUser.password, 10);
@@ -72,18 +64,11 @@ export async function registerUser(userData: RegisterType) {
       id: registeredUser?.id,
       userName: registeredUser?.userName,
     });
-    return {
-      success: true,
-      errors: {},
-    };
+    return successResponse();
   } catch (error) {
     console.log(error);
-    return {
-      success: false,
-
-      errors: {
-        root: { message: "Something went wrong" },
-      },
-    };
+    return errorResponse({
+      root: { message: "Something went wrong" },
+    });
   }
 }
