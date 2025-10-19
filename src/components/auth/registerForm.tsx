@@ -40,7 +40,7 @@ const RegisterForm: React.FC = () => {
       userName: "",
       password: "",
     },
-    errors: ("errors" in res && res?.errors) || {},
+    errors: ("errors" in res && res?.errors) || undefined,
   });
 
   const onSubmit = form.handleSubmit((values: RegisterType) => {

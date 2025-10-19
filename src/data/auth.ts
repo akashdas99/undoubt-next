@@ -91,19 +91,18 @@ export async function loginUser(userData: LoginType) {
     .limit(1);
 
   const isCorrectPassword = await bcryptjs.compare(
-    user?.password,
-    validatedUser?.password
+    validatedUser?.password,
+    user?.password
   );
   if (!isCorrectPassword) {
-    return {
-      type: "password",
-      message: "Wrong password",
-    };
+    return errorResponse({
+      password: { message: "Incorrect Password" },
+    });
   }
-  const tokenData = {
+
+  await createSession({
     id: user?.id,
     userName: user?.userName,
-  };
-
-  await createSession(tokenData);
+  });
+  return successResponse();
 }

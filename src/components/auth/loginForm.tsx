@@ -11,7 +11,7 @@ import { LoginType } from "@/types/auth";
 import { LoginSchema } from "@/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState, useState } from "react";
+import { startTransition, useActionState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 
@@ -38,7 +38,7 @@ export default function LoginForm() {
       email: "",
       password: "",
     },
-    errors: ("errors" in res && res?.errors) || {},
+    errors: ("errors" in res && res?.errors) || undefined,
   });
 
   const onSubmit = form.handleSubmit((values: LoginType) => {
@@ -61,8 +61,8 @@ export default function LoginForm() {
           <InputField
             control={form.control}
             name="email"
-            label="Username"
-            placeholder="Username"
+            label="Email"
+            placeholder="Email"
           />
           <InputField
             control={form.control}
