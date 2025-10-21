@@ -1,10 +1,10 @@
 import { isEmpty } from "@/lib/functions";
 import { cn } from "@/lib/utils";
-import { User } from "@/models/user";
 import { CircleUserRound } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { Skeleton } from "./skeleton";
+import { User } from "@/db/schema/users";
 
 export default function UserImage({
   user,

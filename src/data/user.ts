@@ -17,6 +17,7 @@ export async function getProfile() {
       email: users.email,
       createdAt: users.createdAt,
       updatedAt: users.updatedAt,
+      profilePicture: users.profilePicture,
     })
     .from(users)
     .where(eq(users.id, session.id))
