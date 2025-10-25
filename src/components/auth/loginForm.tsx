@@ -11,13 +11,14 @@ import { LoginType } from "@/types/auth";
 import { LoginSchema } from "@/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isGuest, setIsGuest] = useState<boolean>();
 
   const [res, handleLogin, loadingLogin] = useActionState(
     async (_: any, userData: LoginType) => {
@@ -27,6 +28,7 @@ export default function LoginForm() {
         router.refresh();
         dispatch(userApi.util.invalidateTags(["profile"]));
       }
+      setIsGuest(false);
       return res;
     },
     { errors: {}, success: false }
@@ -45,8 +47,9 @@ export default function LoginForm() {
     startTransition(() => handleLogin(values));
   });
   const onGuestLogin = async () => {
-    const email = process.env.NEXT_PUBLIC_GUEST_USERNAME;
+    const email = process.env.NEXT_PUBLIC_GUEST_EMAIL;
     const password = process.env.NEXT_PUBLIC_GUEST_PASSWORD;
+    setIsGuest(true);
     if (email && password) {
       startTransition(() => handleLogin({ email, password }));
     }
@@ -81,19 +84,19 @@ export default function LoginForm() {
             <Button
               type="submit"
               className="mt-3 flex-1"
-              loading={loadingLogin}
+              loading={!isGuest && loadingLogin}
             >
               Login
             </Button>
-            {/* <Button
+            <Button
               type="button"
               className="mt-3"
               variant={"outline"}
               onClick={onGuestLogin}
-              loading={loadingGuestLogin}
+              loading={isGuest && loadingLogin}
             >
               Guest Login
-            </Button> */}
+            </Button>
           </div>
         </form>
       </Form>
