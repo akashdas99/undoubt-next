@@ -7,10 +7,10 @@ import { LoginType, RegisterType } from "@/types/auth";
 
 // registerUserAction to create new user
 export async function registerUserAction(userData: RegisterType) {
-  return withTryCatchResponse(registerUser(userData));
+  return await withTryCatchResponse(registerUser(userData));
 }
 export async function loginUserAction(loginData: LoginType) {
-  return withTryCatchResponse(loginUser(loginData));
+  return await withTryCatchResponse(loginUser(loginData));
 }
 export async function logoutUser() {
   try {
