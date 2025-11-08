@@ -2,6 +2,7 @@ import { db } from "@/db/drizzle";
 import { users } from "@/db/schema/users";
 import { errorResponse, successResponse } from "@/lib/response";
 import { createSession } from "@/lib/session";
+import { parseZodErrors } from "@/lib/utils";
 import { LoginType, RegisterType } from "@/types/auth";
 import { LoginSchema, RegisterSchema } from "@/validations/auth";
 import bcryptjs from "bcryptjs";
@@ -11,14 +12,7 @@ export async function registerUser(userData: RegisterType) {
   //validate userData
   const parsed = RegisterSchema.safeParse(userData);
   if (!parsed.success) {
-    // Create errors object like React Hook Form expects
-    const errors = Object.fromEntries(
-      parsed.error.issues.map((issue) => [
-        issue.path[0], // assume flat structure with single key path
-        { message: issue.message },
-      ])
-    );
-    return errorResponse(errors);
+    return errorResponse(parseZodErrors(parsed.error));
   }
   const validatedUser = parsed.data;
   // Check unique constraints (email or userName) in a single query
@@ -70,14 +64,7 @@ export async function loginUser(userData: LoginType) {
   //validate userData
   const parsed = LoginSchema.safeParse(userData);
   if (!parsed.success) {
-    // Create errors object like React Hook Form expects
-    const errors = Object.fromEntries(
-      parsed.error.issues.map((issue) => [
-        issue.path[0], // assume flat structure with single key path
-        { message: issue.message },
-      ])
-    );
-    return errorResponse(errors);
+    return errorResponse(parseZodErrors(parsed.error));
   }
   const validatedUser = parsed.data;
   const [user] = await db

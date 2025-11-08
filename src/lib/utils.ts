@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { errorResponse } from "./response";
+import { ZodError } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,4 +27,12 @@ export async function withTryCatchResponse<T>(promise: Promise<T>) {
   return errorResponse({
     root: { message: "Something went wrong" },
   });
+}
+export function parseZodErrors(error: ZodError) {
+  return Object.fromEntries(
+    error.issues.map((issue) => [
+      issue.path[0], // assume flat structure with single key path
+      { message: issue.message },
+    ])
+  );
 }
