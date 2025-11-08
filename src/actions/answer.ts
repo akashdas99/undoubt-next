@@ -1,16 +1,21 @@
 "use server";
 
-import { AnswerType } from "@/lib/types";
-import { addAnswer, deleteAnswer, updateAnswer } from "@/services/answer";
+import { addAnswer } from "@/data/answer";
+import { withTryCatchResponse } from "@/lib/utils";
+import { deleteAnswer, updateAnswer } from "@/services/answer";
+import { AnswerType } from "@/validations/answer";
 import { revalidateTag } from "next/cache";
 
 export async function addAnswerAction(slug: string, answerData: AnswerType) {
-  const result = await addAnswer(slug, answerData);
-  revalidateTag(`questions`);
-  revalidateTag(`questionBySlug:${slug}`);
-  revalidateTag(`answersByQuestionSlug:${slug}`);
+  const res = await withTryCatchResponse(addAnswer(slug, answerData));
 
-  return result;
+  if (res?.success) {
+    revalidateTag(`questions`);
+    revalidateTag(`questionBySlug:${slug}`);
+    revalidateTag(`answersByQuestionSlug:${slug}`);
+  }
+
+  return res;
 }
 export async function updateAnswerAction(
   id: string,
