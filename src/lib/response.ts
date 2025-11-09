@@ -4,13 +4,17 @@ export const successResponse = <T>(data?: T) => {
     data,
   };
 };
-export const errorResponse = (errors: {
-  [k: string]: {
-    message: string;
-  };
-}) => {
+export const errorResponse = (
+  errors:
+    | {
+        [k: string]: {
+          message: string;
+        };
+      }
+    | string
+) => {
   return {
     success: false,
-    errors,
+    errors: typeof errors === "string" ? { root: { message: errors } } : errors, // ✅ Return the errors object
   };
 };

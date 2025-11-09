@@ -15,12 +15,18 @@ export async function createSession(tokenData: {
 
   (await cookies()).set("token", token, { httpOnly: true });
 }
-export async function getSession() {
+export async function getSession(): Promise<null | {
+  id: string;
+  userName: string;
+}> {
   const token = (await cookies()).get("token")?.value;
   if (!token) return null;
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const { payload } = await jwtVerify(token, jwtKey);
-  return payload as Partial<UserType & { id: string }>;
+  return payload as {
+    id: string;
+    userName: string;
+  };
 }
 export async function getSessionToken() {
   const token = (await cookies()).get("token")?.value;
