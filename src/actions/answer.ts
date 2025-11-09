@@ -1,8 +1,7 @@
 "use server";
 
-import { addAnswer } from "@/data/answer";
+import { addAnswer, deleteAnswer, updateAnswer } from "@/data/answer";
 import { withTryCatchResponse } from "@/lib/utils";
-import { deleteAnswer, updateAnswer } from "@/services/answer";
 import { AnswerType } from "@/validations/answer";
 import { revalidateTag } from "next/cache";
 
@@ -22,12 +21,13 @@ export async function updateAnswerAction(
   slug: string,
   answerData: AnswerType
 ) {
-  const result = await updateAnswer(id, answerData);
+  const res = await withTryCatchResponse(updateAnswer(id, answerData));
+
   revalidateTag(`answersByQuestionSlug:${slug}`);
-  return result;
+  return res;
 }
 export async function deleteAnswerAction(id: string, slug: string) {
-  const result = await deleteAnswer(id, slug);
+  const result = await deleteAnswer(id);
   revalidateTag(`questions`);
   revalidateTag(`questionBySlug:${slug}`);
   revalidateTag(`answersByQuestionSlug:${slug}`);
