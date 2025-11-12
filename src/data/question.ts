@@ -7,8 +7,9 @@ import { nanoid } from "@reduxjs/toolkit";
 import sanitizeHtml from "sanitize-html";
 import slugify from "slugify";
 import { getProfile } from "./user";
-import { and, desc, eq, like } from "drizzle-orm";
+import { and, count, desc, eq, like } from "drizzle-orm";
 import { users } from "@/db/schema/users";
+import { answers } from "@/db/schema/answers";
 
 export const getQuestions = async (
   keyword: string,
@@ -25,7 +26,6 @@ export const getQuestions = async (
       author: { name: users.name, profilePicture: users.profilePicture },
     })
     .from(questions)
-    .where(like(questions.description, `%${keyword}%`))
     .innerJoin(
       users,
       and(
@@ -65,4 +65,32 @@ export async function addQuestion(questionData: QuestionType) {
     slug: slug,
   });
   return successResponse();
+}
+export async function getQuestionBySlug(slug: string) {
+  const [question] = await db
+    .select({
+      id: questions.id,
+      title: questions.title,
+      description: questions.description,
+      author: { name: users.name, profilePicture: users.profilePicture },
+      createdAt: questions.createdAt,
+    })
+    .from(questions)
+    .innerJoin(
+      users,
+      and(eq(questions.slug, slug), eq(questions.authorId, users.id))
+    )
+    .limit(1)
+    .orderBy(desc(questions?.updatedAt));
+
+  const [answersCount] = await db
+    .select({ count: count() })
+    .from(answers)
+    .innerJoin(
+      questions,
+      and(eq(questions.slug, slug), eq(answers.questionId, questions.id))
+    )
+    .limit(1);
+
+  return { ...question, answersCount: answersCount?.count };
 }
