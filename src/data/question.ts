@@ -12,18 +12,21 @@ import { users } from "@/db/schema/users";
 import { answers } from "@/db/schema/answers";
 
 export const getQuestions = async (
-  keyword: string,
+  keyword: string = "",
   limit: number = 10,
   page: number = 1
 ) => {
   const offset = limit * (page - 1);
 
-  return await db
+  const result = await db
     .select({
       id: questions.id,
       title: questions.title,
       description: questions.description,
       author: { name: users.name, profilePicture: users.profilePicture },
+      createdAt: questions.createdAt,
+      answersCount: count(answers.id),
+      slug: questions.slug,
     })
     .from(questions)
     .innerJoin(
@@ -33,9 +36,12 @@ export const getQuestions = async (
         eq(questions.authorId, users.id)
       )
     )
+    .leftJoin(answers, eq(questions.id, answers.questionId))
+    .groupBy(questions.id, users.id)
     .orderBy(desc(questions?.updatedAt))
     .limit(limit)
     .offset(offset);
+  return result;
 };
 export async function addQuestion(questionData: QuestionType) {
   //validate question data
@@ -74,23 +80,17 @@ export async function getQuestionBySlug(slug: string) {
       description: questions.description,
       author: { name: users.name, profilePicture: users.profilePicture },
       createdAt: questions.createdAt,
+      answersCount: count(answers.id).as("answerCount"),
     })
     .from(questions)
     .innerJoin(
       users,
       and(eq(questions.slug, slug), eq(questions.authorId, users.id))
     )
+    .leftJoin(answers, eq(answers.questionId, questions.id))
+    .groupBy(questions.id, users.id)
     .limit(1)
     .orderBy(desc(questions?.updatedAt));
 
-  const [answersCount] = await db
-    .select({ count: count() })
-    .from(answers)
-    .innerJoin(
-      questions,
-      and(eq(questions.slug, slug), eq(answers.questionId, questions.id))
-    )
-    .limit(1);
-
-  return { ...question, answersCount: answersCount?.count };
+  return question;
 }

@@ -2,9 +2,7 @@ import { isEmpty } from "@/lib/functions";
 import { cn } from "@/lib/utils";
 import { CircleUserRound } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 import { Skeleton } from "./skeleton";
-import { User } from "@/db/schema/users";
 
 export default function UserImage({
   user,
@@ -20,7 +18,7 @@ export default function UserImage({
   return (
     <div
       className={cn(
-        "w-full aspect-square shrink-0 bg-accent border-2 border-primary border-solid font-bold align-middle rounded-full flex justify-center items-center overflow-hidden relative",
+        "w-full aspect-square shrink-0 bg-accent border-2 border-primary border-solid font-bold align-middle rounded-full flex justify-center items-center overflow-hidden relative text-foreground",
         className
       )}
     >

@@ -1,7 +1,7 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
 import QuestionSection from "@/components/question/questionSection";
-import { getQuestions } from "@/services/question";
+import { getQuestions } from "@/data/question";
 
 export async function generateStaticParams() {
   const questions = await getQuestions();
