@@ -1,72 +1,48 @@
 "use client";
 
-import { deleteAnswerAction, updateAnswerAction } from "@/actions/answer";
-import { AnswerSchema, AnswerType } from "@/lib/types";
-import { Answer } from "@/models/answer";
-import { User } from "@/models/user";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { deleteAnswerAction } from "@/actions/answer";
+import { useGetProfileQuery } from "@/lib/store/user/user";
+
 import dayjs from "dayjs";
 import { CalendarDays, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
-import UserImage from "../ui/userImage";
 import AnswerForm from "./answerForm";
 import DeleteAnswerModal from "./deleteAnswerModal";
-import { useGetProfileQuery } from "@/lib/store/user/user";
+import { Answer } from "@/db/schema/answers";
+import UserImage from "../ui/userImage";
 
 export default function AnswerCard({
   answer,
 }: {
-  answer: Omit<Answer, "author"> & {
-    author: User;
+  answer: Answer & {
+    author: {
+      name: string;
+      profilePicture: string | null;
+    };
   };
 }) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useGetProfileQuery();
 
   const params = useParams<{ slug: string }>();
-  const isAuthor =
-    !isLoading && answer?.author?._id?.toString() === user?._id?.toString();
+  const isAuthor = !isLoading && answer?.authorId === user?.id;
 
-  const form = useForm<AnswerType>({
-    resolver: zodResolver(AnswerSchema),
-    defaultValues: {
-      description: answer?.description,
-    },
-  });
-  const onSubmit = async (values: AnswerType) => {
-    setLoading(true);
-    const res = await updateAnswerAction(
-      answer?._id as string,
-      params?.slug,
-      values
-    );
-    setLoading(false);
-    if (res?.error?.type === "serverError") {
-      form.setError("root", {
-        message: res?.error?.message,
-      });
-    } else setIsEditing(false);
-  };
   const onDelete = async () => {
     setIsDeleting(true);
-    const res = await deleteAnswerAction(answer?._id as string, params?.slug);
+    const res = await deleteAnswerAction(answer?.id as string, params?.slug);
 
-    if (res?.error?.type === "serverError") {
-      setDeleteError(res?.error?.message);
+    if (!res?.success) {
+      setDeleteError(("errors" in res && res?.errors?.root?.message) || "");
       setIsDeleting(false);
     } else setIsEditing(false);
   };
-  useEffect(() => {
-    if (!isEditing) form.reset();
-  }, [isEditing, form]);
+
   return (
     <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
       <div className="flex items-center justify-between">
@@ -105,11 +81,8 @@ export default function AnswerCard({
       <>
         {isEditing ? (
           <AnswerForm
-            form={form}
-            name="description"
-            onSubmit={onSubmit}
-            isLoading={loading}
-            onCancel={() => setIsEditing(false)}
+            answer={answer}
+            closeAnswerForm={() => setIsEditing(false)}
           />
         ) : (
           <>

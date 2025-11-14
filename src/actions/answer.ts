@@ -22,15 +22,18 @@ export async function updateAnswerAction(
   answerData: AnswerType
 ) {
   const res = await withTryCatchResponse(updateAnswer(id, answerData));
-
-  revalidateTag(`answersByQuestionSlug:${slug}`);
+  if (res?.success) {
+    revalidateTag(`answersByQuestionSlug:${slug}`);
+  }
   return res;
 }
 export async function deleteAnswerAction(id: string, slug: string) {
-  const result = await deleteAnswer(id);
-  revalidateTag(`questions`);
-  revalidateTag(`questionBySlug:${slug}`);
-  revalidateTag(`answersByQuestionSlug:${slug}`);
+  const res = await withTryCatchResponse(deleteAnswer(id));
+  if (res?.success) {
+    revalidateTag(`questions`);
+    revalidateTag(`questionBySlug:${slug}`);
+    revalidateTag(`answersByQuestionSlug:${slug}`);
+  }
 
-  return result;
+  return res;
 }
