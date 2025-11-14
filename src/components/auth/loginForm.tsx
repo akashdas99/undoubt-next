@@ -28,7 +28,6 @@ export default function LoginForm() {
         router.refresh();
         dispatch(userApi.util.invalidateTags(["profile"]));
       }
-      setIsGuest(false);
       return res;
     },
     { errors: {}, success: false }
