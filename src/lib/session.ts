@@ -1,6 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { UserType } from "./types";
 
 export async function createSession(tokenData: {
   id: string;
@@ -35,7 +34,7 @@ export async function getSessionToken() {
 export async function getSessionFromToken(token: string) {
   const jwtKey = new TextEncoder().encode(process.env.SECRET!);
   const { payload } = await jwtVerify(token, jwtKey);
-  return payload as Partial<UserType & { id: string }>;
+  return payload as { id: string };
 }
 export async function removeSession() {
   (await cookies()).delete("token");
