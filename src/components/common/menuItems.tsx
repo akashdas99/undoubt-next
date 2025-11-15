@@ -2,7 +2,7 @@
 
 import { logoutUser } from "@/actions/auth";
 import { userApi } from "@/lib/store/user/user";
-import { MenuItem } from "@/lib/types";
+import { MenuItem } from "@/types/misc";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
