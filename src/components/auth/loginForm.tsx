@@ -21,7 +21,7 @@ export default function LoginForm() {
   const [isGuest, setIsGuest] = useState<boolean>();
 
   const [res, handleLogin, loadingLogin] = useActionState(
-    async (_: any, userData: LoginType) => {
+    async (_: unknown, userData: LoginType) => {
       const res = await loginUserAction(userData);
       if (!isEmpty(res) && "success" in res && res?.success) {
         router.replace("/");

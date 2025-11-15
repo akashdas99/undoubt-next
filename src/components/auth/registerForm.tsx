@@ -20,7 +20,7 @@ const RegisterForm: React.FC = () => {
   const dispatch = useDispatch();
 
   const [res, handleRegister, loadingSignup] = useActionState(
-    async (_: any, userData: RegisterType) => {
+    async (_: unknown, userData: RegisterType) => {
       const res = await registerUserAction(userData);
       if (!isEmpty(res) && "success" in res && res?.success) {
         router.replace("/");
