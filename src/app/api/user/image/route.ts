@@ -1,8 +1,10 @@
+import { db } from "@/db/drizzle";
+import { users } from "@/db/schema/users";
 import dbConnect from "@/lib/dbConnect";
 import { getSessionFromToken, getSessionToken } from "@/lib/session";
-import UserModel from "@/models/user";
 import { copy } from "@vercel/blob";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -38,26 +40,27 @@ export async function POST(request: Request): Promise<NextResponse> {
           JSON.parse(tokenPayload)?.session
         );
 
-        try {
-          const user = await UserModel.findById(session?.id);
+        const [user] = await db
+          .select({
+            id: users.id,
+          })
+          .from(users)
+          .where(eq(users.id, session.id))
+          .limit(1);
 
-          if (!user) throw new Error("User not found");
-          const userPathName =
-            "user/" +
-            user?._id?.toString() +
-            "/" +
-            uuidv4() +
-            path.extname(blob?.pathname);
+        if (!user) throw new Error("User not found");
+        const userPathName =
+          "user/" + user?.id + "/" + uuidv4() + path.extname(blob?.pathname);
 
-          const copiedBlog = await copy(blob?.url, userPathName, {
-            access: "public",
-          });
-          user.profilePicture = copiedBlog?.pathname;
-          await user.save();
-        } catch (error) {
-          console.log(error);
-          throw new Error("Could not update user");
-        }
+        const copiedBlog = await copy(blob?.url, userPathName, {
+          access: "public",
+        });
+        await db
+          .update(users)
+          .set({
+            profilePicture: copiedBlog?.pathname,
+          })
+          .where(eq(users.id, session.id));
       },
     });
 
