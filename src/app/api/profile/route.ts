@@ -1,8 +1,8 @@
-import { getUser } from "@/services/user";
+import { getProfile } from "@/data/user";
 
 export async function GET() {
   try {
-    const profile = await getUser();
+    const profile = await getProfile();
     return Response.json(profile);
   } catch (error) {
     console.log(error);

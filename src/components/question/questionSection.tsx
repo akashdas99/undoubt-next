@@ -1,7 +1,7 @@
-import { getQuestionBySlug } from "@/services/question";
 import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import QuestionCard from "./questionCard";
+import { getQuestionBySlug } from "@/data/question";
 
 const getCachedQuestionBySlug = (slug: string) =>
   unstable_cache(

@@ -1,8 +1,6 @@
-import { Answer } from "@/models/answer";
-import { User } from "@/models/user";
-import { getAnswersByQuestionSlug } from "@/services/answer";
 import { unstable_cache } from "next/cache";
 import AnswerCard from "./answerCard";
+import { getAnswersByQuestionSlug } from "@/data/answer";
 
 const getCachedAnswersByQuestionSlug = (slug: string) =>
   unstable_cache(
@@ -19,24 +17,18 @@ export default async function AnswerList({
   params: Promise<{ slug: string }>;
 }) {
   const { slug = "" } = await params;
-  const getAnswers: () => Promise<
-    Array<
-      Omit<Answer, "author"> & {
-        author: User;
-      }
-    >
-  > = getCachedAnswersByQuestionSlug(slug);
+  const getAnswers = getCachedAnswersByQuestionSlug(slug);
 
-  const answers = await getAnswers();
+  const { data: answers } = await getAnswers();
 
   return (
     <>
-      {answers.length === 0 ? (
+      {answers?.length === 0 ? (
         <p>No Answer</p>
       ) : (
         <div className="flex flex-col gap-5">
           {answers?.map((answer) => (
-            <AnswerCard key={answer?._id?.toString()} answer={answer} />
+            <AnswerCard key={answer?.id} answer={answer} />
           ))}
         </div>
       )}

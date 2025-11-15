@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../helpers/timestamps";
-import { answers } from "./answers"; // Assume answers schema is defined in answers.ts
-import { users } from "./users"; // Assume users schema is defined elsewhere
+import { answers } from "./answers";
+import { users } from "./users";
 
 export const questions = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom(),

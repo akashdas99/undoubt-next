@@ -3,86 +3,56 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 //Components
-import { loginUser } from "@/actions/auth";
+import { loginUserAction } from "@/actions/auth";
 import { Form, InputField } from "@/components/ui/form";
-import { LoginSchema, LoginType } from "@/lib/types";
-import Link from "next/link";
-import { useState } from "react";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+import { isEmpty } from "@/lib/functions";
 import { userApi } from "@/lib/store/user/user";
+import { LoginType } from "@/types/auth";
+import { LoginSchema } from "@/validations/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Button } from "../ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isGuest, setIsGuest] = useState<boolean>();
 
-  const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
-  const [loadingGuestLogin, setLoadingGuestLogin] = useState<boolean>(false);
+  const [res, handleLogin, loadingLogin] = useActionState(
+    async (_: unknown, userData: LoginType) => {
+      const res = await loginUserAction(userData);
+      if (!isEmpty(res) && "success" in res && res?.success) {
+        router.replace("/");
+        router.refresh();
+        dispatch(userApi.util.invalidateTags(["profile"]));
+      }
+      return res;
+    },
+    { errors: {}, success: false }
+  );
+
   const form = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
+    errors: ("errors" in res && res?.errors) || undefined,
   });
-  const onSubmit = async (values: LoginType) => {
-    setLoadingLogin(true);
-    const res: Partial<
-      | {
-          type: string;
-          message: string;
-        }
-      | undefined
-    > = await loginUser(values);
 
-    setLoadingLogin(false);
-
-    if (res?.type === "serverError") {
-      form.setError("root", {
-        message: res?.message,
-      });
-    } else if (res?.type === "username") {
-      form.setError("username", {
-        message: res?.message,
-      });
-    } else if (res?.type === "password") {
-      form.setError("password", {
-        message: res?.message,
-      });
-    } else {
-      router.refresh();
-      dispatch(userApi.util.invalidateTags(["profile"]));
-      router.replace("/");
-    }
-  };
+  const onSubmit = form.handleSubmit((values: LoginType) => {
+    setIsGuest(false);
+    startTransition(() => handleLogin(values));
+  });
   const onGuestLogin = async () => {
-    const username = process.env.NEXT_PUBLIC_GUEST_USERNAME;
+    const email = process.env.NEXT_PUBLIC_GUEST_EMAIL;
     const password = process.env.NEXT_PUBLIC_GUEST_PASSWORD;
-    if (!username || !password)
-      return form.setError("root", {
-        message: "Guest User is not available",
-      });
-
-    setLoadingGuestLogin(true);
-    const res: Partial<
-      | {
-          type: string;
-          message: string;
-        }
-      | undefined
-    > = await loginUser({ username, password });
-
-    if (res?.type === "serverError") {
-      form.setError("root", {
-        message: res?.message,
-      });
-    } else {
-      router.refresh();
-      dispatch(userApi.util.invalidateTags(["profile"]));
-      router.replace("/");
+    setIsGuest(true);
+    if (email && password) {
+      startTransition(() => handleLogin({ email, password }));
     }
-    setLoadingGuestLogin(false);
   };
   return (
     <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
@@ -90,12 +60,12 @@ export default function LoginForm() {
         Welcome Back
       </h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <InputField
             control={form.control}
-            name="username"
-            label="Username"
-            placeholder="Username"
+            name="email"
+            label="Email"
+            placeholder="Email"
           />
           <InputField
             control={form.control}
@@ -114,7 +84,7 @@ export default function LoginForm() {
             <Button
               type="submit"
               className="mt-3 flex-1"
-              loading={loadingLogin}
+              loading={!isGuest && loadingLogin}
             >
               Login
             </Button>
@@ -123,7 +93,7 @@ export default function LoginForm() {
               className="mt-3"
               variant={"outline"}
               onClick={onGuestLogin}
-              loading={loadingGuestLogin}
+              loading={isGuest && loadingLogin}
             >
               Guest Login
             </Button>

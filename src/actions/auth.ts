@@ -1,91 +1,16 @@
 "use server";
 
-import dbConnect from "@/lib/dbConnect";
-import { createSession, removeSession } from "@/lib/session";
-import { LoginSchema, LoginType, UserSchema, UserType } from "@/lib/types";
-import User from "@/models/user";
-import bcryptjs from "bcryptjs";
+import { loginUser, registerUser } from "@/data/auth";
+import { removeSession } from "@/lib/session";
+import { withTryCatchResponse } from "@/lib/utils";
+import { LoginType, RegisterType } from "@/types/auth";
 
-export async function registerUser(userData: UserType) {
-  try {
-    await dbConnect();
-    //validate userData
-    const validatedUser = UserSchema.safeParse({
-      ...userData,
-    });
-    if (!validatedUser?.success) {
-      return {
-        errors: validatedUser?.error?.flatten()?.fieldErrors,
-      };
-    }
-    //if user exists
-    const user = await User.findOne({ username: userData?.username });
-    if (user)
-      return {
-        type: "username",
-        message: "Username already exists",
-      };
-
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(userData?.password, salt);
-    const newUser = new User({
-      ...userData,
-      password: hashedPassword,
-    });
-    const savedUser = await newUser.save();
-    const tokenData = {
-      id: savedUser?._id,
-      username: savedUser?.username,
-    };
-    await createSession(tokenData);
-  } catch (e) {
-    console.log(e);
-    return {
-      type: "serverError",
-      message: "Something went wrong",
-    };
-  }
+// registerUserAction to create new user
+export async function registerUserAction(userData: RegisterType) {
+  return await withTryCatchResponse(registerUser(userData));
 }
-export async function loginUser(loginData: LoginType) {
-  try {
-    await dbConnect();
-    //validate userData
-    const validatedLoginData = LoginSchema.safeParse({
-      ...loginData,
-    });
-    if (!validatedLoginData?.success) {
-      throw new Error(
-        JSON.stringify(validatedLoginData?.error?.flatten()?.fieldErrors)
-      );
-    }
-    const { username, password } = validatedLoginData?.data;
-    //if user exists
-    const user = await User.findOne({ username: username }).select("+password");
-    if (!user) {
-      return {
-        type: "username",
-        message: "Username doesnot exist exists",
-      };
-    }
-    const validPassword = await bcryptjs.compare(password, user?.password);
-    if (!validPassword) {
-      return {
-        type: "password",
-        message: "Wrong password",
-      };
-    }
-    const tokenData = {
-      id: user?._id?.toString(),
-      username: user?.username,
-    };
-    await createSession(tokenData);
-  } catch (e) {
-    console.log(e);
-    return {
-      type: "serverError",
-      message: "Something went wrong",
-    };
-  }
+export async function loginUserAction(loginData: LoginType) {
+  return await withTryCatchResponse(loginUser(loginData));
 }
 export async function logoutUser() {
   try {

@@ -1,48 +1,23 @@
 "use client";
-import { addAnswerAction } from "@/actions/answer";
-import { AnswerSchema, AnswerType } from "@/lib/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FilePenLine } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
-import AnswerForm from "./answerForm";
-import { useRouter } from "next/navigation";
-import { useGetProfileQuery } from "@/lib/store/user/user";
 import { isEmpty } from "@/lib/functions";
+import { useGetProfileQuery } from "@/lib/store/user/user";
+import { FilePenLine } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+import AnswerForm from "./answerForm";
 
 export default function AddAnswer() {
-  const [loading, setLoading] = useState<boolean>(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const { data: user, isFetching } = useGetProfileQuery();
   const isLoggedIn = !isEmpty(user);
-  const params = useParams<{ slug: string }>();
   const router = useRouter();
-  const form = useForm<AnswerType>({
-    resolver: zodResolver(AnswerSchema),
-    defaultValues: {
-      description: "",
-    },
-  });
-  const onSubmit = async (values: AnswerType) => {
-    setLoading(true);
-    const res = await addAnswerAction(params?.slug, values);
-    setLoading(false);
-    if (res?.error?.type === "serverError") {
-      form.setError("root", {
-        message: res?.error?.message,
-      });
-    } else setShowEditor(false);
-  };
-  useEffect(() => {
-    if (!showEditor) form.reset();
-  }, [showEditor, form]);
 
   useEffect(() => {
     if (isEmpty(user)) setShowEditor(false);
   }, [user]);
+
   return (
     <div className="flex items-center justify-start">
       {isFetching ? (
@@ -64,13 +39,7 @@ export default function AddAnswer() {
             <h1 className={`font-righteous text-xl md:text-3xl mb-6`}>
               Add Answer
             </h1>
-            <AnswerForm
-              form={form}
-              name="description"
-              onSubmit={onSubmit}
-              isLoading={loading}
-              onCancel={() => setShowEditor(false)}
-            />
+            <AnswerForm closeAnswerForm={() => setShowEditor(false)} />
           </div>
         </div>
       )}

@@ -9,7 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MenuItem } from "@/lib/types";
+import { MenuItem } from "@/types/misc";
+
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import MenuItemComponent from "./menuItems";

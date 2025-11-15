@@ -1,14 +1,22 @@
-import { Question } from "@/models/question";
-import { User } from "@/models/user";
-import React from "react";
 import dayjs from "dayjs";
 import { CalendarDays, MessageSquare } from "lucide-react";
-import UserImage from "../ui/userImage";
-import TextEditorContent from "../ui/textEditorContent";
+import React from "react";
 import { Skeleton } from "../ui/skeleton";
+import TextEditorContent from "../ui/textEditorContent";
+import UserImage from "../ui/userImage";
 
 type QuestionCardProps = {
-  question: Omit<Question, "author"> & { author: User };
+  question: {
+    id: string;
+    title: string;
+    description: string;
+    author: {
+      name: string;
+      profilePicture: string | null;
+    };
+    answersCount: number;
+    createdAt: Date;
+  };
 };
 
 const QuestionCard = ({ question }: QuestionCardProps) => {
@@ -37,7 +45,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
       <div className="flex mt-1">
         <div className="text-xs flex gap-2 py-1 px-2 font-semibold">
           <MessageSquare size={16} />
-          <>{question?.answers?.length || "No"} Answers</>
+          <>{question?.answersCount || "No"} Answers</>
         </div>
       </div>
     </div>

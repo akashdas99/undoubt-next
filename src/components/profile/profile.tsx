@@ -1,10 +1,9 @@
-import { getUser } from "@/services/user";
-import { User } from "@/models/user";
+import { getProfile } from "@/data/user";
 import UserImage from "../ui/userImage";
 import ImageUpload from "./imageUpload";
 
 export default async function Profile() {
-  const data: User = await getUser();
+  const data = await getProfile();
 
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
@@ -21,13 +20,8 @@ export default async function Profile() {
             <div className="font-medium opacity-70">Name</div>
             <div>{data?.name}</div>
             <div className="font-medium opacity-70">Username</div>
-            <div>{data?.username}</div>
-            <div className="font-medium opacity-70">Profession</div>
-            <div>{data?.profession}</div>
-            <div className="font-medium opacity-70">Location</div>
-            <div>
-              {data?.city}, {data?.country}
-            </div>
+            <div>{data?.userName}</div>
+
             <div className="font-medium opacity-70">Registered</div>
             <div>{new Date(data?.createdAt).toLocaleDateString()}</div>
           </div>

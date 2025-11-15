@@ -1,32 +1,32 @@
 "use client";
 
 import { addQuestionAction } from "@/actions/question";
-import { QuestionSchema, QuestionType } from "@/lib/types";
+import { QuestionSchema, QuestionType } from "@/validations/question";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { EditorField, Form, InputField } from "../ui/form";
 
 export default function AddQuestion() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [res, handleAddQuestion, isAddingQuestion] = useActionState(
+    async (_: unknown, data: QuestionType) => {
+      const res = await addQuestionAction(data);
+      return res;
+    },
+    { errors: {}, success: false }
+  );
   const form = useForm<QuestionType>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
       title: "",
       description: "",
     },
+    errors: ("errors" in res && res?.errors) || undefined,
   });
-  const onSubmit = async (values: QuestionType) => {
-    setLoading(true);
-    const res = await addQuestionAction(values);
-    setLoading(false);
-    if (res?.error?.type === "serverError") {
-      form.setError("root", {
-        message: res?.error?.message,
-      });
-    }
-  };
+  const onSubmit = form.handleSubmit((values: QuestionType) => {
+    startTransition(() => handleAddQuestion(values));
+  });
 
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
@@ -35,7 +35,7 @@ export default function AddQuestion() {
           Add Question
         </h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={onSubmit}>
             <InputField
               control={form.control}
               name="title"
@@ -53,7 +53,7 @@ export default function AddQuestion() {
               </p>
             )}
             <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-              <Button type="submit" className="mt-3" loading={loading}>
+              <Button type="submit" className="mt-3" loading={isAddingQuestion}>
                 Add Question
               </Button>
             </div>

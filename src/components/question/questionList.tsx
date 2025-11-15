@@ -1,7 +1,7 @@
-import { getQuestions } from "@/services/question";
 import QuestionCard from "./questionCard";
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
+import { getQuestions } from "@/data/question";
 const getCachedQuestions = unstable_cache(
   async () => getQuestions(),
   [`questions`],

@@ -1,4 +1,4 @@
-import { MenuItem } from "@/lib/types";
+import { MenuItem } from "@/types/misc";
 import MenuItemComponent from "./menuItems";
 
 export default function MenuBar({

@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../helpers/timestamps";
 import { questions } from "./questions";
@@ -27,3 +27,4 @@ export const answersRelations = relations(answers, ({ one }) => ({
     references: [questions.id],
   }),
 }));
+export type Answer = InferSelectModel<typeof answers>;
