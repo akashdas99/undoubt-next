@@ -43,6 +43,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = form.handleSubmit((values: LoginType) => {
+    setIsGuest(false);
     startTransition(() => handleLogin(values));
   });
   const onGuestLogin = async () => {

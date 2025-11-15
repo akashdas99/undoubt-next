@@ -17,7 +17,11 @@ export const getQuestions = async (
   page: number = 1
 ) => {
   const offset = limit * (page - 1);
-
+  // Build condition array
+  const conditions = [eq(questions.authorId, users.id)];
+  if (keyword) {
+    conditions.push(like(questions.description, `%${keyword}%`));
+  }
   const result = await db
     .select({
       id: questions.id,
@@ -29,13 +33,7 @@ export const getQuestions = async (
       slug: questions.slug,
     })
     .from(questions)
-    .innerJoin(
-      users,
-      and(
-        like(questions.description, `%${keyword}%`),
-        eq(questions.authorId, users.id)
-      )
-    )
+    .innerJoin(users, and(...conditions))
     .leftJoin(answers, eq(questions.id, answers.questionId))
     .groupBy(questions.id, users.id)
     .orderBy(desc(questions?.updatedAt))
