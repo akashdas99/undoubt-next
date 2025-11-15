@@ -1,6 +1,5 @@
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema/users";
-import dbConnect from "@/lib/dbConnect";
 import { getSessionFromToken, getSessionToken } from "@/lib/session";
 import { copy } from "@vercel/blob";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
@@ -33,7 +32,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        await dbConnect();
         // Get notified of client upload completion
         if (!tokenPayload) throw new Error("Could not upload file");
         const session = await getSessionFromToken(
