@@ -1,6 +1,12 @@
 # **Undoubt**
 
 [![Vercel](https://vercelbadge.vercel.app/api/akashdas99/undoubt-next?style=for-the-badge)](https://undoubt.by-akashdas.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle%20ORM-0.44.4-FF6B6B?style=for-the-badge)](https://orm.drizzle.team/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.1-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 > A modern Q&A web application built with the **Next.js App Router**, featuring user authentication, real-time interactions, and a clean UI.
 
@@ -85,34 +91,33 @@
 
 1. **Clone the repository**
    git clone https://github.com/akashdas99/undoubt-next.git
-   cd undoubt-next 2. **Install dependencies**h
-   npm install 3. **Set up environment variables**
-
-   Create a `.env` file in the root directory:
-
-   # Database
-
+   cd undoubt-next
+   2. **Install dependencies**h
+   npm install
+   3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:v
+   ##### Database
    DATABASE_URI=your_postgresql_connection_string
 
-   # Authentication
-
+   ##### Authentication
    SECRET=your_jwt_secret_key
 
-   # Application URLs
-
+   ##### Application URLs
    NEXT_PUBLIC_BASEURL=http://localhost:3000
 
-   # Vercel Blob Storage
-
+   ##### Vercel Blob Storage
    BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 
-   # CDN URL for assets
-
-   NEXT_PUBLIC_CDNURL=your_cdn_url 4. **Run database migrations**
-   npx drizzle-kit push 5. **Start the development server**
-
-   npm run dev 6. **Open your browser**
-
+   ##### CDN URL for assets
+   NEXT_PUBLIC_CDNURL=your_cdn_url
+   4. **Run database migrations**ash
+   npx drizzle-kit push
+   5. **Start the development server**
+   
+   npm run dev
+   6. **Open your browser**
+   
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ---
@@ -136,18 +141,3 @@
 - `npm run lint` — Run ESLint
 
 ---
-
-## 👤 Author
-
-**Akash Das**
-
-- Website: [by-akashdas.com](https://by-akashdas.com)
-- GitHub: [@akashdas99](https://github.com/akashdas99)
-
----
-
-## 🙏 Acknowledgments
-
-- [Shadcn/UI](https://ui.shadcn.com/) for the amazing component library
-- [TipTap](https://tiptap.dev/) for the rich text editor
-- [Drizzle ORM](https://orm.drizzle.team/) for type-safe database queries
