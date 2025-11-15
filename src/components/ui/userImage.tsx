@@ -8,7 +8,7 @@ export default function UserImage({
   user,
   className,
 }: {
-  user: {
+  user?: {
     name: string;
     profilePicture: string | null;
   };
