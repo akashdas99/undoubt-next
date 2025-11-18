@@ -20,6 +20,7 @@ export const getQuestions = async (
   // Build condition array
   const conditions = [eq(questions.authorId, users.id)];
   if (keyword) {
+    conditions.push(like(questions.title, `%${keyword}%`));
     conditions.push(like(questions.description, `%${keyword}%`));
   }
   const result = await db
