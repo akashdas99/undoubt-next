@@ -7,7 +7,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import sanitizeHtml from "sanitize-html";
 import slugify from "slugify";
 import { getProfile } from "./user";
-import { and, count, desc, eq, ilike, like, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import { users } from "@/db/schema/users";
 import { answers } from "@/db/schema/answers";
 
@@ -21,8 +21,8 @@ export const getQuestions = async (
   const conditions = [eq(questions.authorId, users.id)];
   if (keyword) {
     const keywordCondition = or(
-      like(questions.title, `%${keyword}%`),
-      like(questions.description, `%${keyword}%`)
+      ilike(questions.title, `%${keyword}%`),
+      ilike(questions.description, `%${keyword}%`)
     );
     if (keywordCondition) conditions.push(keywordCondition);
   }
