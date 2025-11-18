@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import UserImage, { UserImageSkeleton } from "../ui/userImage";
+import { Button } from "../ui/button";
 
 export function ProfileDropdown() {
   const router = useRouter();
@@ -27,13 +28,20 @@ export function ProfileDropdown() {
   };
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-[36px] inline-flex items-center justify-center gap-2 focus-visible:outline-none">
-        {isFetching ? (
-          <UserImageSkeleton className="w-[36px]" />
-        ) : (
-          <UserImage user={user} />
-        )}
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size={"icon"}
+          className="rounded-full p-[2px] data-[state=open]:bg-primary hover:bg-primary"
+        >
+          {isFetching ? (
+            <UserImageSkeleton className="w-[36px]" />
+          ) : (
+            <UserImage user={user} />
+          )}
+        </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
         className="font-montserrat bg-background p-2 border border-solid border-primary/50 rounded-lg"
         align="end"
