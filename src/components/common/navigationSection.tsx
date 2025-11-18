@@ -9,8 +9,8 @@ export default function NavigationSection() {
   return (
     <div className="flex items-center gap-5 text-xs">
       <SearchModal />
-      <Button variant="ghost" size={"icon"} className="hover:bg-transparent">
-        <Link href={"/question"} prefetch={false} className="flex">
+      <Button variant="ghost" size={"icon"} asChild className="rounded-full">
+        <Link href={"/question"} prefetch={false} className="flex rounded-full">
           <Plus />
         </Link>
       </Button>
