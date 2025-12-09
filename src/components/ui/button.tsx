@@ -72,7 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, loading, className }))}
         ref={ref}
         disabled={loading || disabled}
-        {...props}
+          {...props}
       >
         {loading && <Loader2 className="animate-spin" />}
         <Slottable>{children}</Slottable>
