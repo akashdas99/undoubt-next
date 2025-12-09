@@ -23,7 +23,7 @@ export default function AddAnswer() {
         <AddAnswerSkeleton />
       ) : !isEditorOpen ? (
         <Button
-            type="button"
+          type="button"
           variant={"default"}
           size={"lg"}
           onClick={() =>
