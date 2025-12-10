@@ -1,9 +1,19 @@
 "use server";
 
-import { loginUser, registerUser } from "@/data/auth";
+import {
+  forgotPassword,
+  loginUser,
+  registerUser,
+  resetPassword,
+} from "@/data/auth";
 import { removeSession } from "@/lib/session";
 import { withTryCatchResponse } from "@/lib/utils";
-import { LoginType, RegisterType } from "@/types/auth";
+import {
+  ForgotPasswordType,
+  LoginType,
+  RegisterType,
+  ResetPasswordType,
+} from "@/types/auth";
 
 // registerUserAction to create new user
 export async function registerUserAction(userData: RegisterType) {
@@ -22,4 +32,10 @@ export async function logoutUser() {
       message: "Something went wrong",
     };
   }
+}
+export async function forgotPasswordAction(data: ForgotPasswordType) {
+  return await withTryCatchResponse(forgotPassword(data));
+}
+export async function resetPasswordAction(data: ResetPasswordType) {
+  return await withTryCatchResponse(resetPassword(data));
 }

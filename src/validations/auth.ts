@@ -42,3 +42,28 @@ export const LoginSchema = z.object({
     message: "Password must be at least 8 characters.",
   }),
 });
+
+//Forgot Password Schema
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email({
+    message: "Invalid email address.",
+  }),
+});
+
+//Reset Password Schema
+export const ResetPasswordSchema = z
+  .object({
+    token: z.string().min(1, {
+      message: "Token is required.",
+    }),
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters.",
+    }),
+    confirmPassword: z.string().min(8, {
+      message: "Confirm password must be at least 8 characters.",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  });
