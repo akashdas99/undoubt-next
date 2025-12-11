@@ -128,7 +128,10 @@ export async function forgotPassword(data: ForgotPasswordType) {
 
   // Return success even if user doesn't exist (security best practice)
   if (!user) {
-    return errorResponse("User doesnot exist");
+    return successResponse({
+      message:
+        "If an account exists with that email, a password reset link has been sent.",
+    });
   }
 
   // Generate reset token (valid for 5 minutes)
