@@ -3,7 +3,7 @@ import { isEmpty } from "@/lib/functions";
 import { useGetProfileQuery } from "@/lib/store/user/user";
 import { FilePenLine } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import AnswerForm from "./answerForm";
@@ -14,15 +14,14 @@ export default function AddAnswer() {
   const isLoggedIn = !isEmpty(user);
   const router = useRouter();
 
-  useEffect(() => {
-    if (isEmpty(user)) setShowEditor(false);
-  }, [user]);
+  // Close editor when user logs out
+  const isEditorOpen = showEditor && isLoggedIn;
 
   return (
     <div className="flex items-center justify-start">
       {isFetching ? (
         <AddAnswerSkeleton />
-      ) : !showEditor ? (
+      ) : !isEditorOpen ? (
         <Button
           type="button"
           variant={"default"}

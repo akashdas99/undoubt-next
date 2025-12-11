@@ -74,6 +74,14 @@ export default function LoginForm() {
             placeholder="Password"
             type="password"
           />
+          <div className="flex justify-end mt-1">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-primary hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
 
           {form?.formState?.errors?.root?.message && (
             <p className="text-[0.6rem] text-destructive font-medium">
