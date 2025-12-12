@@ -12,4 +12,4 @@ export const userApi = createApi({
     }),
   }),
 });
-export const { useGetProfileQuery } = userApi;
+export const { useGetProfileQuery, usePrefetch } = userApi;
