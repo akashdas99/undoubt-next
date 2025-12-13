@@ -39,6 +39,7 @@ export function parseZodErrors(error: ZodError) {
   );
 }
 // Generate slug from title and append short UUID for uniqueness
+// Keeps slug around 60 characters for optimal SEO
 export default function createSlug(s: string) {
   const baseSlug = slugify(s, {
     lower: true,
@@ -46,5 +47,11 @@ export default function createSlug(s: string) {
     trim: true,
   });
   const uniqueId = nanoid(8);
-  return `${baseSlug}-${uniqueId}`;
+  // Target 60 chars total: reserve 9 for "-" + uniqueId, leaving 51 for slug
+  const maxSlugLength = 51;
+  const truncatedSlug =
+    baseSlug.length > maxSlugLength
+      ? baseSlug.substring(0, maxSlugLength)
+      : baseSlug;
+  return `${truncatedSlug}-${uniqueId}`;
 }
