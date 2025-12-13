@@ -1,15 +1,20 @@
 import { db } from "@/db/drizzle";
-import { questions } from "@/db/schema/questions";
-import { errorResponse, successResponse } from "@/lib/response";
-import { parseZodErrors } from "@/lib/utils";
-import { QuestionSchema, QuestionType } from "@/validations/question";
-import { nanoid } from "@reduxjs/toolkit";
-import sanitizeHtml from "sanitize-html";
-import slugify from "slugify";
-import { getProfile } from "./user";
-import { and, count, desc, eq, ilike, or } from "drizzle-orm";
-import { users } from "@/db/schema/users";
 import { answers } from "@/db/schema/answers";
+import { questions } from "@/db/schema/questions";
+import { users } from "@/db/schema/users";
+import { errorResponse, successResponse } from "@/lib/response";
+import createSlug, { parseZodErrors } from "@/lib/utils";
+import {
+  DeleteQuestionSchema,
+  DeleteQuestionType,
+  EditQuestionSchema,
+  EditQuestionType,
+  QuestionSchema,
+  QuestionType,
+} from "@/validations/question";
+import { and, count, desc, eq, ilike, or } from "drizzle-orm";
+import sanitizeHtml from "sanitize-html";
+import { getProfile } from "./user";
 
 export const getQuestions = async (
   keyword: string = "",
@@ -32,6 +37,7 @@ export const getQuestions = async (
       title: questions.title,
       description: questions.description,
       author: { name: users.name, profilePicture: users.profilePicture },
+      authorId: questions.authorId,
       createdAt: questions.createdAt,
       answersCount: count(answers.id),
       slug: questions.slug,
@@ -57,20 +63,11 @@ export async function addQuestion(questionData: QuestionType) {
   const validatedQuestion = parsed.data;
   const userSession = await getProfile();
 
-  // Generate slug from title and append short UUID for uniqueness
-  const baseSlug = slugify(validatedQuestion.title, {
-    lower: true,
-    strict: true,
-    trim: true,
-  });
-  const uniqueId = nanoid(8);
-  const slug = `${baseSlug}-${uniqueId}`;
-
   await db.insert(questions).values({
     title: validatedQuestion?.title,
     description: sanitizeHtml(validatedQuestion?.description || ""),
     authorId: userSession?.id,
-    slug: slug,
+    slug: createSlug(validatedQuestion.title),
   });
   return successResponse();
 }
@@ -95,4 +92,72 @@ export async function getQuestionBySlug(slug: string) {
     .orderBy(desc(questions?.updatedAt));
 
   return question;
+}
+
+export async function editQuestion(questionData: EditQuestionType) {
+  // Validate question data
+  const parsed = EditQuestionSchema.safeParse(questionData);
+  if (!parsed.success) {
+    return errorResponse(parseZodErrors(parsed.error));
+  }
+
+  const validatedQuestion = parsed.data;
+  const userSession = await getProfile();
+
+  // Check if question exists and belongs to user
+  const [existingQuestion] = await db
+    .select({ authorId: questions.authorId })
+    .from(questions)
+    .where(eq(questions.id, validatedQuestion.id))
+    .limit(1);
+
+  if (!existingQuestion) {
+    return errorResponse("Question not found");
+  }
+
+  if (existingQuestion.authorId !== userSession?.id) {
+    return errorResponse("You don't have permission to edit this question");
+  }
+
+  // Update question (don't update slug to avoid breaking existing links)
+  await db
+    .update(questions)
+    .set({
+      title: validatedQuestion.title,
+      description: sanitizeHtml(validatedQuestion.description || ""),
+    })
+    .where(eq(questions.id, validatedQuestion.id));
+
+  return successResponse({ message: "Question updated successfully" });
+}
+
+export async function deleteQuestion(questionData: DeleteQuestionType) {
+  // Validate question data
+  const parsed = DeleteQuestionSchema.safeParse(questionData);
+  if (!parsed.success) {
+    return errorResponse(parseZodErrors(parsed.error));
+  }
+
+  const validatedQuestion = parsed.data;
+  const userSession = await getProfile();
+
+  // Check if question exists and belongs to user
+  const [existingQuestion] = await db
+    .select({ authorId: questions.authorId })
+    .from(questions)
+    .where(eq(questions.id, validatedQuestion.id))
+    .limit(1);
+
+  if (!existingQuestion) {
+    return errorResponse("Question not found");
+  }
+
+  if (existingQuestion.authorId !== userSession?.id) {
+    return errorResponse("You don't have permission to delete this question");
+  }
+
+  // Delete question (answers will cascade delete due to schema)
+  await db.delete(questions).where(eq(questions.id, validatedQuestion.id));
+
+  return successResponse({ message: "Question deleted successfully" });
 }
