@@ -1,5 +1,4 @@
 import QuestionCard from "./questionCard";
-import Link from "next/link";
 import { unstable_cache } from "next/cache";
 import { getQuestions } from "@/data/question";
 const getCachedQuestions = unstable_cache(
@@ -22,10 +21,8 @@ const QuestionList: React.FC = async () => {
         <p>No Questions</p>
       ) : (
         <div className="flex flex-col gap-5">
-          {questions.map((question, i) => (
-            <Link key={i} href={"question/" + question?.slug}>
-              <QuestionCard question={question} />
-            </Link>
+          {questions.map((question) => (
+            <QuestionCard key={question.id} question={question} asLink />
           ))}
         </div>
       )}
