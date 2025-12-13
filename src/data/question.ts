@@ -119,13 +119,12 @@ export async function editQuestion(questionData: EditQuestionType) {
     return errorResponse("You don't have permission to edit this question");
   }
 
-  // Update question
+  // Update question (don't update slug to avoid breaking existing links)
   await db
     .update(questions)
     .set({
       title: validatedQuestion.title,
       description: sanitizeHtml(validatedQuestion.description || ""),
-      slug: createSlug(validatedQuestion.title),
     })
     .where(eq(questions.id, validatedQuestion.id));
 
