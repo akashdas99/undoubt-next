@@ -7,6 +7,7 @@ import { Montserrat, Righteous } from "next/font/google";
 export const metadata: Metadata = {
   title: "Undoubt",
   description: "Undoubt a QnA forum",
+  robots: "index,follow",
 };
 const montserrat = Montserrat({
   subsets: ["latin"],
