@@ -1,11 +1,11 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
 import QuestionSection from "@/components/question/questionSection";
-import { getQuestionBySlug, getQuestions } from "@/data/question";
+import { getAllQuestions, getQuestionBySlug } from "@/data/question";
 import { Metadata } from "next";
 
 export async function generateStaticParams() {
-  const questions = await getQuestions();
+  const questions = await getAllQuestions();
   return questions.map((question) => ({ slug: question?.slug }));
 }
 export async function generateMetadata({

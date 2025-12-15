@@ -4,6 +4,7 @@ import { questions } from "@/db/schema/questions";
 import { users } from "@/db/schema/users";
 import { errorResponse, successResponse } from "@/lib/response";
 import createSlug, { parseZodErrors } from "@/lib/utils";
+import { withPagination } from "@/lib/withPagination";
 import {
   DeleteQuestionSchema,
   DeleteQuestionType,
@@ -21,17 +22,33 @@ export const getQuestions = async (
   limit: number = 10,
   page: number = 1
 ) => {
-  const offset = limit * (page - 1);
-  // Build condition array
-  const conditions = [eq(questions.authorId, users.id)];
+  // Build WHERE conditions for filtering
+  const whereConditions = [];
   if (keyword) {
     const keywordCondition = or(
       ilike(questions.title, `%${keyword}%`),
       ilike(questions.description, `%${keyword}%`)
     );
-    if (keywordCondition) conditions.push(keywordCondition);
+    if (keywordCondition) whereConditions.push(keywordCondition);
   }
-  const result = await db
+
+  const whereClause =
+    whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+  // Deferred join pattern
+  const baseQuery = db
+    .select({ id: questions.id })
+    .from(questions)
+    .where(whereClause)
+    .orderBy(desc(questions.updatedAt));
+
+  const [total] = await db
+    .select({ count: count() })
+    .from(baseQuery.as("subquery"));
+
+  // Use the pagination helper
+  const sq = withPagination(baseQuery.$dynamic(), page, limit).as("subquery");
+  const data = await db
     .select({
       id: questions.id,
       title: questions.title,
@@ -43,12 +60,27 @@ export const getQuestions = async (
       slug: questions.slug,
     })
     .from(questions)
-    .innerJoin(users, and(...conditions))
+    .innerJoin(sq, eq(questions.id, sq.id))
+    .innerJoin(users, eq(questions.authorId, users.id))
     .leftJoin(answers, eq(questions.id, answers.questionId))
-    .groupBy(questions.id, users.id)
-    .orderBy(desc(questions?.updatedAt))
-    .limit(limit)
-    .offset(offset);
+    .groupBy(questions.id, users.id);
+  return {
+    data,
+    pagination: {
+      page,
+      totalPage: Math.ceil(total.count / limit),
+    },
+  };
+};
+
+export const getAllQuestions = async () => {
+  const result = await db
+    .select({
+      id: questions.id,
+      slug: questions.slug,
+    })
+    .from(questions)
+    .orderBy(desc(questions?.updatedAt));
   return result;
 };
 export async function addQuestion(questionData: QuestionType) {
