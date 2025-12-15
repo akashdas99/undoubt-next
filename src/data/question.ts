@@ -78,8 +78,10 @@ export async function getQuestionBySlug(slug: string) {
       title: questions.title,
       description: questions.description,
       author: { name: users.name, profilePicture: users.profilePicture },
+      authorId: questions.authorId,
       createdAt: questions.createdAt,
-      answersCount: count(answers.id).as("answerCount"),
+      answersCount: count(answers.id),
+      slug: questions.slug,
     })
     .from(questions)
     .innerJoin(
