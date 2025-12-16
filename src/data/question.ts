@@ -68,7 +68,7 @@ export const getQuestions = async (
     data,
     pagination: {
       page,
-      totalPage: Math.ceil(total.count / limit),
+      totalPages: Math.ceil(total.count / limit),
     },
   };
 };
