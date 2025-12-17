@@ -1,13 +1,44 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
 import QuestionSection from "@/components/question/questionSection";
-import { getQuestions } from "@/data/question";
+import { getAllQuestions, getQuestionBySlug } from "@/data/question";
+import { Metadata } from "next";
 
 export async function generateStaticParams() {
-  const questions = await getQuestions();
+  const questions = await getAllQuestions();
   return questions.map((question) => ({ slug: question?.slug }));
 }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const question = await getQuestionBySlug(slug);
 
+  if (!question) {
+    return {
+      title: "Question Not Found | Undoubt",
+      description: "The question you are looking for does not exist.",
+    };
+  }
+
+  // Strip HTML tags from description for meta description
+  const plainDescription = question.description
+    .replace(/<[^>]*>/g, "")
+    .substring(0, 160);
+
+  return {
+    title: `${question.title} | Undoubt`,
+    description: plainDescription || question.title,
+    openGraph: {
+      title: question.title,
+      description: plainDescription || question.title,
+      type: "article",
+      authors: [question.author.name],
+    },
+  };
+}
 export default function Page({
   params,
 }: {
