@@ -3,20 +3,43 @@
 import {
   useGetQuestionsInfiniteQuery,
   type Question,
+  questionApi,
 } from "@/lib/store/questions/question";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
+import { useDispatch } from "react-redux";
 
 type InfiniteQuestionListProps = {
   initialQuestions: Question[];
-  initialHasMore: boolean;
+  initialPagination: { page: number; totalPages: number };
 };
 
 export default function InfiniteQuestionList({
   initialQuestions,
-  initialHasMore,
+  initialPagination,
 }: InfiniteQuestionListProps) {
+  const dispatch = useDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
+
+  // Use util.upsertQueryData to populate RTK Query cache with server data
+  // This prevents the client from refetching data that was already loaded on server
+  useEffect(() => {
+    // For infinite queries, the cache structure is different from regular queries
+    // We need to bypass TypeScript here because upsertQueryData expects single response
+    // but infinite queries store data as { pages: [...], pageParams: [...] }
+    const cacheData = {
+      pages: [
+        {
+          data: initialQuestions,
+          pagination: initialPagination,
+        },
+      ],
+      pageParams: [1],
+    };
+
+    // @ts-expect-error - upsertQueryData types don't account for infinite query structure
+    dispatch(questionApi.util.upsertQueryData("getQuestions", "", cacheData));
+  }, [dispatch, initialQuestions, initialPagination]);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
     useGetQuestionsInfiniteQuery("");

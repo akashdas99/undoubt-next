@@ -25,6 +25,7 @@ const QuestionList: React.FC = async () => {
       <InfiniteQuestionList
         initialQuestions={questions}
         initialHasMore={hasMore}
+        initialPagination={result.pagination}
       />
     </div>
   );

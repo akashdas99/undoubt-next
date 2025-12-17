@@ -34,7 +34,7 @@ export const questionApi = createApi({
       providesTags: ["search"],
     }),
     getQuestions: builder.infiniteQuery<
-      { data: Question; pagination: { page: number; totalPages: number } },
+      { data: Question[]; pagination: { page: number; totalPages: number } },
       string,
       number
     >({
