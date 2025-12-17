@@ -14,8 +14,6 @@ const getCachedQuestions = unstable_cache(
 const QuestionList: React.FC = async () => {
   const result = await getCachedQuestions();
   const questions = result.data;
-  console.log(result.pagination);
-  const hasMore = result.pagination.totalPages > result.pagination.page;
 
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
@@ -24,7 +22,6 @@ const QuestionList: React.FC = async () => {
       </div>
       <InfiniteQuestionList
         initialQuestions={questions}
-        initialHasMore={hasMore}
         initialPagination={result.pagination}
       />
     </div>
