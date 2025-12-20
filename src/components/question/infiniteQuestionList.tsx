@@ -31,7 +31,7 @@ export default function InfiniteQuestionList({
         {
           data: initialQuestions?.map((q) => ({
             ...q,
-            createdAt: q?.createdAt?.toISOString(),
+            createdAt: q?.createdAt?.toISOString?.(),
           })),
           pagination: initialPagination,
         },
