@@ -33,6 +33,24 @@ export async function getProfile() {
 }
 
 export async function getTopContributors(limit: number = 10) {
+  const questionCounts = db
+    .select({
+      authorId: questions.authorId,
+      questionCount: sql<number>`CAST(COUNT(*) AS INTEGER)`.as("questionCount"),
+    })
+    .from(questions)
+    .groupBy(questions.authorId)
+    .as("qc");
+
+  const answerCounts = db
+    .select({
+      authorId: answers.authorId,
+      answerCount: sql<number>`CAST(COUNT(*) AS INTEGER)`.as("answerCount"),
+    })
+    .from(answers)
+    .groupBy(answers.authorId)
+    .as("ac");
+
   const result = await db
     .select({
       id: users.id,
@@ -41,20 +59,23 @@ export async function getTopContributors(limit: number = 10) {
       profilePicture: users.profilePicture,
       createdAt: users.createdAt,
       questionCount:
-        sql<number>`CAST(COUNT(DISTINCT ${questions.id}) AS INTEGER)`.as(
+        sql<number>`COALESCE(${questionCounts.questionCount}, 0)`.as(
           "questionCount"
         ),
-      answerCount:
-        sql<number>`CAST(COUNT(DISTINCT ${answers.id}) AS INTEGER)`.as(
-          "answerCount"
-        ),
+      answerCount: sql<number>`COALESCE(${answerCounts.answerCount}, 0)`.as(
+        "answerCount"
+      ),
     })
     .from(users)
-    .leftJoin(questions, eq(questions.authorId, users.id))
-    .leftJoin(answers, eq(answers.authorId, users.id))
-    .groupBy(users.id)
+    .leftJoin(questionCounts, eq(questionCounts.authorId, users.id))
+    .leftJoin(answerCounts, eq(answerCounts.authorId, users.id))
+    .where(
+      sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0) > 0`
+    )
     .orderBy(
-      desc(sql`COUNT(DISTINCT ${questions.id}) + COUNT(DISTINCT ${answers.id})`)
+      desc(
+        sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0)`
+      )
     )
     .limit(limit);
 
