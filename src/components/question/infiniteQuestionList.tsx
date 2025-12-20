@@ -20,7 +20,6 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const dispatch = useDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
-
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
   useEffect(() => {
@@ -30,7 +29,10 @@ export default function InfiniteQuestionList({
     const cacheData = {
       pages: [
         {
-          data: initialQuestions,
+          data: initialQuestions?.map((q) => ({
+            ...q,
+            createdAt: q?.createdAt?.toISOString(),
+          })),
           pagination: initialPagination,
         },
       ],
@@ -62,6 +64,7 @@ export default function InfiniteQuestionList({
 
     return () => observer.disconnect();
   }, [hasNextPage, isFetching, fetchNextPage]);
+  console.log(questions);
 
   if (questions.length === 0 && !isLoading) {
     return <p>No Questions</p>;
