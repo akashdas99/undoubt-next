@@ -64,7 +64,6 @@ export default function InfiniteQuestionList({
 
     return () => observer.disconnect();
   }, [hasNextPage, isFetching, fetchNextPage]);
-  console.log(questions);
 
   if (questions.length === 0 && !isLoading) {
     return <p>No Questions</p>;
