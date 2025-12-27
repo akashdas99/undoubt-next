@@ -1,6 +1,7 @@
 import { db } from "@/db/drizzle";
 import { answers } from "@/db/schema/answers";
 import { questions } from "@/db/schema/questions";
+import { questionVotes } from "@/db/schema/questionVotes";
 import { users } from "@/db/schema/users";
 import { errorResponse, successResponse } from "@/lib/response";
 import createSlug, { parseZodErrors } from "@/lib/utils";
@@ -13,7 +14,7 @@ import {
   QuestionSchema,
   QuestionType,
 } from "@/validations/question";
-import { and, count, desc, eq, ilike, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { getProfile } from "./user";
 
@@ -58,11 +59,14 @@ export const getQuestions = async (
       createdAt: questions.createdAt,
       answersCount: count(answers.id),
       slug: questions.slug,
+      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)`,
+      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)`,
     })
     .from(questions)
     .innerJoin(sq, eq(questions.id, sq.id))
     .innerJoin(users, eq(questions.authorId, users.id))
     .leftJoin(answers, eq(questions.id, answers.questionId))
+    .leftJoin(questionVotes, eq(questions.id, questionVotes.questionId))
     .groupBy(questions.id, users.id);
   return {
     data,
@@ -114,6 +118,8 @@ export async function getQuestionBySlug(slug: string) {
       createdAt: questions.createdAt,
       answersCount: count(answers.id),
       slug: questions.slug,
+      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)`,
+      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)`,
     })
     .from(questions)
     .innerJoin(
@@ -121,6 +127,7 @@ export async function getQuestionBySlug(slug: string) {
       and(eq(questions.slug, slug), eq(questions.authorId, users.id))
     )
     .leftJoin(answers, eq(answers.questionId, questions.id))
+    .leftJoin(questionVotes, eq(questions.id, questionVotes.questionId))
     .groupBy(questions.id, users.id)
     .limit(1)
     .orderBy(desc(questions?.updatedAt));

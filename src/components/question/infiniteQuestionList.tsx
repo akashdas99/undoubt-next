@@ -4,6 +4,7 @@ import {
   useGetQuestionsInfiniteQuery,
   type Question,
   questionApi,
+  useGetUserVotesQuery,
 } from "@/lib/store/questions/question";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
@@ -48,6 +49,10 @@ export default function InfiniteQuestionList({
 
   const questions =
     (data?.pages?.map(({ data }) => data).flat() ?? []) || initialQuestions;
+
+  useGetUserVotesQuery(data?.pages?.at(-1)?.data?.map(({ id }) => id) || [], {
+    skip: !data,
+  });
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

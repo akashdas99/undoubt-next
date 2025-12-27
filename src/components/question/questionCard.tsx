@@ -12,6 +12,7 @@ import { useGetProfileQuery } from "@/lib/store/user/user";
 import { Button } from "../ui/button";
 import QuestionForm from "./questionForm";
 import Link from "next/link";
+import QuestionVoteButton from "./questionVoteButton";
 
 type QuestionCardProps = {
   question: {
@@ -26,6 +27,9 @@ type QuestionCardProps = {
     createdAt: Date;
     authorId: string;
     slug: string;
+    likes: number;
+    dislikes: number;
+    userVote?: number | null;
   };
   asLink?: boolean;
 };
@@ -108,10 +112,22 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
                 )}
               </>
 
-              <div className="flex mt-1">
+              <div className="flex items-center justify-between mt-1 w-full">
                 <div className="text-xs flex gap-2 py-1 px-2 font-semibold">
                   <MessageSquare size={16} />
                   <>{question?.answersCount || "No"} Answers</>
+                </div>
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <QuestionVoteButton
+                    questionId={question.id}
+                    initialLikes={question.likes}
+                    initialDislikes={question.dislikes}
+                  />
                 </div>
               </div>
             </>
