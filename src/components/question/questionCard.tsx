@@ -13,24 +13,10 @@ import { Button } from "../ui/button";
 import QuestionForm from "./questionForm";
 import Link from "next/link";
 import QuestionVoteButton from "./questionVoteButton";
+import { Question } from "@/lib/store/questions/question";
 
 type QuestionCardProps = {
-  question: {
-    id: string;
-    title: string;
-    description: string;
-    author: {
-      name: string;
-      profilePicture: string | null;
-    };
-    answersCount: number;
-    createdAt: Date;
-    authorId: string;
-    slug: string;
-    likes: number;
-    dislikes: number;
-    userVote?: number | null;
-  };
+  question: Question;
   asLink?: boolean;
 };
 

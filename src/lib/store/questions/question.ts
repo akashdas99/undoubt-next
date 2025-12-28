@@ -11,7 +11,7 @@ export type Question = {
     profilePicture: string | null;
   };
   answersCount: number;
-  createdAt: Date;
+  createdAt: Date | string;
   authorId: string;
   slug: string;
   likes: number;
@@ -85,7 +85,6 @@ export const selectVoteByQuestionId = (
   questionId: string
 ): -1 | 1 | null => {
   const queries = state.getQuestions.queries;
-
   const batchQuery = Object.values(queries).find(
     (query) =>
       query?.endpointName === "getUserVotes" &&

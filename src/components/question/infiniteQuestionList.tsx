@@ -1,14 +1,14 @@
 "use client";
 
+import { useAppDispatch } from "@/lib/store/hooks";
 import {
-  useGetQuestionsInfiniteQuery,
-  type Question,
   questionApi,
+  useGetQuestionsInfiniteQuery,
   useGetUserVotesQuery,
+  type Question,
 } from "@/lib/store/questions/question";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
-import { useDispatch } from "react-redux";
 
 type InfiniteQuestionListProps = {
   initialQuestions: Question[];
@@ -19,7 +19,7 @@ export default function InfiniteQuestionList({
   initialQuestions,
   initialPagination,
 }: InfiniteQuestionListProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
@@ -32,7 +32,10 @@ export default function InfiniteQuestionList({
         {
           data: initialQuestions?.map((q) => ({
             ...q,
-            createdAt: q?.createdAt?.toISOString?.(),
+            createdAt:
+              q?.createdAt instanceof Date
+                ? q.createdAt.toISOString()
+                : q.createdAt,
           })),
           pagination: initialPagination,
         },
@@ -40,7 +43,6 @@ export default function InfiniteQuestionList({
       pageParams: [1],
     };
 
-    // @ts-expect-error - upsertQueryData types don't account for infinite query structure
     dispatch(questionApi.util.upsertQueryData("getQuestions", "", cacheData));
   }, [dispatch, initialQuestions, initialPagination]);
 
