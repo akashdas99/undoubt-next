@@ -1,13 +1,15 @@
 "use client";
 
 import { voteOnQuestionAction } from "@/actions/question";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useGetProfileQuery } from "@/lib/store/user/user";
 import { isEmpty } from "@/lib/functions";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import {
+  questionApi,
+  selectVoteByQuestionId,
+} from "@/lib/store/questions/question";
+import { useGetProfileQuery } from "@/lib/store/user/user";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { selectVoteByQuestionId } from "@/lib/store/questions/question";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useRouter } from "next/navigation";
 
 interface QuestionVoteButtonProps {
   questionId: string;
@@ -21,31 +23,53 @@ export default function QuestionVoteButton({
   initialDislikes,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { data: user } = useGetProfileQuery();
-
-  // Use initialUserVote directly - it updates from parent when RTK Query fetches new data
-  const [userVote, setUserVote] = useState<"like" | "dislike" | null>(null);
-
   // Access RTK Query cache directly using useAppSelector
   const cachedUserVote = useAppSelector((state) =>
     selectVoteByQuestionId(state, questionId)
   );
 
+  // Get all queries to find getUserVotes cache entries
+  const allQueries = useAppSelector((state) => state.getQuestions.queries);
+
   // Determine the current vote state (prefer local optimistic state, then cache, then initial prop)
   const currentVote =
-    userVote ??
-    (cachedUserVote === 1 ? "like" : cachedUserVote === -1 ? "dislike" : null);
+    cachedUserVote === 1 ? "like" : cachedUserVote === -1 ? "dislike" : null;
 
   const handleVote = async (voteType: "like" | "dislike") => {
     // Redirect to login if not authenticated
     if (isEmpty(user)) return router.push("/login");
 
-    // Optimistic update
-    if (currentVote === voteType) {
-      setUserVote(null); // Remove vote
-    } else {
-      setUserVote(voteType); // Add or change vote
-    }
+    const newVote = currentVote === voteType ? null : voteType;
+    const newVoteValue =
+      newVote === "like" ? 1 : newVote === "dislike" ? -1 : null;
+
+    // Update RTK Query cache optimistically
+    // Find and update all getUserVotes cache entries that contain this questionId
+    Object.values(allQueries).forEach((value) => {
+      if (
+        value?.endpointName === "getUserVotes" &&
+        value.status === "fulfilled"
+      ) {
+        // Extract the original args (array of questionIds) from the query
+        const questionIds = value.originalArgs as string[] | undefined;
+
+        // If this cache entry includes our questionId, update it
+        if (questionIds?.includes(questionId)) {
+          dispatch(
+            questionApi.util.updateQueryData(
+              "getUserVotes",
+              questionIds,
+              (draft) => {
+                // Update the vote in the cache
+                draft[questionId] = newVoteValue;
+              }
+            )
+          );
+        }
+      }
+    });
 
     // Perform server action
     await voteOnQuestionAction(

@@ -110,9 +110,9 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
                   }}
                 >
                   <QuestionVoteButton
-                    questionId={question.id}
-                    initialLikes={question.likes}
-                    initialDislikes={question.dislikes}
+                    questionId={question?.id}
+                    initialLikes={question?.likes}
+                    initialDislikes={question?.dislikes}
                   />
                 </div>
               </div>

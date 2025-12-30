@@ -21,6 +21,8 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const dispatch = useAppDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
+  const hasInitializedCache = useRef(false);
+
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
   useEffect(() => {
@@ -43,7 +45,20 @@ export default function InfiniteQuestionList({
       pageParams: [1],
     };
 
-    dispatch(questionApi.util.upsertQueryData("getQuestions", "", cacheData));
+    if (!hasInitializedCache.current) {
+      // First render: initialize cache with server data
+      dispatch(questionApi.util.upsertQueryData("getQuestions", "", cacheData));
+      hasInitializedCache.current = true;
+    } else {
+      // Subsequent renders (after revalidation): update only the first page
+      dispatch(
+        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+          if (draft.pages[0]) {
+            draft.pages[0] = cacheData.pages[0];
+          }
+        })
+      );
+    }
   }, [dispatch, initialQuestions, initialPagination]);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
@@ -80,7 +95,7 @@ export default function InfiniteQuestionList({
     <>
       <div className="flex flex-col gap-5">
         {questions.map((question) => (
-          <QuestionCard key={question.id} question={question} asLink />
+          <QuestionCard key={question?.id} question={question} asLink />
         ))}
       </div>
 
