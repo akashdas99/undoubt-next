@@ -109,11 +109,7 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
                     e.stopPropagation();
                   }}
                 >
-                  <QuestionVoteButton
-                    questionId={question?.id}
-                    initialLikes={question?.likes}
-                    initialDislikes={question?.dislikes}
-                  />
+                  <QuestionVoteButton questionId={question?.id} />
                 </div>
               </div>
             </>

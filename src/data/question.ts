@@ -59,8 +59,8 @@ export const getQuestions = async (
       createdAt: questions.createdAt,
       answersCount: count(answers.id),
       slug: questions.slug,
-      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)`,
-      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)`,
+      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
+      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
     })
     .from(questions)
     .innerJoin(sq, eq(questions.id, sq.id))
@@ -118,8 +118,8 @@ export async function getQuestionBySlug(slug: string) {
       createdAt: questions.createdAt,
       answersCount: count(answers.id),
       slug: questions.slug,
-      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)`,
-      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)`,
+      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
+      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
     })
     .from(questions)
     .innerJoin(

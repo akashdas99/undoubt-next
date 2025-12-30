@@ -13,56 +13,65 @@ import { useRouter } from "next/navigation";
 
 interface QuestionVoteButtonProps {
   questionId: string;
-  initialLikes: number;
-  initialDislikes: number;
 }
+
+type VoteType = "like" | "dislike";
 
 export default function QuestionVoteButton({
   questionId,
-  initialLikes,
-  initialDislikes,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data: user } = useGetProfileQuery();
-  // Access RTK Query cache directly using useAppSelector
+
+  // Get current user's vote from cache
   const cachedUserVote = useAppSelector((state) =>
     selectVoteByQuestionId(state, questionId)
   );
 
-  // Get all queries to find getUserVotes cache entries
+  // Get all queries to find cache entries
   const allQueries = useAppSelector((state) => state.getQuestions.queries);
 
-  // Determine the current vote state (prefer local optimistic state, then cache, then initial prop)
-  const currentVote =
+  // Get cached like/dislike counts from getQuestions cache
+  const cachedQuestion = useAppSelector((state) => {
+    const questionsQuery = Object.values(state.getQuestions.queries).find(
+      (query) =>
+        query?.endpointName === "getQuestions" && query.status === "fulfilled"
+    );
+    if (questionsQuery?.data) {
+      const data = questionsQuery.data as {
+        pages: Array<{
+          data?: Array<{ id: string; likes?: number; dislikes?: number }>;
+        }>;
+      };
+      for (const page of data.pages) {
+        const question = page.data?.find((q) => q.id === questionId);
+        if (question) return question;
+      }
+    }
+    return null;
+  });
+
+  // Derive current vote state and counts
+  const currentVote: VoteType | null =
     cachedUserVote === 1 ? "like" : cachedUserVote === -1 ? "dislike" : null;
+  // const likes = cachedQuestion?.likes ;
+  // const dislikes = cachedQuestion?.dislikes ;
 
-  const handleVote = async (voteType: "like" | "dislike") => {
-    // Redirect to login if not authenticated
-    if (isEmpty(user)) return router.push("/login");
-
-    const newVote = currentVote === voteType ? null : voteType;
-    const newVoteValue =
-      newVote === "like" ? 1 : newVote === "dislike" ? -1 : null;
-
-    // Update RTK Query cache optimistically
-    // Find and update all getUserVotes cache entries that contain this questionId
+  // Update user votes cache optimistically
+  const updateUserVotesCache = (newVoteValue: number | null) => {
     Object.values(allQueries).forEach((value) => {
       if (
         value?.endpointName === "getUserVotes" &&
         value.status === "fulfilled"
       ) {
-        // Extract the original args (array of questionIds) from the query
         const questionIds = value.originalArgs as string[] | undefined;
-
-        // If this cache entry includes our questionId, update it
         if (questionIds?.includes(questionId)) {
           dispatch(
             questionApi.util.updateQueryData(
               "getUserVotes",
               questionIds,
               (draft) => {
-                // Update the vote in the cache
                 draft[questionId] = newVoteValue;
               }
             )
@@ -70,41 +79,105 @@ export default function QuestionVoteButton({
         }
       }
     });
+  };
+
+  // Update questions cache optimistically
+  const updateQuestionsCache = (voteType: VoteType) => {
+    dispatch(
+      questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+        draft.pages.forEach((page) => {
+          const question = page.data?.find((q) => q.id === questionId);
+          if (!question) return;
+
+          // Removing current vote
+          if (voteType === currentVote) {
+            if (currentVote === "like") {
+              question.likes = Math.max(0, question.likes - 1);
+            } else {
+              question.dislikes = Math.max(0, question.dislikes - 1);
+            }
+          }
+          // Adding or changing vote
+          else {
+            if (voteType === "like") {
+              question.likes += 1;
+              if (currentVote === "dislike") {
+                question.dislikes = Math.max(0, question.dislikes - 1);
+              }
+            } else {
+              question.dislikes += 1;
+              if (currentVote === "like") {
+                question.likes = Math.max(0, question.likes - 1);
+              }
+            }
+          }
+        });
+      })
+    );
+  };
+
+  const handleVote = async (voteType: VoteType) => {
+    if (isEmpty(user)) return router.push("/login");
+
+    const isRemoving = currentVote === voteType;
+    const newVoteValue = isRemoving ? null : voteType === "like" ? 1 : -1;
+
+    // Optimistically update both caches
+    updateUserVotesCache(newVoteValue);
+    updateQuestionsCache(voteType);
 
     // Perform server action
-    await voteOnQuestionAction(
-      questionId,
-      currentVote === voteType ? "remove" : voteType
-    );
+    await voteOnQuestionAction(questionId, isRemoving ? "remove" : voteType);
   };
 
   return (
     <div className="flex items-center gap-2">
-      <button
+      <VoteButton
+        icon={<ThumbsUp size={16} />}
+        count={cachedQuestion?.likes || 0}
+        isActive={currentVote === "like"}
         onClick={() => handleVote("like")}
-        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-          currentVote === "like"
-            ? "bg-accent text-accent-foreground"
-            : "bg-secondary hover:bg-secondary/80"
-        } `}
-        aria-label="Like question"
-      >
-        <ThumbsUp size={16} />
-        <span className="font-semibold">{initialLikes}</span>
-      </button>
-
-      <button
+        activeClass="bg-accent text-accent-foreground"
+        label="Like question"
+      />
+      <VoteButton
+        icon={<ThumbsDown size={16} />}
+        count={cachedQuestion?.dislikes || 0}
+        isActive={currentVote === "dislike"}
         onClick={() => handleVote("dislike")}
-        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-          currentVote === "dislike"
-            ? "bg-destructive text-destructive-foreground"
-            : "bg-secondary hover:bg-secondary/80"
-        } `}
-        aria-label="Dislike question"
-      >
-        <ThumbsDown size={16} />
-        <span className="font-semibold">{initialDislikes}</span>
-      </button>
+        activeClass="bg-destructive text-destructive-foreground"
+        label="Dislike question"
+      />
     </div>
+  );
+}
+
+// Extracted vote button component for reusability
+function VoteButton({
+  icon,
+  count,
+  isActive,
+  onClick,
+  activeClass,
+  label,
+}: {
+  icon: React.ReactNode;
+  count: number;
+  isActive: boolean;
+  onClick: () => void;
+  activeClass: string;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
+        isActive ? activeClass : "bg-secondary hover:bg-secondary/80"
+      }`}
+      aria-label={label}
+    >
+      {icon}
+      <span className="font-semibold">{count}</span>
+    </button>
   );
 }
