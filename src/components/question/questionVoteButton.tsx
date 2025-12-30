@@ -55,8 +55,6 @@ export default function QuestionVoteButton({
   // Derive current vote state and counts
   const currentVote: VoteType | null =
     cachedUserVote === 1 ? "like" : cachedUserVote === -1 ? "dislike" : null;
-  // const likes = cachedQuestion?.likes ;
-  // const dislikes = cachedQuestion?.dislikes ;
 
   // Update user votes cache optimistically
   const updateUserVotesCache = (newVoteValue: number | null) => {
