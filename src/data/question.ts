@@ -67,6 +67,7 @@ export const getQuestions = async (
     .innerJoin(users, eq(questions.authorId, users.id))
     .leftJoin(answers, eq(questions.id, answers.questionId))
     .leftJoin(questionVotes, eq(questions.id, questionVotes.questionId))
+    .orderBy(desc(questions.updatedAt))
     .groupBy(questions.id, users.id);
   return {
     data,
