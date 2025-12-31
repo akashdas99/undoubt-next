@@ -1,6 +1,7 @@
 "use server";
 
 import { addQuestion, deleteQuestion, editQuestion } from "@/data/question";
+import { voteOnQuestion, VoteType } from "@/data/questionVote";
 import { withTryCatchResponse } from "@/lib/utils";
 import {
   DeleteQuestionType,
@@ -31,12 +32,28 @@ export async function editQuestionAction(questionData: EditQuestionType) {
   return res;
 }
 
-export async function deleteQuestionAction(questionData: DeleteQuestionType) {
+export async function deleteQuestionAction(
+  questionData: DeleteQuestionType,
+  shouldRedirect?: boolean
+) {
   const res = await withTryCatchResponse(deleteQuestion(questionData));
 
   if (res?.success) {
     revalidateTag("questions");
-    redirect("/");
+    if (shouldRedirect) redirect("/");
+  }
+
+  return res;
+}
+
+export async function voteOnQuestionAction(
+  questionId: string,
+  voteType: VoteType
+) {
+  const res = await withTryCatchResponse(voteOnQuestion(questionId, voteType));
+
+  if (res?.success) {
+    revalidateTag("questions");
   }
 
   return res;

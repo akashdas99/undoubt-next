@@ -12,21 +12,13 @@ import { useGetProfileQuery } from "@/lib/store/user/user";
 import { Button } from "../ui/button";
 import QuestionForm from "./questionForm";
 import Link from "next/link";
+import QuestionVoteButton from "./questionVoteButton";
+import { Question, questionApi } from "@/lib/store/questions/question";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { usePathname } from "next/navigation";
 
 type QuestionCardProps = {
-  question: {
-    id: string;
-    title: string;
-    description: string;
-    author: {
-      name: string;
-      profilePicture: string | null;
-    };
-    answersCount: number;
-    createdAt: Date;
-    authorId: string;
-    slug: string;
-  };
+  question: Question;
   asLink?: boolean;
 };
 
@@ -35,22 +27,37 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useGetProfileQuery();
-
+  const dispatch = useAppDispatch();
+  const pathname = usePathname();
   const isAuthor = !isLoading && question?.authorId === user?.id;
-
   const onDelete = async () => {
     setIsDeleting(true);
-    const res = await deleteQuestionAction({ id: question.id });
+
+    const res = await deleteQuestionAction(
+      { id: question.id },
+      pathname !== "/"
+    );
+    setIsDeleting(false);
 
     if (!res?.success) {
       setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
-      setIsDeleting(false);
+    } else {
+      // Remove deleted question from RTK Query cache
+      dispatch(
+        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+          draft.pages.forEach((page) => {
+            if (page.data) {
+              page.data = page.data.filter((q) => q.id !== question.id);
+            }
+          });
+        })
+      );
     }
   };
   return (
     <Wrapper asLink={asLink && !isEditing} href={"question/" + question?.slug}>
-      <div className="p-[1em] bordered-card flex flex-col gap-2 items-start">
-        <div className="flex items-center justify-between pb-2 border-b-2 border-solid border-foreground/10 w-full">
+      <div className="p-6 bordered-card flex flex-col gap-3 items-start">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <UserImage user={question?.author} className="w-[30px]" />
             <div className="font-montserrat font-medium">
@@ -78,7 +85,7 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
                 }}
               >
                 <Pencil
-                  size={20}
+                  size={16}
                   className="group-hover:text-background text-foreground"
                 />
               </Button>
@@ -90,7 +97,7 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
             </div>
           )}
         </div>
-
+        <hr className="w-full border-t border-gray-300" />
         <>
           {isEditing ? (
             <QuestionForm
@@ -99,20 +106,24 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
             />
           ) : (
             <>
-              <div className="font-semibold text-base md:text-xl leading-tight">
-                {question?.title}
+              <div>
+                <div className="font-semibold text-base md:text-xl leading-tight">
+                  {question?.title}
+                </div>
+                <>
+                  {question?.description && (
+                    <TextEditorContent content={question?.description} />
+                  )}
+                </>
               </div>
-              <>
-                {question?.description && (
-                  <TextEditorContent content={question?.description} />
-                )}
-              </>
+              <hr className="w-full border-t border-gray-300" />
 
-              <div className="flex mt-1">
-                <div className="text-xs flex gap-2 py-1 px-2 font-semibold">
+              <div className="flex items-center justify-between w-full text-xs pr-2">
+                <div className="flex gap-2 text-muted-foreground font-semibold">
                   <MessageSquare size={16} />
                   <>{question?.answersCount || "No"} Answers</>
                 </div>
+                <QuestionVoteButton questionId={question?.id} />
               </div>
             </>
           )}
