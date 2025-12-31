@@ -7,9 +7,9 @@ import {
   useGetUserVotesQuery,
   type Question,
 } from "@/lib/store/questions/question";
+import { INTERSECTION_THRESHOLD } from "@/lib/constants";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
-import { makeStore } from "@/lib/store/store";
 
 type InfiniteQuestionListProps = {
   initialQuestions: Question[];
@@ -107,7 +107,7 @@ export default function InfiniteQuestionList({
           fetchNextPage();
         }
       },
-      { threshold: 0.1 }
+      { threshold: INTERSECTION_THRESHOLD }
     );
 
     if (observerRef.current) {

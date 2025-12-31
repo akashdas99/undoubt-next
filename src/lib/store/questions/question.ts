@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 
 export type Question = {
   id: string;
@@ -56,7 +57,7 @@ export const questionApi = createApi({
       },
       // The `query` function receives `{queryArg, pageParam}` as its argument
       query({ queryArg: keyword, pageParam }) {
-        return `/api/questions?page=${pageParam}&limit=${10}&keyword=${keyword}`;
+        return `/api/questions?page=${pageParam}&limit=${QUESTIONS_PER_PAGE}&keyword=${keyword}`;
       },
     }),
     getUserVotes: builder.query<Record<string, number | null>, string[]>({
