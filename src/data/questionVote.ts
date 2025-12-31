@@ -84,7 +84,7 @@ export async function getUserVotesForQuestions(questionIds: string[]) {
 
     // If no user or no questions, return empty map
     if (!user || questionIds.length === 0) {
-      return new Map<string, number | null>();
+      return {};
     }
     // Get all user's votes for the provided questions in a single query
     const userVotes = await db
