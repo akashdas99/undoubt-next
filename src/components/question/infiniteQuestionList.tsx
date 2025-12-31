@@ -22,7 +22,6 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const dispatch = useAppDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
-
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
   useEffect(() => {
