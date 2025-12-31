@@ -13,7 +13,9 @@ import { Button } from "../ui/button";
 import QuestionForm from "./questionForm";
 import Link from "next/link";
 import QuestionVoteButton from "./questionVoteButton";
-import { Question } from "@/lib/store/questions/question";
+import { Question, questionApi } from "@/lib/store/questions/question";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { usePathname } from "next/navigation";
 
 type QuestionCardProps = {
   question: Question;
@@ -25,16 +27,31 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useGetProfileQuery();
-
+  const dispatch = useAppDispatch();
+  const pathname = usePathname();
   const isAuthor = !isLoading && question?.authorId === user?.id;
-
   const onDelete = async () => {
     setIsDeleting(true);
-    const res = await deleteQuestionAction({ id: question.id });
+
+    const res = await deleteQuestionAction(
+      { id: question.id },
+      pathname !== "/"
+    );
+    setIsDeleting(false);
 
     if (!res?.success) {
       setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
-      setIsDeleting(false);
+    } else {
+      // Remove deleted question from RTK Query cache
+      dispatch(
+        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+          draft.pages.forEach((page) => {
+            if (page.data) {
+              page.data = page.data.filter((q) => q.id !== question.id);
+            }
+          });
+        })
+      );
     }
   };
   return (

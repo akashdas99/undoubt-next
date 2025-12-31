@@ -32,12 +32,15 @@ export async function editQuestionAction(questionData: EditQuestionType) {
   return res;
 }
 
-export async function deleteQuestionAction(questionData: DeleteQuestionType) {
+export async function deleteQuestionAction(
+  questionData: DeleteQuestionType,
+  shouldRedirect?: boolean
+) {
   const res = await withTryCatchResponse(deleteQuestion(questionData));
 
   if (res?.success) {
     revalidateTag("questions");
-    redirect("/");
+    if (shouldRedirect) redirect("/");
   }
 
   return res;

@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   questionApi,
   selectVoteByQuestionId,
+  selectQuestionById,
 } from "@/lib/store/questions/question";
 import { useGetProfileQuery } from "@/lib/store/user/user";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
@@ -24,33 +25,15 @@ export default function QuestionVoteButton({
   const dispatch = useAppDispatch();
   const { data: user } = useGetProfileQuery();
 
-  // Get current user's vote from cache
+  // Get current user's vote from cache using memoized selector
   const cachedUserVote = useAppSelector((state) =>
     selectVoteByQuestionId(state, questionId)
   );
 
-  // Get all queries to find cache entries
-  const allQueries = useAppSelector((state) => state.getQuestions.queries);
-
-  // Get cached like/dislike counts from getQuestions cache
-  const cachedQuestion = useAppSelector((state) => {
-    const questionsQuery = Object.values(state.getQuestions.queries).find(
-      (query) =>
-        query?.endpointName === "getQuestions" && query.status === "fulfilled"
-    );
-    if (questionsQuery?.data) {
-      const data = questionsQuery.data as {
-        pages: Array<{
-          data?: Array<{ id: string; likes?: number; dislikes?: number }>;
-        }>;
-      };
-      for (const page of data.pages) {
-        const question = page.data?.find((q) => q.id === questionId);
-        if (question) return question;
-      }
-    }
-    return null;
-  });
+  // Get cached like/dislike counts from getQuestions cache using memoized selector
+  const cachedQuestion = useAppSelector((state) =>
+    selectQuestionById(state, questionId)
+  );
 
   // Derive current vote state and counts
   const currentVote: VoteType | null =
@@ -58,24 +41,29 @@ export default function QuestionVoteButton({
 
   // Update user votes cache optimistically
   const updateUserVotesCache = (newVoteValue: number | null) => {
-    Object.values(allQueries).forEach((value) => {
-      if (
-        value?.endpointName === "getUserVotes" &&
-        value.status === "fulfilled"
-      ) {
-        const questionIds = value.originalArgs as string[] | undefined;
-        if (questionIds?.includes(questionId)) {
-          dispatch(
-            questionApi.util.updateQueryData(
-              "getUserVotes",
-              questionIds,
-              (draft) => {
-                draft[questionId] = newVoteValue;
-              }
-            )
-          );
+    dispatch((dispatch, getState) => {
+      const state = getState();
+      const allQueries = state.getQuestions.queries;
+
+      Object.values(allQueries).forEach((value) => {
+        if (
+          value?.endpointName === "getUserVotes" &&
+          value.status === "fulfilled"
+        ) {
+          const questionIds = value.originalArgs as string[] | undefined;
+          if (questionIds?.includes(questionId)) {
+            dispatch(
+              questionApi.util.updateQueryData(
+                "getUserVotes",
+                questionIds,
+                (draft) => {
+                  draft[questionId] = newVoteValue;
+                }
+              )
+            );
+          }
         }
-      }
+      });
     });
   };
 

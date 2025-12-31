@@ -59,12 +59,33 @@ export default function InfiniteQuestionList({
           questionApi.util.upsertQueryData("getQuestions", "", cacheData)
         );
       } else {
-        // Subsequent renders: update only the first page
+        // Subsequent renders: update first page and remove duplicates from other pages
         dispatch(
           questionApi.util.updateQueryData("getQuestions", "", (draft) => {
-            if (draft.pages[0]) {
-              draft.pages[0] = cacheData.pages[0];
+            // Get IDs of questions in the new first page
+            const newPageQuestionIds = new Set(
+              cacheData.pages[0].data?.map((q) => q.id) || []
+            );
+
+            // Update first page
+            draft.pages[0] = cacheData.pages[0];
+
+            // Remove duplicates from other pages
+            for (let i = 1; i < draft.pages.length; i++) {
+              if (draft.pages[i]?.data) {
+                draft.pages[i].data = draft.pages[i].data!.filter(
+                  (q) => !newPageQuestionIds.has(q.id)
+                );
+              }
             }
+
+            // Remove empty pages
+            draft.pages = draft.pages.filter(
+              (page) => page.data && page.data.length > 0
+            );
+
+            // Update pageParams to match remaining pages
+            draft.pageParams = draft.pageParams.slice(0, draft.pages.length);
           })
         );
       }

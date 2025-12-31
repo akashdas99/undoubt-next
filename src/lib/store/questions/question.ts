@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export type Question = {
@@ -78,18 +79,61 @@ export const {
   useGetUserVotesQuery,
 } = questionApi;
 
-// Simple non-memoized selector for when memoization is handled elsewhere
-export const selectVoteByQuestionId = (
-  state: RootState,
-  questionId: string
-): -1 | 1 | null => {
-  const queries = state.getQuestions.queries;
-  const batchQuery = Object.values(queries).find(
-    (query) =>
-      query?.endpointName === "getUserVotes" &&
-      (query?.data as Record<string, number | null>)?.[questionId] !== undefined
-  );
+// Base selectors
+const selectQuestionQueries = (state: RootState) => state.getQuestions.queries;
 
-  const data = batchQuery?.data as Record<string, number | null> | undefined;
-  return (data?.[questionId] ?? null) as -1 | 1 | null;
-};
+// Memoized selector to get all getUserVotes queries
+export const selectUserVotesQueries = createSelector(
+  [selectQuestionQueries],
+  (queries) =>
+    Object.values(queries).filter(
+      (query) => query?.endpointName === "getUserVotes"
+    )
+);
+
+// Memoized selector to get vote by question ID
+export const selectVoteByQuestionId = createSelector(
+  [
+    selectUserVotesQueries,
+    (_state: RootState, questionId: string) => questionId,
+  ],
+  (userVotesQueries, questionId) => {
+    const batchQuery = userVotesQueries.find(
+      (query) =>
+        (query?.data as Record<string, number | null>)?.[questionId] !==
+        undefined
+    );
+
+    const data = batchQuery?.data as Record<string, number | null> | undefined;
+    return (data?.[questionId] ?? null) as -1 | 1 | null;
+  }
+);
+
+// Memoized selector to get question from cache by ID
+export const selectQuestionById = createSelector(
+  [
+    selectQuestionQueries,
+    (_state: RootState, questionId: string) => questionId,
+  ],
+  (queries, questionId) => {
+    const questionsQuery = Object.values(queries).find(
+      (query) =>
+        query?.endpointName === "getQuestions" && query.status === "fulfilled"
+    );
+
+    if (questionsQuery?.data) {
+      const data = questionsQuery.data as {
+        pages: Array<{
+          data?: Array<{ id: string; likes?: number; dislikes?: number }>;
+        }>;
+      };
+
+      for (const page of data.pages) {
+        const question = page.data?.find((q) => q.id === questionId);
+        if (question) return question;
+      }
+    }
+
+    return null;
+  }
+);
