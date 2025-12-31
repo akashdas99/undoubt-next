@@ -15,6 +15,13 @@
       "when": 1765382906333,
       "tag": "0001_dazzling_captain_flint",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766753914815,
+      "tag": "0002_harsh_union_jack",
+      "breakpoints": true
     }
   ]
 }
