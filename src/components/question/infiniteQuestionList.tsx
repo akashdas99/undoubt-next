@@ -9,6 +9,7 @@ import {
 } from "@/lib/store/questions/question";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
+import { makeStore } from "@/lib/store/store";
 
 type InfiniteQuestionListProps = {
   initialQuestions: Question[];
@@ -21,7 +22,6 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const dispatch = useAppDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
-  const hasInitializedCache = useRef(false);
 
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
@@ -45,27 +45,36 @@ export default function InfiniteQuestionList({
       pageParams: [1],
     };
 
-    if (!hasInitializedCache.current) {
-      // First render: initialize cache with server data
-      dispatch(questionApi.util.upsertQueryData("getQuestions", "", cacheData));
-      hasInitializedCache.current = true;
-    } else {
-      // Subsequent renders (after revalidation): update only the first page
-      dispatch(
-        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
-          if (draft.pages[0]) {
-            draft.pages[0] = cacheData.pages[0];
-          }
-        })
+    dispatch((dispatch, getState) => {
+      const state = getState();
+
+      const isCached = Object.values(state.getQuestions.queries).find(
+        (query) =>
+          query?.endpointName === "getQuestions" && query.status === "fulfilled"
       );
-    }
-  }, [dispatch, initialQuestions, initialPagination]);
+
+      if (!isCached) {
+        // First render: initialize cache with server data
+        dispatch(
+          questionApi.util.upsertQueryData("getQuestions", "", cacheData)
+        );
+      } else {
+        // Subsequent renders: update only the first page
+        dispatch(
+          questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+            if (draft.pages[0]) {
+              draft.pages[0] = cacheData.pages[0];
+            }
+          })
+        );
+      }
+    });
+  }, [initialQuestions]);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
     useGetQuestionsInfiniteQuery("");
 
-  const questions =
-    (data?.pages?.map(({ data }) => data).flat() ?? []) || initialQuestions;
+  const questions = data?.pages?.map(({ data }) => data).flat() ?? [];
 
   useGetUserVotesQuery(data?.pages?.at(-1)?.data?.map(({ id }) => id) || [], {
     skip: !data,
