@@ -5,12 +5,13 @@ import { isEmpty } from "@/lib/functions";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   questionApi,
-  selectVoteByQuestionId,
   selectQuestionById,
+  selectVoteByQuestionId,
 } from "@/lib/store/questions/question";
 import { useGetProfileQuery } from "@/lib/store/user/user";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 interface QuestionVoteButtonProps {
   questionId: string;
@@ -117,21 +118,43 @@ export default function QuestionVoteButton({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       <VoteButton
-        icon={<ThumbsUp size={16} />}
+        icon={
+          <ArrowBigUp
+            size={18}
+            fill={currentVote === "like" ? "hsl(var(--accent))" : "none"}
+            stroke={
+              currentVote === "like" ? "hsl(var(--primary))" : "currentColor"
+            }
+          />
+        }
         count={cachedQuestion?.likes || 0}
-        isActive={currentVote === "like"}
         onClick={() => handleVote("like")}
-        activeClass="bg-accent text-accent-foreground"
         label="Like question"
       />
       <VoteButton
-        icon={<ThumbsDown size={16} />}
+        icon={
+          <ArrowBigDown
+            size={18}
+            fill={
+              currentVote === "dislike" ? "hsl(var(--destructive))" : "none"
+            }
+            stroke={
+              currentVote === "dislike"
+                ? "hsl(var(--destructive))"
+                : "currentColor"
+            }
+          />
+        }
         count={cachedQuestion?.dislikes || 0}
-        isActive={currentVote === "dislike"}
         onClick={() => handleVote("dislike")}
-        activeClass="bg-destructive text-destructive-foreground"
         label="Dislike question"
       />
     </div>
@@ -142,24 +165,18 @@ export default function QuestionVoteButton({
 function VoteButton({
   icon,
   count,
-  isActive,
   onClick,
-  activeClass,
   label,
 }: {
   icon: React.ReactNode;
   count: number;
-  isActive: boolean;
   onClick: () => void;
-  activeClass: string;
   label: string;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-        isActive ? activeClass : "bg-secondary hover:bg-secondary/80"
-      }`}
+      className={`flex items-center text-muted-foreground hover:underline gap-1 rounded-lg`}
       aria-label={label}
     >
       {icon}

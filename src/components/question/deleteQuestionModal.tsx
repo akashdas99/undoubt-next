@@ -30,7 +30,7 @@ export default function DeleteQuestionModal({
           className="group hover:bg-destructive"
         >
           <Trash
-            size={20}
+            size={16}
             className="group-hover:text-background text-destructive"
           />
         </Button>
