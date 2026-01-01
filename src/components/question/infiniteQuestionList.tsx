@@ -124,7 +124,7 @@ export default function InfiniteQuestionList({
     <>
       <div className="flex flex-col gap-5">
         {questions.map((question) => (
-          <QuestionCard key={question?.id} question={question} asLink />
+          <QuestionCard key={question?.id} question={question} />
         ))}
       </div>
 
