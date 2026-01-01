@@ -118,13 +118,7 @@ export default function QuestionVoteButton({
   };
 
   return (
-    <div
-      className="flex items-center gap-2"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
+    <div className="flex items-center gap-2">
       <VoteButton
         icon={
           <ArrowBigUp

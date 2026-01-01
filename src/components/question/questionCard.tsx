@@ -1,28 +1,44 @@
 "use client";
 
+import { deleteQuestionAction } from "@/actions/question";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { Question, questionApi } from "@/lib/store/questions/question";
+import { useGetProfileQuery } from "@/lib/store/user/user";
 import dayjs from "dayjs";
 import { CalendarDays, MessageSquare, Pencil } from "lucide-react";
-import React, { ReactNode, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useState } from "react";
+import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import DeleteQuestionModal from "./deleteQuestionModal";
-import { deleteQuestionAction } from "@/actions/question";
-import { useGetProfileQuery } from "@/lib/store/user/user";
-import { Button } from "../ui/button";
 import QuestionForm from "./questionForm";
-import Link from "next/link";
 import QuestionVoteButton from "./questionVoteButton";
-import { Question, questionApi } from "@/lib/store/questions/question";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { usePathname } from "next/navigation";
 
 type QuestionCardProps = {
   question: Question;
-  asLink?: boolean;
 };
 
-const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
+// Conditional wrapper component for Link
+const ConditionalLink = ({
+  condition,
+  href,
+  children,
+}: {
+  condition: boolean;
+  href: string;
+  children: React.ReactNode;
+}) => {
+  return condition ? (
+    <Link href={href}>{children}</Link>
+  ) : (
+    <div>{children}</div>
+  );
+};
+
+const QuestionCard = ({ question }: QuestionCardProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
@@ -30,6 +46,7 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const isAuthor = !isLoading && question?.authorId === user?.id;
+  const isQuestionPage = pathname.startsWith("/question/");
   const onDelete = async () => {
     setIsDeleting(true);
 
@@ -55,97 +72,79 @@ const QuestionCard = ({ question, asLink }: QuestionCardProps) => {
     }
   };
   return (
-    <Wrapper asLink={asLink && !isEditing} href={"question/" + question?.slug}>
-      <div className="p-6 bordered-card flex flex-col gap-3 items-start">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2">
-            <UserImage user={question?.author} className="w-[30px]" />
-            <div className="font-montserrat font-medium">
-              {question?.author?.name}
-            </div>
-            <div className="flex items-center gap-1 text-xs opacity-50">
-              <CalendarDays className="w-3" />
-              {dayjs(question?.createdAt).format("MMM D, YYYY")}
-            </div>
+    <div className="p-5 bordered-card flex flex-col gap-3 items-start">
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-2">
+          <UserImage user={question?.author} className="w-[30px]" />
+          <div className="font-montserrat font-medium">
+            {question?.author?.name}
           </div>
-          {isAuthor && (
-            <div
-              className="flex items-center gap-2"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+          <div className="flex items-center gap-1 text-xs opacity-50">
+            <CalendarDays className="w-3" />
+            {dayjs(question?.createdAt).format("MMM D, YYYY")}
+          </div>
+        </div>
+        {isAuthor && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant={"ghost"}
+              size={"sm-icon"}
+              className="group"
+              onClick={() => {
+                setIsEditing(!isEditing);
               }}
             >
-              <Button
-                variant={"ghost"}
-                size={"sm-icon"}
-                className="group"
-                onClick={() => {
-                  setIsEditing(!isEditing);
-                }}
-              >
-                <Pencil
-                  size={16}
-                  className="group-hover:text-background text-foreground"
-                />
-              </Button>
-              <DeleteQuestionModal
-                error={deleteError}
-                isDeleting={isDeleting}
-                onDelete={onDelete}
+              <Pencil
+                size={16}
+                className="group-hover:text-background text-foreground"
               />
-            </div>
-          )}
-        </div>
-        <hr className="w-full border-t border-gray-300" />
-        <>
-          {isEditing ? (
-            <QuestionForm
-              question={question}
-              closeQuestionForm={() => setIsEditing(false)}
+            </Button>
+            <DeleteQuestionModal
+              error={deleteError}
+              isDeleting={isDeleting}
+              onDelete={onDelete}
             />
-          ) : (
-            <>
-              <div>
-                <div className="font-semibold text-base md:text-xl leading-tight">
-                  {question?.title}
-                </div>
-                <>
-                  {question?.description && (
-                    <TextEditorContent content={question?.description} />
-                  )}
-                </>
-              </div>
-              <hr className="w-full border-t border-gray-300" />
-
-              <div className="flex items-center justify-between w-full text-xs pr-2">
-                <div className="flex gap-2 text-muted-foreground font-semibold">
-                  <MessageSquare size={16} />
-                  <>{question?.answersCount || "No"} Answers</>
-                </div>
-                <QuestionVoteButton questionId={question?.id} />
-              </div>
-            </>
-          )}
-        </>
+          </div>
+        )}
       </div>
-    </Wrapper>
+      <hr className="w-full border-t border-gray-300" />
+      <>
+        {isEditing ? (
+          <QuestionForm
+            question={question}
+            closeQuestionForm={() => setIsEditing(false)}
+          />
+        ) : (
+          <>
+            <ConditionalLink
+              condition={!isQuestionPage}
+              href={`/question/${question?.slug}`}
+            >
+              <div className="font-semibold text-base md:text-xl leading-tight">
+                {question?.title}
+              </div>
+              <>
+                {question?.description && (
+                  <TextEditorContent content={question?.description} />
+                )}
+              </>
+            </ConditionalLink>
+            <hr className="w-full border-t border-gray-300" />
+
+            <div className="flex items-center justify-between w-full text-xs pr-2">
+              <div className="flex gap-2 text-muted-foreground font-semibold">
+                <MessageSquare size={16} />
+                <>{question?.answersCount || "No"} Answers</>
+              </div>
+              <QuestionVoteButton questionId={question?.id} />
+            </div>
+          </>
+        )}
+      </>
+    </div>
   );
 };
-const Wrapper = ({
-  asLink = false,
-  href,
-  children,
-}: {
-  asLink?: boolean;
-  href: string;
-  children: ReactNode;
-}) => {
-  if (asLink) {
-    return <Link href={href}>{children}</Link>;
-  }
-  return <div>{children}</div>;
-};
+
 const QuestionCardSkeleton: React.FC = () => {
   return (
     <div className="p-[1em] bordered-card flex flex-col gap-2 items-start">
