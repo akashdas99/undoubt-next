@@ -21,6 +21,23 @@ type QuestionCardProps = {
   question: Question;
 };
 
+// Conditional wrapper component for Link
+const ConditionalLink = ({
+  condition,
+  href,
+  children,
+}: {
+  condition: boolean;
+  href: string;
+  children: React.ReactNode;
+}) => {
+  return condition ? (
+    <Link href={href}>{children}</Link>
+  ) : (
+    <div>{children}</div>
+  );
+};
+
 const QuestionCard = ({ question }: QuestionCardProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -29,6 +46,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const isAuthor = !isLoading && question?.authorId === user?.id;
+  const isQuestionPage = pathname.startsWith("/question/");
   const onDelete = async () => {
     setIsDeleting(true);
 
@@ -98,7 +116,10 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
           />
         ) : (
           <>
-            <Link href={`/question/${question?.slug}`}>
+            <ConditionalLink
+              condition={!isQuestionPage}
+              href={`/question/${question?.slug}`}
+            >
               <div className="font-semibold text-base md:text-xl leading-tight">
                 {question?.title}
               </div>
@@ -107,7 +128,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
                   <TextEditorContent content={question?.description} />
                 )}
               </>
-            </Link>
+            </ConditionalLink>
             <hr className="w-full border-t border-gray-300" />
 
             <div className="flex items-center justify-between w-full text-xs pr-2">
