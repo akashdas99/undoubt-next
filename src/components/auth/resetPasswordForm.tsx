@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { resetPasswordAction } from "@/actions/auth";
-import { Form, InputField } from "@/components/ui/form";
+import { Form, PasswordField } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ResetPasswordType } from "@/types/auth";
 import { ResetPasswordSchema } from "@/validations/auth";
@@ -47,8 +47,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
-        <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
+      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-md w-10/12 my-auto">
+        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
           Password Reset Successful
         </h1>
         <p className="text-sm mb-4">
@@ -67,26 +67,22 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   }
 
   return (
-    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
-      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
-        Reset Password
-      </h1>
-      <p className="text-xs mb-4">Enter your new password below.</p>
+    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-md w-10/12 my-auto">
+      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>Reset Password</h1>
+      <p className="text-sm mb-4">Enter your new password below.</p>
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <InputField
+          <PasswordField
             control={form.control}
             name="password"
             label="New Password"
             placeholder="New Password"
-            type="password"
           />
-          <InputField
+          <PasswordField
             control={form.control}
             name="confirmPassword"
             label="Confirm Password"
             placeholder="Confirm Password"
-            type="password"
           />
 
           {form?.formState?.errors?.root?.message && (
@@ -108,7 +104,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           </Button>
         </form>
       </Form>
-      <div className="mt-4 text-xs">
+      <div className="mt-4 text-sm">
         <Link className="text-primary underline font-semibold" href={"/login"}>
           Back to Login
         </Link>

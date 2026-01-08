@@ -17,9 +17,7 @@ const QuestionList: React.FC = async () => {
 
   return (
     <div className="w-full my-3 max-w-screen-lg px-3">
-      <div className="mb-3 font-righteous text-xl md:text-3xl">
-        Recent Questions
-      </div>
+      <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
       <InfiniteQuestionList
         initialQuestions={questions}
         initialPagination={result.pagination}

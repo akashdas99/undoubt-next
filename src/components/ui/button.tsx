@@ -32,7 +32,7 @@ const buttonVariants = cva(
         "sm-icon": "h-7 w-7",
       },
       loading: {
-        true: "px-3",
+        true: "",
         false: null,
       },
     },

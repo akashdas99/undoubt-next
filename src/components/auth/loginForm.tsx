@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 //Components
 import { loginUserAction } from "@/actions/auth";
-import { Form, InputField } from "@/components/ui/form";
+import { Form, InputField, PasswordField } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { userApi } from "@/lib/store/user/user";
 import { LoginType } from "@/types/auth";
@@ -55,10 +55,8 @@ export default function LoginForm() {
     }
   };
   return (
-    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
-      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6 `}>
-        Welcome Back
-      </h1>
+    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-md w-10/12 my-auto">
+      <h1 className={`font-righteous text-3xl mb-3 md:mb-6 `}>Welcome Back</h1>
       <Form {...form}>
         <form onSubmit={onSubmit}>
           <InputField
@@ -67,17 +65,16 @@ export default function LoginForm() {
             label="Email"
             placeholder="Email"
           />
-          <InputField
+          <PasswordField
             control={form.control}
             name="password"
             label="Password"
             placeholder="Password"
-            type="password"
           />
           <div className="flex justify-end mt-1">
             <Link
               href="/forgot-password"
-              className="text-xs text-primary hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               Forgot Password?
             </Link>
@@ -88,10 +85,10 @@ export default function LoginForm() {
               {form?.formState?.errors?.root?.message}
             </p>
           )}
-          <div className="flex flex-wrap gap-x-2 mt-2">
+          <div className="grid grid-cols-2 gap-x-2 mt-2">
             <Button
               type="submit"
-              className="mt-3 flex-1"
+              className="mt-3"
               loading={!isGuest && loadingLogin}
             >
               Login
@@ -113,7 +110,7 @@ export default function LoginForm() {
         <span className="flex-shrink mx-4 text-gray-400">Or</span>
         <div className="flex-grow border-t border-gray-400"></div>
       </div>
-      <div className="text-xs">
+      <div className="text-sm">
         <Link
           className="text-primary underline font-semibold"
           href={"/register"}
