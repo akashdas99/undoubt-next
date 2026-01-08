@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 //Components
 import { registerUserAction } from "@/actions/auth";
-import { Form, InputField } from "@/components/ui/form";
+import { Form, InputField, PasswordField } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { userApi } from "@/lib/store/user/user";
 import { RegisterType } from "@/types/auth";
@@ -48,8 +48,8 @@ const RegisterForm: React.FC = () => {
   });
 
   return (
-    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-lg w-10/12 my-auto">
-      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
+    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
+      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
         Register Account
       </h1>
       <Form {...form}>
@@ -71,13 +71,14 @@ const RegisterForm: React.FC = () => {
             name="email"
             label="Email"
             placeholder="Email"
+            className="col-span-2"
           />
-          <InputField
+          <PasswordField
             control={form.control}
             name="password"
             label="Password"
             placeholder="Password"
-            type="password"
+            className="col-span-2"
           />
           {form?.formState?.errors?.root?.message && (
             <p className="text-[0.6rem] text-destructive font-medium">
@@ -98,7 +99,7 @@ const RegisterForm: React.FC = () => {
         <span className="flex-shrink mx-4 text-gray-400">Or</span>
         <div className="flex-grow border-t border-gray-400"></div>
       </div>
-      <div className="text-xs">
+      <div className="text-sm">
         <Link className="text-primary underline font-semibold" href={"/login"}>
           Login
         </Link>{" "}

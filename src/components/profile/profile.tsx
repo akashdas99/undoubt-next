@@ -8,9 +8,7 @@ export default async function Profile() {
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
       <div className="bordered-card p-[1em]">
-        <h1 className={`font-righteous text-xl md:text-3xl mb-2`}>
-          Profile Information
-        </h1>
+        <h1 className={`font-righteous text-3xl mb-2`}>Profile Information</h1>
         <div className="flex flex-col gap-5 sm:flex-row sm:justify-between items-start">
           <div className="relative">
             <UserImage user={data} className="w-[36px]" />

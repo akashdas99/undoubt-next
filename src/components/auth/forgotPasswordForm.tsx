@@ -39,8 +39,8 @@ export default function ForgotPasswordForm() {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
-        <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
+      <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
+        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
           Check Your Email
         </h1>
         <p className="text-sm mb-4">
@@ -49,7 +49,7 @@ export default function ForgotPasswordForm() {
         </p>
         <Link
           href="/login"
-          className="text-xs text-primary hover:underline block"
+          className="text-sm text-primary hover:underline block"
         >
           Back to Login
         </Link>
@@ -58,11 +58,11 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <div className="bordered-card p-5 md:p-8 rounded-xl max-w-xs w-10/12 my-auto">
-      <h1 className={`font-righteous text-xl md:text-3xl mb-3 md:mb-6`}>
+    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
+      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
         Forgot Password
       </h1>
-      <p className="text-xs mb-4">
+      <p className="text-sm mb-4">
         Enter your email address and we&apos;ll send you a link to reset your
         password.
       </p>
@@ -89,7 +89,7 @@ export default function ForgotPasswordForm() {
           </Button>
         </form>
       </Form>
-      <div className="mt-4 text-xs">
+      <div className="mt-4 text-sm">
         <Link className="text-primary underline font-semibold" href={"/login"}>
           Back to Login
         </Link>
