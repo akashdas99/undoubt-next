@@ -1,11 +1,11 @@
 "use client";
 
-import { deleteQuestionAction } from "@/actions/question";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { Question, questionApi } from "@/lib/store/questions/question";
+import { Question } from "@/lib/store/questions/question";
 import { useGetProfileQuery } from "@/lib/store/user/user";
+import { openDeleteModal } from "@/lib/store/ui/uiSlice";
 import dayjs from "dayjs";
-import { CalendarDays, MessageSquare, Pencil } from "lucide-react";
+import { CalendarDays, MessageSquare, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -13,7 +13,6 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
-import DeleteQuestionModal from "./deleteQuestionModal";
 import QuestionForm from "./questionForm";
 import QuestionVoteButton from "./questionVoteButton";
 
@@ -38,112 +37,117 @@ const ConditionalLink = ({
   );
 };
 
-const QuestionCard = ({ question }: QuestionCardProps) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [deleteError, setDeleteError] = useState<string>("");
-  const { data: user, isLoading } = useGetProfileQuery();
-  const dispatch = useAppDispatch();
-  const pathname = usePathname();
-  const isAuthor = !isLoading && question?.authorId === user?.id;
-  const isQuestionPage = pathname.startsWith("/question/");
-  const onDelete = async () => {
-    setIsDeleting(true);
-
-    const res = await deleteQuestionAction(
-      { id: question.id },
-      pathname !== "/"
-    );
-    setIsDeleting(false);
-
-    if (!res?.success) {
-      setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
-    } else {
-      // Remove deleted question from RTK Query cache
-      dispatch(
-        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
-          draft.pages.forEach((page) => {
-            if (page.data) {
-              page.data = page.data.filter((q) => q.id !== question.id);
-            }
-          });
-        })
-      );
-    }
-  };
-  return (
-    <div className="p-5 bordered-card flex flex-col gap-3 items-start">
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-2">
-          <UserImage user={question?.author} className="w-[30px]" />
-          <div className="font-montserrat font-medium">
-            {question?.author?.name}
-          </div>
-          <div className="flex items-center gap-1 text-xs opacity-50">
-            <CalendarDays className="w-3" />
-            {dayjs(question?.createdAt).format("MMM D, YYYY")}
-          </div>
-        </div>
-        {isAuthor && (
+const QuestionCard = React.memo(
+  ({ question }: QuestionCardProps) => {
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const { data: user, isLoading } = useGetProfileQuery();
+    const dispatch = useAppDispatch();
+    const pathname = usePathname();
+    const isAuthor = !isLoading && question?.authorId === user?.id;
+    const isQuestionPage = pathname.startsWith("/question/");
+    return (
+      <div className="p-5 bordered-card flex flex-col gap-3 items-start">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            <Button
-              variant={"ghost"}
-              size={"sm-icon"}
-              className="group"
-              onClick={() => {
-                setIsEditing(!isEditing);
-              }}
-            >
-              <Pencil
-                size={16}
-                className="group-hover:text-background text-foreground"
-              />
-            </Button>
-            <DeleteQuestionModal
-              error={deleteError}
-              isDeleting={isDeleting}
-              onDelete={onDelete}
-            />
-          </div>
-        )}
-      </div>
-      <hr className="w-full border-t border-gray-300" />
-      <>
-        {isEditing ? (
-          <QuestionForm
-            question={question}
-            closeQuestionForm={() => setIsEditing(false)}
-          />
-        ) : (
-          <>
-            <ConditionalLink
-              condition={!isQuestionPage}
-              href={`/question/${question?.slug}`}
-            >
-              <div className="font-semibold text-base md:text-xl leading-tight">
-                {question?.title}
-              </div>
-              <>
-                {question?.description && (
-                  <TextEditorContent content={question?.description} />
-                )}
-              </>
-            </ConditionalLink>
-            <hr className="w-full border-t border-gray-300" />
-
-            <div className="flex items-center justify-between w-full text-xs pr-2">
-              <div className="flex gap-2 text-muted-foreground font-semibold">
-                <MessageSquare size={16} />
-                <>{question?.answersCount || "No"} Answers</>
-              </div>
-              <QuestionVoteButton questionId={question?.id} />
+            <UserImage user={question?.author} className="w-[30px]" />
+            <div className="font-montserrat font-medium">
+              {question?.author?.name}
             </div>
-          </>
-        )}
-      </>
-    </div>
-  );
-};
+            <div className="flex items-center gap-1 text-xs opacity-50">
+              <CalendarDays className="w-3" />
+              {dayjs(question?.createdAt).format("MMM D, YYYY")}
+            </div>
+          </div>
+          {isAuthor && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant={"ghost"}
+                size={"sm-icon"}
+                className="group"
+                onClick={() => {
+                  setIsEditing(!isEditing);
+                }}
+              >
+                <Pencil
+                  size={16}
+                  className="group-hover:text-background text-foreground"
+                />
+              </Button>
+              <Button
+                variant={"ghost"}
+                size={"sm-icon"}
+                className="group hover:bg-destructive"
+                onClick={() => dispatch(openDeleteModal(question.id))}
+              >
+                <Trash
+                  size={16}
+                  className="group-hover:text-background text-destructive"
+                />
+              </Button>
+            </div>
+          )}
+        </div>
+        <hr className="w-full border-t border-gray-300" />
+        <>
+          {isEditing ? (
+            <QuestionForm
+              question={question}
+              closeQuestionForm={() => setIsEditing(false)}
+            />
+          ) : (
+            <>
+              <ConditionalLink
+                condition={!isQuestionPage}
+                href={`/question/${question?.slug}`}
+              >
+                <div className="font-semibold text-base md:text-xl leading-tight">
+                  {question?.title}
+                </div>
+                <>
+                  {question?.description && (
+                    <TextEditorContent content={question?.description} />
+                  )}
+                </>
+              </ConditionalLink>
+              <hr className="w-full border-t border-gray-300" />
+
+              <div className="flex items-center justify-between w-full text-xs pr-2">
+                <div className="flex gap-2 text-muted-foreground font-semibold">
+                  <MessageSquare size={16} />
+                  <>{question?.answersCount || "No"} Answers</>
+                </div>
+                <QuestionVoteButton questionId={question?.id} />
+              </div>
+            </>
+          )}
+        </>
+      </div>
+    );
+  },
+  // Custom comparison function for React.memo
+  // Only re-render if the question data actually changed, not just the reference
+  (prevProps: QuestionCardProps, nextProps: QuestionCardProps) => {
+    const prev = prevProps.question;
+    const next = nextProps.question;
+
+    // Compare all relevant fields
+    return (
+      prev.id === next.id &&
+      prev.title === next.title &&
+      prev.description === next.description &&
+      prev.slug === next.slug &&
+      prev.likes === next.likes &&
+      prev.dislikes === next.dislikes &&
+      prev.answersCount === next.answersCount &&
+      prev.createdAt === next.createdAt &&
+      prev.authorId === next.authorId &&
+      prev.author?.name === next.author?.name &&
+      prev.author?.profilePicture === next.author?.profilePicture
+    );
+  }
+);
+
+QuestionCard.displayName = "QuestionCard";
 
 const QuestionCardSkeleton: React.FC = () => {
   return (

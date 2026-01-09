@@ -1,14 +1,22 @@
 "use client";
 
-import { useAppDispatch } from "@/lib/store/hooks";
+import { deleteQuestionAction } from "@/actions/question";
+import { INTERSECTION_THRESHOLD } from "@/lib/constants";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   questionApi,
   useGetQuestionsInfiniteQuery,
   useGetUserVotesQuery,
   type Question,
 } from "@/lib/store/questions/question";
-import { INTERSECTION_THRESHOLD } from "@/lib/constants";
+import {
+  closeDeleteModal,
+  selectDeleteModal,
+  setDeleteError,
+  setDeleteLoading,
+} from "@/lib/store/ui/uiSlice";
 import { useEffect, useRef } from "react";
+import { ConfirmationModal } from "../ui/confirmationModal";
 import QuestionCard from "./questionCard";
 
 type InfiniteQuestionListProps = {
@@ -22,6 +30,7 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const dispatch = useAppDispatch();
   const observerRef = useRef<HTMLDivElement>(null);
+  const deleteModal = useAppSelector(selectDeleteModal);
   // Use util.upsertQueryData to populate RTK Query cache with server data
   // This prevents the client from refetching data that was already loaded on server
   useEffect(() => {
@@ -99,6 +108,39 @@ export default function InfiniteQuestionList({
   useGetUserVotesQuery(data?.pages?.at(-1)?.data?.map(({ id }) => id) || [], {
     skip: !data,
   });
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.questionId) return;
+
+    dispatch(setDeleteLoading(true));
+
+    const res = await deleteQuestionAction(
+      { id: deleteModal.questionId },
+      false
+    );
+
+    dispatch(setDeleteLoading(false));
+
+    if (!res?.success) {
+      dispatch(
+        setDeleteError(("errors" in res && res?.errors?.id?.message) || "")
+      );
+    } else {
+      // Remove deleted question from RTK Query cache
+      dispatch(
+        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
+          draft.pages.forEach((page) => {
+            if (page.data) {
+              page.data = page.data.filter(
+                (q) => q.id !== deleteModal.questionId
+              );
+            }
+          });
+        })
+      );
+      dispatch(closeDeleteModal());
+    }
+  };
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -146,6 +188,20 @@ export default function InfiniteQuestionList({
           No more questions to load
         </div>
       )}
+
+      <ConfirmationModal
+        open={deleteModal.isOpen}
+        onOpenChange={(open) => {
+          if (!open) dispatch(closeDeleteModal());
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Question?"
+        description="This action cannot be undone. This will permanently delete your question and all its answers."
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={deleteModal.isDeleting}
+        error={deleteModal.error}
+      />
     </>
   );
 }
