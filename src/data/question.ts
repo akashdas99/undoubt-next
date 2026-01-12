@@ -14,7 +14,16 @@ import {
   QuestionSchema,
   QuestionType,
 } from "@/validations/question";
-import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  ilike,
+  or,
+  sql,
+} from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { getProfile } from "./user";
 
@@ -57,7 +66,7 @@ export const getQuestions = async (
       author: { name: users.name, profilePicture: users.profilePicture },
       authorId: questions.authorId,
       createdAt: questions.createdAt,
-      answersCount: count(answers.id),
+      answersCount: countDistinct(answers.id),
       slug: questions.slug,
       likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
       dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
@@ -117,7 +126,7 @@ export async function getQuestionBySlug(slug: string) {
       author: { name: users.name, profilePicture: users.profilePicture },
       authorId: questions.authorId,
       createdAt: questions.createdAt,
-      answersCount: count(answers.id),
+      answersCount: countDistinct(answers.id),
       slug: questions.slug,
       likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
       dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
