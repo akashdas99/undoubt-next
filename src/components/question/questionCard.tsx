@@ -3,7 +3,7 @@
 import { useAppDispatch } from "@/lib/store/hooks";
 import { Question } from "@/lib/store/questions/question";
 import { useGetProfileQuery } from "@/lib/store/user/user";
-import { openDeleteModal } from "@/lib/store/ui/uiSlice";
+import { openDeleteModal } from "@/lib/store/ui/deleteModalSlice";
 import dayjs from "dayjs";
 import { CalendarDays, MessageSquare, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
