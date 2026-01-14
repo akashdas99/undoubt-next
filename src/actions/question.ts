@@ -40,6 +40,10 @@ export async function deleteQuestionAction(
 
   if (res?.success) {
     revalidateTag("questions");
+    // Also revalidate the specific question page to remove it from static cache
+    if ("data" in res && res.data?.slug) {
+      revalidateTag(`questionBySlug:${res.data.slug}`);
+    }
     if (shouldRedirect) redirect("/");
   }
 

@@ -194,7 +194,7 @@ export async function deleteQuestion(questionData: DeleteQuestionType) {
 
   // Check if question exists and belongs to user
   const [existingQuestion] = await db
-    .select({ authorId: questions.authorId })
+    .select({ authorId: questions.authorId, slug: questions.slug })
     .from(questions)
     .where(eq(questions.id, validatedQuestion.id))
     .limit(1);
@@ -210,5 +210,8 @@ export async function deleteQuestion(questionData: DeleteQuestionType) {
   // Delete question (answers will cascade delete due to schema)
   await db.delete(questions).where(eq(questions.id, validatedQuestion.id));
 
-  return successResponse({ message: "Question deleted successfully" });
+  return successResponse({
+    message: "Question deleted successfully",
+    slug: existingQuestion.slug,
+  });
 }

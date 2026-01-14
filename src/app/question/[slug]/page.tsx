@@ -1,5 +1,6 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
+import QuestionDeleteModal from "@/components/question/questionDeleteModal";
 import QuestionSection from "@/components/question/questionSection";
 import { getAllQuestions, getQuestionBySlug } from "@/data/question";
 import { Metadata } from "next";
@@ -48,6 +49,7 @@ export default function Page({
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
       <div className="flex flex-col gap-5">
         <QuestionSection params={params} />
+        <QuestionDeleteModal redirectOnDelete />
         <AddAnswer />
         <div className="bordered-card p-[1em]">
           <div className="active-neo section-heading mb-2 font-righteous text-xl">

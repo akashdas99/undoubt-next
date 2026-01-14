@@ -1,5 +1,6 @@
 "use client";
 
+import { INTERSECTION_THRESHOLD } from "@/lib/constants";
 import { useAppDispatch } from "@/lib/store/hooks";
 import {
   questionApi,
@@ -7,9 +8,9 @@ import {
   useGetUserVotesQuery,
   type Question,
 } from "@/lib/store/questions/question";
-import { INTERSECTION_THRESHOLD } from "@/lib/constants";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
+import QuestionDeleteModal from "./questionDeleteModal";
 
 type InfiniteQuestionListProps = {
   initialQuestions: Question[];
@@ -99,6 +100,7 @@ export default function InfiniteQuestionList({
   useGetUserVotesQuery(data?.pages?.at(-1)?.data?.map(({ id }) => id) || [], {
     skip: !data,
   });
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -146,6 +148,8 @@ export default function InfiniteQuestionList({
           No more questions to load
         </div>
       )}
+
+      <QuestionDeleteModal />
     </>
   );
 }
