@@ -61,7 +61,7 @@ export default function AnswerCard({
             <Button
               variant={"ghost"}
               size="icon-sm"
-              className="group"
+              className="group hover:bg-primary"
               onClick={() => setIsEditing(!isEditing)}
             >
               <Pencil

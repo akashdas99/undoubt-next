@@ -123,10 +123,8 @@ export default function QuestionVoteButton({
         icon={
           <ArrowBigUp
             size={18}
-            fill={currentVote === "like" ? "hsl(var(--accent))" : "none"}
-            stroke={
-              currentVote === "like" ? "hsl(var(--primary))" : "currentColor"
-            }
+            fill={currentVote === "like" ? "var(--primary)" : "none"}
+            stroke={currentVote === "like" ? "var(--primary)" : "currentColor"}
           />
         }
         count={cachedQuestion?.likes || 0}
@@ -137,13 +135,9 @@ export default function QuestionVoteButton({
         icon={
           <ArrowBigDown
             size={18}
-            fill={
-              currentVote === "dislike" ? "hsl(var(--destructive))" : "none"
-            }
+            fill={currentVote === "dislike" ? "var(--destructive)" : "none"}
             stroke={
-              currentVote === "dislike"
-                ? "hsl(var(--destructive))"
-                : "currentColor"
+              currentVote === "dislike" ? "var(--destructive)" : "currentColor"
             }
           />
         }

@@ -1,25 +1,20 @@
-import { unstable_cache } from "next/cache";
+import { cacheTag } from "next/cache";
 import AnswerCard from "./answerCard";
 import { getAnswersByQuestionSlug } from "@/data/answer";
 
-const getCachedAnswersByQuestionSlug = (slug: string) =>
-  unstable_cache(
-    async () => getAnswersByQuestionSlug(slug),
-    [`answersByQuestionSlug:${slug}`],
-    {
-      tags: [`answersByQuestionSlug:${slug}`],
-      revalidate: 600,
-    },
-  );
+async function getCachedAnswersByQuestionSlug(slug: string) {
+  "use cache";
+  cacheTag(`answersByQuestionSlug:${slug}`);
+  return getAnswersByQuestionSlug(slug);
+}
+
 export default async function AnswerList({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug = "" } = await params;
-  const getAnswers = getCachedAnswersByQuestionSlug(slug);
-
-  const { data: answers } = await getAnswers();
+  const { data: answers } = await getCachedAnswersByQuestionSlug(slug);
 
   return (
     <>

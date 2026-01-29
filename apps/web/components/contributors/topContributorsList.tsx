@@ -1,15 +1,13 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { getTopContributors } from "@/data/user";
 import ContributorCard from "./contributorCard";
 
-const getCachedTopContributors = unstable_cache(
-  async () => getTopContributors(10),
-  ["top-contributors"],
-  {
-    tags: ["contributors"],
-    revalidate: 600, // Revalidate every 10 minutes
-  },
-);
+async function getCachedTopContributors() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("contributors");
+  return getTopContributors(10);
+}
 
 const TopContributorsList: React.FC = async () => {
   const contributors = await getCachedTopContributors();

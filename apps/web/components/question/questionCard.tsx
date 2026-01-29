@@ -63,7 +63,7 @@ const QuestionCard = React.memo(
               <Button
                 variant={"ghost"}
                 size="icon-sm"
-                className="group"
+                className="group hover:bg-primary"
                 onClick={() => {
                   setIsEditing(!isEditing);
                 }}

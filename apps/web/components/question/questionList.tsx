@@ -1,15 +1,12 @@
-import { unstable_cache } from "next/cache";
+import { cacheTag } from "next/cache";
 import { getQuestions } from "@/data/question";
 import InfiniteQuestionList from "./infiniteQuestionList";
 
-const getCachedQuestions = unstable_cache(
-  async () => getQuestions(),
-  [`questions`],
-  {
-    tags: ["questions"],
-    revalidate: 600,
-  },
-);
+async function getCachedQuestions() {
+  "use cache";
+  cacheTag("questions");
+  return getQuestions();
+}
 
 const QuestionList: React.FC = async () => {
   const result = await getCachedQuestions();

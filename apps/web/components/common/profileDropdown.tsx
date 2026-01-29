@@ -2,6 +2,7 @@ import { logoutUser } from "@/actions/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -26,6 +27,7 @@ export function ProfileDropdown() {
     router.refresh();
     dispatch(userApi.util.invalidateTags(["profile"]));
   };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -33,7 +35,7 @@ export function ProfileDropdown() {
           <Button
             variant="ghost"
             size={"icon"}
-            className="rounded-full p-[2px] data-popup-open:bg-primary hover:bg-primary"
+            className="rounded-full p-[2px] data-popup-open:ring-2 data-popup-open:ring-primary/50 hover:ring-2 hover:ring-primary/30 transition-shadow"
           />
         }
       >
@@ -45,33 +47,73 @@ export function ProfileDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="font-montserrat bg-background p-2 border border-solid border-primary/50 rounded-lg"
+        className="w-56 bg-background/95 backdrop-blur-sm border border-border/50 shadow-lg rounded-xl p-1.5"
         align="end"
+        sideOffset={8}
       >
-        <DropdownMenuLabel>Get Started</DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-primary/50 h-[2px]" />
-
         {isEmpty(user) ? (
-          <>
-            <DropdownMenuItem render={<Link href={"/register"} />}>
-              <UserPlus />
-              Create Account
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1.5">
+              Get Started
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              render={<Link href={"/register"} />}
+              className="rounded-lg mx-1 my-0.5"
+            >
+              <UserPlus className="text-primary" />
+              <span>Create Account</span>
             </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href={"/login"} />}>
-              <LogIn />
-              Login
+            <DropdownMenuItem
+              render={<Link href={"/login"} />}
+              className="rounded-lg mx-1 my-0.5"
+            >
+              <LogIn className="text-primary" />
+              <span>Login</span>
             </DropdownMenuItem>
-          </>
+          </DropdownMenuGroup>
         ) : (
           <>
-            <DropdownMenuItem render={<Link href={"/profile"} />}>
-              <UserRoundCog />
-              Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <div className="flex items-center gap-3 px-2 py-2">
+                <UserImage user={user} className="w-10 h-10" />
+                <div className="flex flex-col min-w-0">
+                  <span className="font-medium text-sm truncate">
+                    {user?.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {user?.email}
+                  </span>
+                </div>
+              </div>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator className="my-1.5" />
+
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+                Account
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                render={<Link href={"/profile"} />}
+                className="rounded-lg mx-1 my-0.5"
+              >
+                <UserRoundCog className="text-primary" />
+                <span>Profile Settings</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator className="my-1.5" />
+
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={handleLogout}
+                variant="destructive"
+                className="rounded-lg mx-1 my-0.5"
+              >
+                <LogOut />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </>
         )}
       </DropdownMenuContent>
