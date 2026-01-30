@@ -1,15 +1,8 @@
-import { cacheTag } from "next/cache";
 import { getQuestions } from "@/data/question";
 import InfiniteQuestionList from "./infiniteQuestionList";
 
-async function getCachedQuestions() {
-  "use cache";
-  cacheTag("questions");
-  return getQuestions();
-}
-
 const QuestionList: React.FC = async () => {
-  const result = await getCachedQuestions();
+  const result = await getQuestions();
   const questions = result.data;
 
   return (

@@ -1,10 +1,7 @@
-import { cacheTag } from "next/cache";
-import AnswerCard from "./answerCard";
 import { getAnswersByQuestionSlug } from "@/data/answer";
+import AnswerCard from "./answerCard";
 
 async function getCachedAnswersByQuestionSlug(slug: string) {
-  "use cache";
-  cacheTag(`answersByQuestionSlug:${slug}`);
   return getAnswersByQuestionSlug(slug);
 }
 
