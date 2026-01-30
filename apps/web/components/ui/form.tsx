@@ -121,7 +121,11 @@ export function FormEditor<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className={className}>
           {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
-          <Editor content={field.value || ""} onChange={field.onChange} />
+          <Editor
+            content={field.value || ""}
+            onChange={field.onChange}
+            className="bg-white min-h-32"
+          />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
       )}

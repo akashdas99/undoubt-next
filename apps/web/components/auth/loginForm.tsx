@@ -167,7 +167,7 @@ export default function LoginForm() {
         >
           Register
         </Link>{" "}
-        if you donot have an account
+        if you do not have an account
       </div>
     </div>
   );
