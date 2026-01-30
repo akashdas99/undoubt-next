@@ -1,16 +1,8 @@
-import { cacheLife, cacheTag } from "next/cache";
 import { getTopContributors } from "@/data/user";
 import ContributorCard from "./contributorCard";
 
-async function getCachedTopContributors() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("contributors");
-  return getTopContributors(10);
-}
-
 const TopContributorsList: React.FC = async () => {
-  const contributors = await getCachedTopContributors();
+  const contributors = await getTopContributors(10);
 
   // Filter out users with 0 contributions
   const activeContributors = contributors.filter(
