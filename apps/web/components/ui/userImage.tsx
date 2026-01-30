@@ -26,7 +26,8 @@ export default function UserImage({
         <Image
           src={`${process.env.NEXT_PUBLIC_CDNURL!}${user?.profilePicture}`}
           alt=""
-          fill={true}
+          height={30}
+          width={30}
         />
       ) : (
         user?.name?.slice(0, 1)
