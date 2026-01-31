@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/common/header";
-import QueryProvider from "@/lib/providers/QueryProvider";
 import { Montserrat, Righteous } from "next/font/google";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Undoubt",
@@ -29,12 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} ${righteous.variable}`}>
       <body>
-        <QueryProvider>
+        <Providers>
           <div className="min-h-svh flex flex-col items-center font-montserrat">
             <Header />
             {children}
           </div>
-        </QueryProvider>
+        </Providers>
       </body>
     </html>
   );
