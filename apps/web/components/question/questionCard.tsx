@@ -1,7 +1,8 @@
 "use client";
 
-import { useProfile } from "@/lib/queries/user";
 import { Question } from "@/lib/queries/questions";
+import { useProfile } from "@/lib/queries/user";
+import { useUIStoreSelector } from "@/store/useUIStore";
 import dayjs from "dayjs";
 import { CalendarDays, MessageSquare, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +14,6 @@ import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import QuestionForm from "./questionForm";
 import QuestionVoteButton from "./questionVoteButton";
-import { useUIStore, useUIStoreSelector } from "@/store/useUIStore";
 
 type QuestionCardProps = {
   question: Question;
