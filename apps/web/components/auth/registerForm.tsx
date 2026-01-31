@@ -11,19 +11,18 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { isEmpty } from "@/lib/functions";
-import { userApi } from "@/lib/store/user/user";
+import { useInvalidateProfile } from "@/lib/queries/user";
 import { RegisterType } from "@/types/auth";
 import { RegisterSchema } from "@repo/validations/auth";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const invalidateProfile = useInvalidateProfile();
   const [showPassword, setShowPassword] = useState(false);
 
   const [res, handleRegister, loadingSignup] = useActionState(
@@ -32,7 +31,7 @@ const RegisterForm: React.FC = () => {
       if (!isEmpty(res) && "success" in res && res?.success) {
         router.replace("/");
         router.refresh();
-        dispatch(userApi.util.invalidateTags(["profile"]));
+        invalidateProfile();
       }
       return res;
     },

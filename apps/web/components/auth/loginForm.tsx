@@ -11,19 +11,18 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { isEmpty } from "@/lib/functions";
-import { userApi } from "@/lib/store/user/user";
+import { useInvalidateProfile } from "@/lib/queries/user";
 import { LoginType } from "@/types/auth";
 import { LoginSchema } from "@repo/validations/auth";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const invalidateProfile = useInvalidateProfile();
   const [isGuest, setIsGuest] = useState<boolean>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,7 +32,7 @@ export default function LoginForm() {
       if (!isEmpty(res) && "success" in res && res?.success) {
         router.replace("/");
         router.refresh();
-        dispatch(userApi.util.invalidateTags(["profile"]));
+        invalidateProfile();
       }
       return res;
     },

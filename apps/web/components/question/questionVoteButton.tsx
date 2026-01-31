@@ -2,13 +2,13 @@
 
 import { voteOnQuestionAction } from "@/actions/question";
 import { isEmpty } from "@/lib/functions";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useProfile } from "@/lib/queries/user";
 import {
-  questionApi,
-  selectQuestionById,
-  selectVoteByQuestionId,
-} from "@/lib/store/questions/question";
-import { useGetProfileQuery } from "@/lib/store/user/user";
+  useVoteByQuestionId,
+  useQuestionById,
+  type PaginatedResponse,
+} from "@/lib/queries/questions";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -23,18 +23,14 @@ export default function QuestionVoteButton({
   questionId,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const { data: user } = useGetProfileQuery();
+  const queryClient = useQueryClient();
+  const { data: user } = useProfile();
 
-  // Get current user's vote from cache using memoized selector
-  const cachedUserVote = useAppSelector((state) =>
-    selectVoteByQuestionId(state, questionId),
-  );
+  // Get current user's vote from cache
+  const cachedUserVote = useVoteByQuestionId(questionId);
 
-  // Get cached like/dislike counts from getQuestions cache using memoized selector
-  const cachedQuestion = useAppSelector((state) =>
-    selectQuestionById(state, questionId),
-  );
+  // Get cached like/dislike counts from getQuestions cache
+  const cachedQuestion = useQuestionById(questionId);
 
   // Derive current vote state and counts
   const currentVote: VoteType | null =
@@ -42,65 +38,67 @@ export default function QuestionVoteButton({
 
   // Update user votes cache optimistically
   const updateUserVotesCache = (newVoteValue: number | null) => {
-    dispatch((dispatch, getState) => {
-      const state = getState();
-      const allQueries = state.getQuestions.queries;
-
-      Object.values(allQueries).forEach((value) => {
-        if (
-          value?.endpointName === "getUserVotes" &&
-          value.status === "fulfilled"
-        ) {
-          const questionIds = value.originalArgs as string[] | undefined;
-          if (questionIds?.includes(questionId)) {
-            dispatch(
-              questionApi.util.updateQueryData(
-                "getUserVotes",
-                questionIds,
-                (draft) => {
-                  draft[questionId] = newVoteValue;
-                },
-              ),
-            );
-          }
-        }
-      });
+    const allQueries = queryClient.getQueriesData<
+      Record<string, number | null>
+    >({
+      queryKey: ["userVotes"],
     });
+
+    for (const [queryKey, data] of allQueries) {
+      if (data?.[questionId] !== undefined) {
+        queryClient.setQueryData(queryKey, {
+          ...data,
+          [questionId]: newVoteValue,
+        });
+      }
+    }
   };
 
   // Update questions cache optimistically
   const updateQuestionsCache = (voteType: VoteType) => {
-    dispatch(
-      questionApi.util.updateQueryData("getQuestions", "", (draft) => {
-        draft.pages.forEach((page) => {
-          const question = page.data?.find((q) => q.id === questionId);
-          if (!question) return;
+    queryClient.setQueriesData<{
+      pages: PaginatedResponse[];
+      pageParams: number[];
+    }>({ queryKey: ["questions", "list"] }, (oldData) => {
+      if (!oldData) return oldData;
 
-          // Removing current vote
-          if (voteType === currentVote) {
-            if (currentVote === "like") {
-              question.likes = Math.max(0, question.likes - 1);
-            } else {
-              question.dislikes = Math.max(0, question.dislikes - 1);
-            }
-          }
-          // Adding or changing vote
-          else {
-            if (voteType === "like") {
-              question.likes += 1;
-              if (currentVote === "dislike") {
-                question.dislikes = Math.max(0, question.dislikes - 1);
-              }
-            } else {
-              question.dislikes += 1;
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          data: page.data?.map((question) => {
+            if (question.id !== questionId) return question;
+
+            const newQuestion = { ...question };
+
+            // Removing current vote
+            if (voteType === currentVote) {
               if (currentVote === "like") {
-                question.likes = Math.max(0, question.likes - 1);
+                newQuestion.likes = Math.max(0, question.likes - 1);
+              } else {
+                newQuestion.dislikes = Math.max(0, question.dislikes - 1);
               }
             }
-          }
-        });
-      }),
-    );
+            // Adding or changing vote
+            else {
+              if (voteType === "like") {
+                newQuestion.likes = question.likes + 1;
+                if (currentVote === "dislike") {
+                  newQuestion.dislikes = Math.max(0, question.dislikes - 1);
+                }
+              } else {
+                newQuestion.dislikes = question.dislikes + 1;
+                if (currentVote === "like") {
+                  newQuestion.likes = Math.max(0, question.likes - 1);
+                }
+              }
+            }
+
+            return newQuestion;
+          }),
+        })),
+      };
+    });
   };
 
   const handleVote = async (voteType: VoteType) => {
