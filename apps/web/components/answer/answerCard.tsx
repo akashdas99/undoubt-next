@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteAnswerAction } from "@/actions/answer";
-import { useGetProfileQuery } from "@/lib/store/user/user";
+import { useProfile } from "@/lib/queries/user";
 
 import dayjs from "dayjs";
 import { CalendarDays, Pencil } from "lucide-react";
@@ -28,7 +28,7 @@ export default function AnswerCard({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
-  const { data: user, isLoading } = useGetProfileQuery();
+  const { data: user, isLoading } = useProfile();
 
   const params = useParams<{ slug: string }>();
   const isAuthor = !isLoading && answer?.authorId === user?.id;

@@ -11,7 +11,7 @@ export default function UserImage({
   user?: {
     name: string;
     profilePicture: string | null;
-  };
+  } | null;
   className?: string;
 }) {
   if (isEmpty(user)) return <CircleUserRound />;

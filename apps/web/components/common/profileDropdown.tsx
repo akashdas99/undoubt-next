@@ -9,23 +9,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { isEmpty } from "@/lib/functions";
-import { useGetProfileQuery, userApi } from "@/lib/store/user/user";
+import { useProfile, useInvalidateProfile } from "@/lib/queries/user";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import UserImage, { UserImageSkeleton } from "../ui/userImage";
 import { Button } from "../ui/button";
 
 export function ProfileDropdown() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { data: user, isFetching } = useGetProfileQuery();
+  const invalidateProfile = useInvalidateProfile();
+  const { data: user, isFetching } = useProfile();
 
   const handleLogout = async () => {
     await logoutUser();
     router.refresh();
-    dispatch(userApi.util.invalidateTags(["profile"]));
+    invalidateProfile();
   };
 
   return (

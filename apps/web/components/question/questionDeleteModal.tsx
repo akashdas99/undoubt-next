@@ -1,16 +1,11 @@
 "use client";
 
 import { deleteQuestionAction } from "@/actions/question";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { questionApi } from "@/lib/store/questions/question";
-import {
-  closeDeleteModal,
-  selectDeleteModal,
-  setDeleteError,
-  setDeleteLoading,
-} from "@/lib/store/ui/deleteModalSlice";
+import { PaginatedResponse } from "@/lib/queries/questions";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../ui/confirmationModal";
+import { useUIStoreSelector } from "@/store/useUIStore";
 
 type QuestionDeleteModalProps = {
   redirectOnDelete?: boolean;
@@ -19,40 +14,46 @@ type QuestionDeleteModalProps = {
 export default function QuestionDeleteModal({
   redirectOnDelete = false,
 }: QuestionDeleteModalProps) {
-  const dispatch = useAppDispatch();
-  const deleteModal = useAppSelector(selectDeleteModal);
+  const queryClient = useQueryClient();
+  const { deleteModal, setDeleteLoading, closeDeleteModal, setDeleteError } =
+    useUIStoreSelector(
+      "deleteModal",
+      "setDeleteLoading",
+      "setDeleteError",
+      "closeDeleteModal",
+    );
   const router = useRouter();
 
   const handleDeleteConfirm = async () => {
-    if (!deleteModal.questionId) return;
+    if (!deleteModal?.questionId) return;
 
-    dispatch(setDeleteLoading(true));
+    setDeleteLoading(true);
 
     const res = await deleteQuestionAction(
       { id: deleteModal.questionId },
       false,
     );
 
-    dispatch(setDeleteLoading(false));
+    setDeleteLoading(false);
 
     if (!res?.success) {
-      dispatch(
-        setDeleteError(("errors" in res && res?.errors?.id?.message) || ""),
-      );
+      setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
     } else {
-      // Remove deleted question from RTK Query cache
-      dispatch(
-        questionApi.util.updateQueryData("getQuestions", "", (draft) => {
-          draft.pages.forEach((page) => {
-            if (page.data) {
-              page.data = page.data.filter(
-                (q) => q.id !== deleteModal.questionId,
-              );
-            }
-          });
-        }),
-      );
-      dispatch(closeDeleteModal());
+      // Remove deleted question from React Query cache
+      queryClient.setQueriesData<{
+        pages: PaginatedResponse[];
+        pageParams: number[];
+      }>({ queryKey: ["questions", "list"] }, (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            data: page.data?.filter((q) => q.id !== deleteModal.questionId),
+          })),
+        };
+      });
+      closeDeleteModal();
 
       if (redirectOnDelete) {
         router.push("/");
@@ -64,7 +65,7 @@ export default function QuestionDeleteModal({
     <ConfirmationModal
       open={deleteModal.isOpen}
       onOpenChange={(open) => {
-        if (!open) dispatch(closeDeleteModal());
+        if (!open) closeDeleteModal();
       }}
       onConfirm={handleDeleteConfirm}
       title="Delete Question?"
