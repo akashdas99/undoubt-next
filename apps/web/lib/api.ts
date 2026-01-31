@@ -13,7 +13,7 @@ type MutationOptions = FetchOptions & {
 async function request<T>(
   endpoint: string,
   options?: FetchOptions & { body?: BodyInit },
-): Promise<T | null> {
+): Promise<T> {
   const { params, ...fetchOptions } = options ?? {};
 
   let url = `${baseUrl}${endpoint}`;
@@ -32,7 +32,7 @@ async function request<T>(
   }
 
   const res = await fetch(url, fetchOptions);
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
   return await res.json();
 }
 
@@ -53,19 +53,19 @@ function withJsonBody(
 }
 
 export const api = {
-  get<T>(endpoint: string, options?: FetchOptions): Promise<T | null> {
+  get<T>(endpoint: string, options?: FetchOptions): Promise<T> {
     return request<T>(endpoint, { ...options, method: "GET" });
   },
 
-  post<T>(endpoint: string, options?: MutationOptions): Promise<T | null> {
+  post<T>(endpoint: string, options?: MutationOptions): Promise<T> {
     return request<T>(endpoint, { ...withJsonBody(options), method: "POST" });
   },
 
-  put<T>(endpoint: string, options?: MutationOptions): Promise<T | null> {
+  put<T>(endpoint: string, options?: MutationOptions): Promise<T> {
     return request<T>(endpoint, { ...withJsonBody(options), method: "PUT" });
   },
 
-  delete<T>(endpoint: string, options?: MutationOptions): Promise<T | null> {
+  delete<T>(endpoint: string, options?: MutationOptions): Promise<T> {
     return request<T>(endpoint, { ...withJsonBody(options), method: "DELETE" });
   },
 };
