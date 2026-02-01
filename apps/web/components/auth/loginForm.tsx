@@ -1,20 +1,14 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { loginUserAction } from "@/actions/auth";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { LoginType } from "@/types/auth";
 import { LoginSchema } from "@repo/validations/auth";
-import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
@@ -24,7 +18,6 @@ export default function LoginForm() {
   const router = useRouter();
   const invalidateProfile = useInvalidateProfile();
   const [isGuest, setIsGuest] = useState<boolean>();
-  const [showPassword, setShowPassword] = useState(false);
 
   const [res, handleLogin, loadingLogin] = useActionState(
     async (_: unknown, userData: LoginType) => {
@@ -67,59 +60,19 @@ export default function LoginForm() {
       <h1 className={`font-righteous text-3xl mb-3 md:mb-6 `}>Welcome Back</h1>
       <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
-          <Controller
+          <FormInput
+            control={form.control}
             name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                <Input
-                  {...field}
-                  id={field.name}
-                  placeholder="Email"
-                  autoComplete="email"
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            label="Email"
+            placeholder="Email"
+            autoComplete="email"
           />
-          <Controller
-            name="password"
+          <FormPassword
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    autoComplete="current-password"
-                    aria-invalid={fieldState.invalid}
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="size-4" />
-                    ) : (
-                      <Eye className="size-4" />
-                    )}
-                  </button>
-                </div>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            name="password"
+            label="Password"
+            placeholder="Password"
+            autoComplete="current-password"
           />
         </FieldGroup>
         <div className="flex justify-end mt-1">
@@ -130,11 +83,7 @@ export default function LoginForm() {
             Forgot Password?
           </Link>
         </div>
-        {form?.formState?.errors?.root?.message && (
-          <p className="text-[0.6rem] text-destructive font-medium">
-            {form?.formState?.errors?.root?.message}
-          </p>
-        )}
+        <FieldError errors={[form?.formState?.errors?.root]} />
         <div className="grid grid-cols-2 gap-x-2 mt-2">
           <Button
             type="submit"
