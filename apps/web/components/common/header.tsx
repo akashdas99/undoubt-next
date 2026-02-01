@@ -1,5 +1,9 @@
+import { Plus } from "lucide-react";
 import Link from "next/link";
-import NavigationSection from "./navigationSection";
+import { Suspense } from "react";
+import { UserImageSkeleton } from "../ui/userImage";
+import { ProfileDropdown } from "./profileDropdown";
+import SearchModal from "./searchModal";
 
 export default async function Header() {
   return (
@@ -11,7 +15,19 @@ export default async function Header() {
         >
           UNdoubt
         </Link>
-        <NavigationSection />
+        <div className="flex items-center gap-5 text-xs">
+          <SearchModal />
+          <Link
+            href={"/question"}
+            prefetch={false}
+            className="flex rounded-full"
+          >
+            <Plus />
+          </Link>
+          <Suspense fallback={<UserImageSkeleton className="w-[36px]" />}>
+            <ProfileDropdown />
+          </Suspense>
+        </div>
       </div>
     </header>
   );

@@ -1,3 +1,4 @@
+"use client";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import QuestionSearch from "../question/questionSearch";
