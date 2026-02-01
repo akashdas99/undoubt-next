@@ -116,7 +116,11 @@ const QuestionCard = React.memo(
                   <MessageSquare size={16} />
                   <>{question?.answersCount || "No"} Answers</>
                 </div>
-                <QuestionVoteButton questionId={question?.id} />
+                <QuestionVoteButton
+                  questionId={question?.id}
+                  likes={question?.likes ?? 0}
+                  dislikes={question?.dislikes ?? 0}
+                />
               </div>
             </>
           )}

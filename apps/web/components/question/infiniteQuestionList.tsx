@@ -1,7 +1,7 @@
 "use client";
 
 import { INTERSECTION_THRESHOLD } from "@/lib/constants";
-import { useQuestionsInfinite, useUserVotes } from "@/lib/queries/questions";
+import { useQuestionsInfinite } from "@/lib/queries/questions";
 import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
 import QuestionDeleteModal from "./questionDeleteModal";
@@ -13,10 +13,6 @@ export default function InfiniteQuestionList() {
     useQuestionsInfinite("");
 
   const questions = data?.pages?.flatMap((page) => page.data) ?? [];
-
-  const lastPageQuestionIds =
-    data?.pages?.at(-1)?.data?.map(({ id }) => id) || [];
-  useUserVotes(lastPageQuestionIds);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

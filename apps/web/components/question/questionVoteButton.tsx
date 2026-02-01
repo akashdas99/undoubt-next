@@ -3,11 +3,7 @@
 import { voteOnQuestionAction } from "@/actions/question";
 import { isEmpty } from "@/lib/functions";
 import { useProfile } from "@/lib/queries/user";
-import {
-  useVoteByQuestionId,
-  useQuestionById,
-  type PaginatedResponse,
-} from "@/lib/queries/questions";
+import { useUserVote, type PaginatedResponse } from "@/lib/queries/questions";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,43 +11,31 @@ import React from "react";
 
 interface QuestionVoteButtonProps {
   questionId: string;
+  likes: number;
+  dislikes: number;
 }
 
 type VoteType = "like" | "dislike";
 
 export default function QuestionVoteButton({
   questionId,
+  likes,
+  dislikes,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: user } = useProfile();
 
-  // Get current user's vote from cache
-  const cachedUserVote = useVoteByQuestionId(questionId);
+  // Get current user's vote
+  const { data: userVote } = useUserVote(questionId);
 
-  // Get cached like/dislike counts from getQuestions cache
-  const cachedQuestion = useQuestionById(questionId);
-
-  // Derive current vote state and counts
+  // Derive current vote state
   const currentVote: VoteType | null =
-    cachedUserVote === 1 ? "like" : cachedUserVote === -1 ? "dislike" : null;
+    userVote === 1 ? "like" : userVote === -1 ? "dislike" : null;
 
-  // Update user votes cache optimistically
-  const updateUserVotesCache = (newVoteValue: number | null) => {
-    const allQueries = queryClient.getQueriesData<
-      Record<string, number | null>
-    >({
-      queryKey: ["userVotes"],
-    });
-
-    for (const [queryKey, data] of allQueries) {
-      if (data?.[questionId] !== undefined) {
-        queryClient.setQueryData(queryKey, {
-          ...data,
-          [questionId]: newVoteValue,
-        });
-      }
-    }
+  // Update user vote cache optimistically
+  const updateUserVoteCache = (newVoteValue: number | null) => {
+    queryClient.setQueryData(["userVote", questionId], newVoteValue);
   };
 
   // Update questions cache optimistically
@@ -108,7 +92,7 @@ export default function QuestionVoteButton({
     const newVoteValue = isRemoving ? null : voteType === "like" ? 1 : -1;
 
     // Optimistically update both caches
-    updateUserVotesCache(newVoteValue);
+    updateUserVoteCache(newVoteValue);
     updateQuestionsCache(voteType);
 
     // Perform server action
@@ -125,7 +109,7 @@ export default function QuestionVoteButton({
             stroke={currentVote === "like" ? "var(--primary)" : "currentColor"}
           />
         }
-        count={cachedQuestion?.likes || 0}
+        count={likes}
         onClick={() => handleVote("like")}
         label="Like question"
       />
@@ -139,7 +123,7 @@ export default function QuestionVoteButton({
             }
           />
         }
-        count={cachedQuestion?.dislikes || 0}
+        count={dislikes}
         onClick={() => handleVote("dislike")}
         label="Dislike question"
       />
