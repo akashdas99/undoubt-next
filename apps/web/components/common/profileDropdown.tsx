@@ -10,25 +10,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getUserById } from "@/data/user";
 import { isEmpty } from "@/lib/functions";
-import { getSession } from "@/lib/session";
 import { withTryCatch } from "@/lib/utils";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
+import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "../ui/button";
 import UserImage from "../ui/userImage";
-import { cacheLife, cacheTag } from "next/cache";
 
-async function getCachedUser(userId: string) {
+export async function ProfileDropdown({
+  sessionId,
+}: {
+  sessionId?: string | null;
+}) {
   "use cache";
   cacheTag("user-profile");
   cacheLife("hours");
-  return withTryCatch(getUserById(userId));
-}
-
-export async function ProfileDropdown() {
-  const session = await getSession();
-  const { result: user } = session
-    ? await getCachedUser(session.id)
+  const { result: user } = sessionId
+    ? await withTryCatch(getUserById(sessionId))
     : { result: null };
   return (
     <DropdownMenu>

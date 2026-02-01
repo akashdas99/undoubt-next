@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { UserImageSkeleton } from "../ui/userImage";
 import { ProfileDropdown } from "./profileDropdown";
+import { SessionWrapper } from "./sessionWrapper";
 import SearchModal from "./searchModal";
 
 export default async function Header() {
@@ -25,7 +26,9 @@ export default async function Header() {
             <Plus />
           </Link>
           <Suspense fallback={<UserImageSkeleton className="w-[36px]" />}>
-            <ProfileDropdown />
+            <SessionWrapper
+              render={(sessionId) => <ProfileDropdown sessionId={sessionId} />}
+            />
           </Suspense>
         </div>
       </div>
