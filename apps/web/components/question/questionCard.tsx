@@ -168,7 +168,6 @@ const QuestionCardSkeleton: React.FC = () => {
       <Skeleton className="h-7 w-2/3" />
       <Skeleton className="h-6 w-full" />
       <Skeleton className="h-6 w-full" />
-      <Skeleton className="h-6 w-full" />
 
       <div className="flex mt-1">
         <div className="text-xs flex gap-2 py-1 px-2 font-semibold">

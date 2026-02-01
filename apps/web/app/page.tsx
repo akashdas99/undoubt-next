@@ -1,18 +1,15 @@
 import TopContributorsList from "@/components/contributors/topContributorsList";
-import QuestionLoadingCard from "@/components/question/questionLoadingCard";
+import { QuestionCardSkeleton } from "@/components/question/questionCard";
 import QuestionList from "@/components/question/questionList";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
 function QuestionListFallback() {
   return (
-    <div className="w-full my-3 max-w-screen-lg px-3">
-      <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
-      <div className="flex flex-col gap-5">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <QuestionLoadingCard key={i} />
-        ))}
-      </div>
+    <div className="flex flex-col gap-5">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <QuestionCardSkeleton key={i} />
+      ))}
     </div>
   );
 }
@@ -39,10 +36,12 @@ function ContributorsFallback() {
 export default function Home() {
   return (
     <div className="flex gap-6 w-full justify-center">
-      <Suspense fallback={<QuestionListFallback />}>
-        <QuestionList />
-      </Suspense>
-
+      <div className="w-full my-3 max-w-screen-lg px-3">
+        <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
+        <Suspense fallback={<QuestionListFallback />}>
+          <QuestionList />
+        </Suspense>
+      </div>
       <Suspense fallback={<ContributorsFallback />}>
         <TopContributorsList />
       </Suspense>

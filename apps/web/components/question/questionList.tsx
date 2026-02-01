@@ -27,12 +27,9 @@ const QuestionList: React.FC = async () => {
   });
 
   return (
-    <div className="w-full my-3 max-w-screen-lg px-3">
-      <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <InfiniteQuestionList />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <InfiniteQuestionList />
+    </HydrationBoundary>
   );
 };
 
