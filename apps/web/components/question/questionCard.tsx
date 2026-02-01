@@ -54,8 +54,8 @@ const QuestionCard = React.memo(
 
     const { openDeleteModal } = useUIStoreSelector("openDeleteModal");
     return (
-      <Card>
-        <CardHeader className="flex-row items-center justify-between border-b border-gray-300">
+      <Card size="sm">
+        <CardHeader className="flex-row items-center justify-between gap-0">
           <CardTitle className="flex items-center gap-2">
             <UserImage user={question?.author} className="w-[30px]" />
             <span className="font-montserrat font-medium">
@@ -95,6 +95,7 @@ const QuestionCard = React.memo(
             </CardAction>
           )}
         </CardHeader>
+        <hr className="mx-3 border-t border-gray-300" />
         <CardContent>
           {isEditing ? (
             <QuestionForm
@@ -115,7 +116,9 @@ const QuestionCard = React.memo(
             </ConditionalLink>
           )}
         </CardContent>
-        <CardFooter className="justify-between border-t border-gray-300 text-xs">
+        <hr className="mx-3 border-t border-gray-300" />
+
+        <CardFooter className="justify-between text-xs">
           <div className="flex gap-2 text-muted-foreground font-semibold">
             <MessageSquare size={16} />
             <span>{question?.answersCount || "No"} Answers</span>
@@ -156,23 +159,23 @@ QuestionCard.displayName = "QuestionCard";
 
 const QuestionCardSkeleton: React.FC = () => {
   return (
-    <Card>
-      <CardHeader className="flex-row items-center border-b border-gray-300">
-        <CardTitle className="flex items-center gap-2">
-          <Skeleton className="rounded-full h-[30px] w-[30px]" />
-          <Skeleton className="h-5 w-28" />
-          <span className="flex items-center gap-1 text-xs opacity-50">
-            <CalendarDays className="w-3" />
-            <Skeleton className="h-4 w-20" />
-          </span>
-        </CardTitle>
+    <Card size="sm">
+      <CardHeader>
+        <Skeleton className="rounded-full h-[30px] w-[30px]" />
+        <Skeleton className="h-5 w-28" />
+        <span className="flex items-center gap-1 text-xs opacity-50">
+          <CalendarDays className="w-3" />
+          <Skeleton className="h-4 w-20" />
+        </span>
       </CardHeader>
+      <hr className="mx-3 border-t border-gray-300" />
       <CardContent className="space-y-2">
         <Skeleton className="h-7 w-2/3" />
         <Skeleton className="h-5 w-full" />
         <Skeleton className="h-5 w-full" />
       </CardContent>
-      <CardFooter className="border-t border-gray-300 text-xs">
+      <hr className="mx-3 border-t border-gray-300" />
+      <CardFooter className="text-xs">
         <div className="flex gap-2 font-semibold">
           <MessageSquare size={16} />
           <Skeleton className="h-4 w-20" />
