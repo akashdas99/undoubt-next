@@ -10,7 +10,7 @@ interface QuestionListProps {
 
 const QuestionList: React.FC<QuestionListProps> = async ({ userId }) => {
   const queryClient = getQueryClient();
-  console.log("session", userId);
+
   // Prefetch the infinite query on the server
   await queryClient.prefetchInfiniteQuery({
     queryKey: ["questions", "list", "", userId],
