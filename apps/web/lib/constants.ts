@@ -1,5 +1,5 @@
 // Pagination constants
-export const QUESTIONS_PER_PAGE = 10;
+export const QUESTIONS_PER_PAGE = 3;
 
 // Intersection Observer constants
 export const INTERSECTION_THRESHOLD = 0.1;

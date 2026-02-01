@@ -1,9 +1,12 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
+import { SessionWrapper } from "@/components/common/sessionWrapper";
+import { QuestionCardSkeleton } from "@/components/question/questionCard";
 import QuestionDeleteModal from "@/components/question/questionDeleteModal";
 import QuestionSection from "@/components/question/questionSection";
 import { getAllQuestions, getQuestionBySlug } from "@/data/question";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export async function generateStaticParams() {
   const questions = await getAllQuestions();
@@ -48,7 +51,13 @@ export default function Page({
   return (
     <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
       <div className="flex flex-col gap-5">
-        <QuestionSection params={params} />
+        <Suspense fallback={<QuestionCardSkeleton />}>
+          <SessionWrapper
+            render={(userId) => (
+              <QuestionSection params={params} userId={userId} />
+            )}
+          />
+        </Suspense>
         <QuestionDeleteModal redirectOnDelete />
         <AddAnswer />
         <div className="bordered-card p-[1em]">

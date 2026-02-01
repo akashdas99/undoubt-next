@@ -9,8 +9,11 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(
     request?.nextUrl?.searchParams?.get("limit") || String(QUESTIONS_PER_PAGE),
   );
+  const userId = request?.nextUrl?.searchParams?.get("userId") || undefined;
 
-  const result = await withTryCatchResponse(getQuestions(keyword, limit, page));
+  const result = await withTryCatchResponse(
+    getQuestions(keyword, limit, page, userId),
+  );
 
   return Response.json(result);
 }

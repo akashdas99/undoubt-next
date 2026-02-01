@@ -1,3 +1,4 @@
+import { SessionWrapper } from "@/components/common/sessionWrapper";
 import TopContributorsList from "@/components/contributors/topContributorsList";
 import { QuestionCardSkeleton } from "@/components/question/questionCard";
 import QuestionList from "@/components/question/questionList";
@@ -39,7 +40,9 @@ export default function Home() {
       <div className="w-full my-3 max-w-screen-lg px-3">
         <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
         <Suspense fallback={<QuestionListFallback />}>
-          <QuestionList />
+          <SessionWrapper
+            render={(userId) => <QuestionList userId={userId} />}
+          />
         </Suspense>
       </div>
       <Suspense fallback={<ContributorsFallback />}>

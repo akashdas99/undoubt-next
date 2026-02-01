@@ -53,6 +53,7 @@ const QuestionCard = React.memo(
     const isQuestionPage = pathname.startsWith("/question/");
 
     const { openDeleteModal } = useUIStoreSelector("openDeleteModal");
+
     return (
       <Card size="sm">
         <CardHeader className="flex-row items-center justify-between gap-0">
@@ -127,6 +128,7 @@ const QuestionCard = React.memo(
             questionId={question?.id}
             likes={question?.likes ?? 0}
             dislikes={question?.dislikes ?? 0}
+            userVote={question?.userVote}
           />
         </CardFooter>
       </Card>

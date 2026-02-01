@@ -3,7 +3,7 @@
 import { voteOnQuestionAction } from "@/actions/question";
 import { isEmpty } from "@/lib/functions";
 import { useProfile } from "@/lib/queries/user";
-import { useUserVote, type PaginatedResponse } from "@/lib/queries/questions";
+import { type PaginatedResponse } from "@/lib/queries/questions";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,33 +13,36 @@ interface QuestionVoteButtonProps {
   questionId: string;
   likes: number;
   dislikes: number;
+  userVote: number | null;
 }
 
-type VoteType = "like" | "dislike";
+function calculateVoteChanges(newVote: 1 | -1, currentVote: number | null) {
+  const isRemoving = newVote === currentVote;
+  const isAddingLike = newVote === 1 && !isRemoving;
+  const isAddingDislike = newVote === -1 && !isRemoving;
+  const hadLike = currentVote === 1;
+  const hadDislike = currentVote === -1;
+
+  return {
+    userVote: isRemoving ? null : newVote,
+    likesDelta: Number(isAddingLike) - Number(hadLike),
+    dislikesDelta: Number(isAddingDislike) - Number(hadDislike),
+  };
+}
 
 export default function QuestionVoteButton({
   questionId,
   likes,
   dislikes,
+  userVote,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: user } = useProfile();
 
-  // Get current user's vote
-  const { data: userVote } = useUserVote(questionId);
+  const updateQuestionsCache = (newVote: 1 | -1) => {
+    const changes = calculateVoteChanges(newVote, userVote);
 
-  // Derive current vote state
-  const currentVote: VoteType | null =
-    userVote === 1 ? "like" : userVote === -1 ? "dislike" : null;
-
-  // Update user vote cache optimistically
-  const updateUserVoteCache = (newVoteValue: number | null) => {
-    queryClient.setQueryData(["userVote", questionId], newVoteValue);
-  };
-
-  // Update questions cache optimistically
-  const updateQuestionsCache = (voteType: VoteType) => {
     queryClient.setQueriesData<{
       pages: PaginatedResponse[];
       pageParams: number[];
@@ -50,53 +53,35 @@ export default function QuestionVoteButton({
         ...oldData,
         pages: oldData.pages.map((page) => ({
           ...page,
-          data: page.data?.map((question) => {
-            if (question.id !== questionId) return question;
-
-            const newQuestion = { ...question };
-
-            // Removing current vote
-            if (voteType === currentVote) {
-              if (currentVote === "like") {
-                newQuestion.likes = Math.max(0, question.likes - 1);
-              } else {
-                newQuestion.dislikes = Math.max(0, question.dislikes - 1);
-              }
-            }
-            // Adding or changing vote
-            else {
-              if (voteType === "like") {
-                newQuestion.likes = question.likes + 1;
-                if (currentVote === "dislike") {
-                  newQuestion.dislikes = Math.max(0, question.dislikes - 1);
+          data: page.data?.map((question) =>
+            question.id === questionId
+              ? {
+                  ...question,
+                  likes: Math.max(0, question.likes + changes.likesDelta),
+                  dislikes: Math.max(
+                    0,
+                    question.dislikes + changes.dislikesDelta,
+                  ),
+                  userVote: changes.userVote,
                 }
-              } else {
-                newQuestion.dislikes = question.dislikes + 1;
-                if (currentVote === "like") {
-                  newQuestion.likes = Math.max(0, question.likes - 1);
-                }
-              }
-            }
-
-            return newQuestion;
-          }),
+              : question,
+          ),
         })),
       };
     });
   };
 
-  const handleVote = async (voteType: VoteType) => {
+  const handleVote = async (newVote: 1 | -1) => {
     if (isEmpty(user)) return router.push("/login");
 
-    const isRemoving = currentVote === voteType;
-    const newVoteValue = isRemoving ? null : voteType === "like" ? 1 : -1;
+    const isRemoving = userVote === newVote;
 
-    // Optimistically update both caches
-    updateUserVoteCache(newVoteValue);
-    updateQuestionsCache(voteType);
+    updateQuestionsCache(newVote);
 
-    // Perform server action
-    await voteOnQuestionAction(questionId, isRemoving ? "remove" : voteType);
+    await voteOnQuestionAction(
+      questionId,
+      isRemoving ? "remove" : newVote === 1 ? "like" : "dislike",
+    );
   };
 
   return (
@@ -105,33 +90,30 @@ export default function QuestionVoteButton({
         icon={
           <ArrowBigUp
             size={18}
-            fill={currentVote === "like" ? "var(--primary)" : "none"}
-            stroke={currentVote === "like" ? "var(--primary)" : "currentColor"}
+            fill={userVote === 1 ? "var(--primary)" : "none"}
+            stroke={userVote === 1 ? "var(--primary)" : "currentColor"}
           />
         }
         count={likes}
-        onClick={() => handleVote("like")}
+        onClick={() => handleVote(1)}
         label="Like question"
       />
       <VoteButton
         icon={
           <ArrowBigDown
             size={18}
-            fill={currentVote === "dislike" ? "var(--destructive)" : "none"}
-            stroke={
-              currentVote === "dislike" ? "var(--destructive)" : "currentColor"
-            }
+            fill={userVote === -1 ? "var(--destructive)" : "none"}
+            stroke={userVote === -1 ? "var(--destructive)" : "currentColor"}
           />
         }
         count={dislikes}
-        onClick={() => handleVote("dislike")}
+        onClick={() => handleVote(-1)}
         label="Dislike question"
       />
     </div>
   );
 }
 
-// Extracted vote button component for reusability
 function VoteButton({
   icon,
   count,

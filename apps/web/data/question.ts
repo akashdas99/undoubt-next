@@ -31,6 +31,7 @@ export const getQuestions = async (
   keyword: string = "",
   limit: number = 10,
   page: number = 1,
+  userId?: string | null,
 ) => {
   // Build WHERE conditions for filtering
   const whereConditions = [];
@@ -70,6 +71,11 @@ export const getQuestions = async (
       slug: questions.slug,
       likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
       dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
+      userVote: userId
+        ? sql<
+            number | null
+          >`MAX(CASE WHEN ${questionVotes.userId} = ${userId} THEN ${questionVotes.vote} END)`
+        : sql<null>`NULL`,
     })
     .from(questions)
     .innerJoin(sq, eq(questions.id, sq.id))
@@ -117,7 +123,7 @@ export async function addQuestion(questionData: QuestionType) {
   });
   return successResponse();
 }
-export async function getQuestionBySlug(slug: string) {
+export async function getQuestionBySlug(slug: string, userId?: string | null) {
   const [question] = await db
     .select({
       id: questions.id,
@@ -130,6 +136,11 @@ export async function getQuestionBySlug(slug: string) {
       slug: questions.slug,
       likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
       dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
+      userVote: userId
+        ? sql<
+            number | null
+          >`MAX(CASE WHEN ${questionVotes.userId} = ${userId} THEN ${questionVotes.vote} END)`
+        : sql<null>`NULL`,
     })
     .from(questions)
     .innerJoin(
