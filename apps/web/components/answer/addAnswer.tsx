@@ -1,6 +1,6 @@
 "use client";
 import { isEmpty } from "@/lib/functions";
-import { useGetProfileQuery } from "@/lib/store/user/user";
+import { useProfile } from "@/lib/queries/user";
 import { FilePenLine } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import AnswerForm from "./answerForm";
 
 export default function AddAnswer() {
   const [showEditor, setShowEditor] = useState<boolean>(false);
-  const { data: user, isFetching } = useGetProfileQuery();
+  const { data: user, isFetching } = useProfile();
   const isLoggedIn = !isEmpty(user);
   const router = useRouter();
 

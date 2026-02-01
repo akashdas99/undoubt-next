@@ -1,12 +1,7 @@
 "use client";
 
 import useDebounce from "@/hooks/useDebounce";
-import { useAppDispatch } from "@/lib/store/hooks";
-import {
-  questionApi,
-  useGetAllQuestionsByKeywordQuery,
-} from "@/lib/store/questions/question";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { useQuestionsByKeyword } from "@/lib/queries/questions";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,24 +10,10 @@ import { Input } from "../ui/input";
 export default function QuestionSearch({ onClick }: { onClick?: () => void }) {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchQuestion: string = useDebounce(searchValue, 300);
-  const { data, isLoading } = useGetAllQuestionsByKeywordQuery(
-    searchQuestion?.length ? searchQuestion : skipToken,
-  );
-  const dispatch = useAppDispatch();
+  const { data, isLoading } = useQuestionsByKeyword(searchQuestion);
+
   const handleChange = async (search: string) => {
     setSearchValue(search);
-    if (search === "") {
-      dispatch(
-        questionApi.util.updateQueryData(
-          "getAllQuestionsByKeyword",
-          searchQuestion,
-          () => {
-            return [];
-          },
-          true,
-        ),
-      );
-    }
   };
 
   return (

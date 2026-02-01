@@ -1,9 +1,8 @@
 "use client";
 
-import { useAppDispatch } from "@/lib/store/hooks";
-import { Question } from "@/lib/store/questions/question";
-import { useGetProfileQuery } from "@/lib/store/user/user";
-import { openDeleteModal } from "@/lib/store/ui/deleteModalSlice";
+import { Question } from "@/lib/queries/questions";
+import { useProfile } from "@/lib/queries/user";
+import { useUIStoreSelector } from "@/store/useUIStore";
 import dayjs from "dayjs";
 import { CalendarDays, MessageSquare, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
@@ -40,11 +39,12 @@ const ConditionalLink = ({
 const QuestionCard = React.memo(
   ({ question }: QuestionCardProps) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const { data: user, isLoading } = useGetProfileQuery();
-    const dispatch = useAppDispatch();
+    const { data: user, isLoading } = useProfile();
     const pathname = usePathname();
     const isAuthor = !isLoading && question?.authorId === user?.id;
     const isQuestionPage = pathname.startsWith("/question/");
+
+    const { openDeleteModal } = useUIStoreSelector("openDeleteModal");
     return (
       <div className="p-5 bordered-card flex flex-col gap-3 items-start">
         <div className="flex items-center justify-between w-full">
@@ -77,7 +77,7 @@ const QuestionCard = React.memo(
                 variant={"ghost"}
                 size="icon-sm"
                 className="group hover:bg-destructive"
-                onClick={() => dispatch(openDeleteModal(question.id))}
+                onClick={() => openDeleteModal(question.id)}
               >
                 <Trash
                   size={16}
@@ -116,7 +116,11 @@ const QuestionCard = React.memo(
                   <MessageSquare size={16} />
                   <>{question?.answersCount || "No"} Answers</>
                 </div>
-                <QuestionVoteButton questionId={question?.id} />
+                <QuestionVoteButton
+                  questionId={question?.id}
+                  likes={question?.likes ?? 0}
+                  dislikes={question?.dislikes ?? 0}
+                />
               </div>
             </>
           )}
