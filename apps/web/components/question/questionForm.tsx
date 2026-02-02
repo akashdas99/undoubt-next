@@ -1,24 +1,18 @@
 "use client";
 import { addQuestionAction, editQuestionAction } from "@/actions/question";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldGroup } from "@/components/ui/field";
 import { isEmpty } from "@/lib/functions";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EditQuestionSchema,
   EditQuestionType,
   QuestionSchema,
   QuestionType,
 } from "@repo/validations/question";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import Editor from "../ui/editor";
+import { FormEditor, FormInput } from "../ui/form";
 
 export default function QuestionForm({
   closeQuestionForm,
@@ -73,36 +67,16 @@ export default function QuestionForm({
     <div className="w-full">
       <form id="question-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
-          <Controller
+          <FormInput
+            control={form.control}
             name="title"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                <Input
-                  {...field}
-                  id={field.name}
-                  placeholder="Please enter a title for your question"
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            label="Title"
+            placeholder="Please enter a title for your question"
           />
-          <Controller
-            name="description"
+          <FormEditor
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                <Editor content={field.value || ""} onChange={field.onChange} />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            name="description"
+            label="Description"
           />
         </FieldGroup>
         {form?.formState?.errors?.root?.message && (

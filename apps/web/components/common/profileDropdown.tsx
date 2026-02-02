@@ -1,4 +1,4 @@
-import { logoutUser } from "@/actions/auth";
+import { logoutUserAction } from "@/actions/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,25 +8,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getUserById } from "@/data/user";
 import { isEmpty } from "@/lib/functions";
-import { useProfile, useInvalidateProfile } from "@/lib/queries/user";
+import { withTryCatch } from "@/lib/utils";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import UserImage, { UserImageSkeleton } from "../ui/userImage";
+import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "../ui/button";
+import UserImage from "../ui/userImage";
 
-export function ProfileDropdown() {
-  const router = useRouter();
-  const invalidateProfile = useInvalidateProfile();
-  const { data: user, isFetching } = useProfile();
-
-  const handleLogout = async () => {
-    await logoutUser();
-    router.refresh();
-    invalidateProfile();
-  };
-
+export async function ProfileDropdown({
+  sessionId,
+}: {
+  sessionId?: string | null;
+}) {
+  "use cache";
+  cacheTag("user-profile");
+  cacheLife("hours");
+  const { result: user } = sessionId
+    ? await withTryCatch(getUserById(sessionId))
+    : { result: null };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -38,11 +39,7 @@ export function ProfileDropdown() {
           />
         }
       >
-        {isFetching ? (
-          <UserImageSkeleton className="w-[36px]" />
-        ) : (
-          <UserImage user={user} />
-        )}
+        <UserImage user={user} />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -105,7 +102,7 @@ export function ProfileDropdown() {
 
             <DropdownMenuGroup>
               <DropdownMenuItem
-                onClick={handleLogout}
+                onClick={logoutUserAction}
                 variant="destructive"
                 className="rounded-lg mx-1 my-0.5"
               >

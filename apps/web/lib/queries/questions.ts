@@ -20,6 +20,7 @@ export type Question = {
   slug: string;
   likes: number;
   dislikes: number;
+  userVote: number | null;
 };
 
 export type PaginatedResponse = {
@@ -48,12 +49,20 @@ export function useQuestionsByKeyword(keyword: string) {
 }
 
 // Infinite scroll questions
-export function useQuestionsInfinite(keyword: string = "") {
+export function useQuestionsInfinite(
+  keyword: string = "",
+  userId?: string | null,
+) {
   return useInfiniteQuery({
-    queryKey: ["questions", "list", keyword],
+    queryKey: ["questions", "list", keyword, userId],
     queryFn: async ({ pageParam }) => {
       const data = await api.get<PaginatedResponse>("/api/questions", {
-        params: { page: pageParam, limit: QUESTIONS_PER_PAGE, keyword },
+        params: {
+          page: pageParam,
+          limit: QUESTIONS_PER_PAGE,
+          keyword,
+          userId: userId ?? undefined,
+        },
       });
       return data ?? { data: [], pagination: { page: 1, totalPages: 1 } };
     },

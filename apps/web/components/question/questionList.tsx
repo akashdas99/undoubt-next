@@ -4,14 +4,18 @@ import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import InfiniteQuestionList from "./infiniteQuestionList";
 
-const QuestionList: React.FC = async () => {
+interface QuestionListProps {
+  userId?: string | null;
+}
+
+const QuestionList: React.FC<QuestionListProps> = async ({ userId }) => {
   const queryClient = getQueryClient();
 
   // Prefetch the infinite query on the server
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ["questions", "list", ""],
+    queryKey: ["questions", "list", "", userId],
     queryFn: async () => {
-      const result = await getQuestions("", QUESTIONS_PER_PAGE, 1);
+      const result = await getQuestions("", QUESTIONS_PER_PAGE, 1, userId);
       return {
         data: result.data.map((q) => ({
           ...q,
@@ -27,12 +31,9 @@ const QuestionList: React.FC = async () => {
   });
 
   return (
-    <div className="w-full my-3 max-w-screen-lg px-3">
-      <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <InfiniteQuestionList />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <InfiniteQuestionList userId={userId} />
+    </HydrationBoundary>
   );
 };
 

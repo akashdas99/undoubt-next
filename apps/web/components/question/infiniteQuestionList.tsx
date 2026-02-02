@@ -6,11 +6,17 @@ import { useEffect, useRef } from "react";
 import QuestionCard from "./questionCard";
 import QuestionDeleteModal from "./questionDeleteModal";
 
-export default function InfiniteQuestionList() {
+interface InfiniteQuestionListProps {
+  userId?: string | null;
+}
+
+export default function InfiniteQuestionList({
+  userId,
+}: InfiniteQuestionListProps) {
   const observerRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    useQuestionsInfinite("");
+    useQuestionsInfinite("", userId);
 
   const questions = data?.pages?.flatMap((page) => page.data) ?? [];
 

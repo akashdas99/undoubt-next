@@ -1,16 +1,16 @@
 "use client";
 import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import { isEmpty } from "@/lib/functions";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Button } from "../ui/button";
-import Editor from "../ui/editor";
-import { useParams } from "next/navigation";
 import { Answer } from "@/db/schema/answers";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnswerSchema, AnswerType } from "@repo/validations/answer";
+import { useParams } from "next/navigation";
+import { startTransition, useActionState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { FormEditor } from "../ui/form";
 
 export default function AnswerForm({
   closeAnswerForm,
@@ -55,15 +55,10 @@ export default function AnswerForm({
   return (
     <form id="answer-form" onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
-        <Controller
-          name="description"
+        <FormEditor
           control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <Editor content={field.value} onChange={field.onChange} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
+          name="description"
+          label="Description"
         />
       </FieldGroup>
       {form?.formState?.errors?.root?.message && (

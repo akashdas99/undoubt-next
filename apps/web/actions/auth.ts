@@ -8,6 +8,7 @@ import {
 } from "@/data/auth";
 import { removeSession } from "@/lib/session";
 import { withTryCatchResponse } from "@/lib/utils";
+import { refresh } from "next/cache";
 import {
   ForgotPasswordType,
   LoginType,
@@ -22,16 +23,10 @@ export async function registerUserAction(userData: RegisterType) {
 export async function loginUserAction(loginData: LoginType) {
   return await withTryCatchResponse(loginUser(loginData));
 }
-export async function logoutUser() {
-  try {
-    await removeSession();
-  } catch (e) {
-    console.log(e);
-    return {
-      type: "serverError",
-      message: "Something went wrong",
-    };
-  }
+export async function logoutUserAction() {
+  const result = await withTryCatchResponse(removeSession());
+  refresh();
+  return result;
 }
 export async function forgotPasswordAction(data: ForgotPasswordType) {
   return await withTryCatchResponse(forgotPassword(data));

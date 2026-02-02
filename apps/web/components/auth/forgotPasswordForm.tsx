@@ -1,15 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { forgotPasswordAction } from "@/actions/auth";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FormInput } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ForgotPasswordType } from "@/types/auth";
 import { ForgotPasswordSchema } from "@repo/validations/auth";
@@ -74,31 +69,15 @@ export default function ForgotPasswordForm() {
       </p>
       <form id="forgot-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
-          <Controller
-            name="email"
+          <FormInput
             control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                <Input
-                  {...field}
-                  id={field.name}
-                  placeholder="Email"
-                  autoComplete="email"
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            name="email"
+            label="Email"
+            placeholder="Email"
+            autoComplete="email"
           />
         </FieldGroup>
-        {form?.formState?.errors?.root?.message && (
-          <p className="text-[0.6rem] text-destructive font-medium">
-            {form?.formState?.errors?.root?.message}
-          </p>
-        )}
+        <FieldError errors={[form?.formState?.errors?.root]} />
         <Button
           type="submit"
           className="mt-3 w-full"

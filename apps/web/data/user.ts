@@ -5,12 +5,7 @@ import { questions } from "@/db/schema/questions";
 import { answers } from "@/db/schema/answers";
 import { getSession } from "@/lib/session";
 
-export async function getProfile() {
-  const session = await getSession();
-  if (!session?.id) {
-    throw new Error("Session not found");
-  }
-
+export async function getUserById(userId: string) {
   const [user] = await db
     .select({
       id: users.id,
@@ -22,7 +17,7 @@ export async function getProfile() {
       profilePicture: users.profilePicture,
     })
     .from(users)
-    .where(eq(users.id, session.id))
+    .where(eq(users.id, userId))
     .limit(1);
 
   if (!user) {
@@ -30,6 +25,15 @@ export async function getProfile() {
   }
 
   return user;
+}
+
+export async function getProfile() {
+  const session = await getSession();
+  if (!session?.id) {
+    throw new Error("Session not found");
+  }
+
+  return getUserById(session.id);
 }
 
 export async function getTopContributors(limit: number = 10) {
