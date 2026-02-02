@@ -2,6 +2,7 @@ import { getQuestions } from "@/data/question";
 import { withTryCatchResponse } from "@/lib/utils";
 import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import { type NextRequest } from "next/server";
+import { getSession } from "@/lib/session";
 
 export async function GET(request: NextRequest) {
   const keyword = request?.nextUrl?.searchParams?.get("keyword") || "";
@@ -9,10 +10,12 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(
     request?.nextUrl?.searchParams?.get("limit") || String(QUESTIONS_PER_PAGE),
   );
-  const userId = request?.nextUrl?.searchParams?.get("userId") || undefined;
 
   const result = await withTryCatchResponse(
-    getQuestions(keyword, limit, page, userId),
+    (async () => {
+      const session = await getSession();
+      return getQuestions(keyword, limit, page, session?.id);
+    })(),
   );
 
   return Response.json(result);
