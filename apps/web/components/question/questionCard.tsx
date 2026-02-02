@@ -143,16 +143,17 @@ const QuestionCard = React.memo(
     // Compare all relevant fields
     return (
       prev.id === next.id &&
-      prev.title === next.title &&
-      prev.description === next.description &&
-      prev.slug === next.slug &&
-      prev.likes === next.likes &&
-      prev.dislikes === next.dislikes &&
-      prev.answersCount === next.answersCount &&
-      prev.createdAt === next.createdAt &&
-      prev.authorId === next.authorId &&
-      prev.author?.name === next.author?.name &&
-      prev.author?.profilePicture === next.author?.profilePicture
+        prev.title === next.title &&
+        prev.description === next.description &&
+        prev.slug === next.slug &&
+        prev.likes === next.likes &&
+        prev.dislikes === next.dislikes &&
+        prev.answersCount === next.answersCount &&
+        prev.createdAt === next.createdAt &&
+        prev.authorId === next.authorId &&
+        prev.author?.name === next.author?.name &&
+        prev.author?.profilePicture === next.author?.profilePicture,
+      prev.userVote === next.userVote
     );
   },
 );
