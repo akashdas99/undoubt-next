@@ -61,7 +61,6 @@ export function useQuestionsInfinite(
           page: pageParam,
           limit: QUESTIONS_PER_PAGE,
           keyword,
-          userId: userId ?? undefined,
         },
       });
       return data ?? { data: [], pagination: { page: 1, totalPages: 1 } };

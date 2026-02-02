@@ -2,8 +2,8 @@ import { db } from "@/db/drizzle";
 import { questionVotes } from "@/db/schema/questionVotes";
 import { questions } from "@/db/schema/questions";
 import { errorResponse, successResponse } from "@/lib/response";
+import { getSession } from "@/lib/session";
 import { and, eq, inArray } from "drizzle-orm";
-import { getProfile } from "./user";
 
 export type VoteType = "like" | "dislike" | "remove";
 
@@ -17,7 +17,7 @@ export type VoteType = "like" | "dislike" | "remove";
  */
 export async function voteOnQuestion(questionId: string, voteType: VoteType) {
   try {
-    const user = await getProfile();
+    const user = await getSession();
     if (!user) {
       return errorResponse("You must be logged in to vote");
     }
@@ -80,7 +80,7 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
  */
 export async function getUserVotesForQuestions(questionIds: string[]) {
   try {
-    const user = await getProfile();
+    const user = await getSession();
 
     // If no user or no questions, return empty map
     if (!user || questionIds.length === 0) {
