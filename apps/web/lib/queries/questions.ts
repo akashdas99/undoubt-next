@@ -1,10 +1,7 @@
-import {
-  useQuery,
-  useInfiniteQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import { api } from "@/lib/api";
+import { queryKeys } from "@/lib/cache/queryKeys";
+import { QUESTIONS_PER_PAGE } from "@/lib/constants";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export type Question = {
   id: string;
@@ -37,7 +34,7 @@ type SearchResponse = { data: { title: string; slug: string }[] };
 // Search questions by keyword (for autocomplete)
 export function useQuestionsByKeyword(keyword: string) {
   return useQuery<SearchResult[]>({
-    queryKey: ["questions", "search", keyword],
+    queryKey: queryKeys.questions.search(keyword),
     queryFn: async () => {
       const data = await api.get<SearchResponse>("/api/questions", {
         params: { keyword },
@@ -54,14 +51,13 @@ export function useQuestionsInfinite(
   userId?: string | null,
 ) {
   return useInfiniteQuery({
-    queryKey: ["questions", "list", keyword, userId],
+    queryKey: queryKeys.questions.list(keyword, userId),
     queryFn: async ({ pageParam }) => {
       const data = await api.get<PaginatedResponse>("/api/questions", {
         params: {
           page: pageParam,
           limit: QUESTIONS_PER_PAGE,
           keyword,
-          userId: userId ?? undefined,
         },
       });
       return data ?? { data: [], pagination: { page: 1, totalPages: 1 } };
@@ -72,41 +68,4 @@ export function useQuestionsInfinite(
         ? lastPage.pagination.page + 1
         : undefined,
   });
-}
-
-// Get user vote for a specific question
-export function useUserVote(questionId: string) {
-  return useQuery({
-    queryKey: ["userVote", questionId],
-    queryFn: async () => {
-      const data = await api.get<Record<string, number | null>>(
-        "/api/questions/userVotes",
-        { params: { questionIds: questionId } },
-      );
-      return (data?.[questionId] ?? null) as -1 | 1 | null;
-    },
-    staleTime: 30 * 1000,
-  });
-}
-
-// Helper hook to get a question from cache by ID
-export function useQuestionById(questionId: string) {
-  const queryClient = useQueryClient();
-
-  const queriesData = queryClient.getQueriesData<{
-    pages: PaginatedResponse[];
-  }>({
-    queryKey: ["questions", "list"],
-  });
-
-  for (const [, data] of queriesData) {
-    if (data?.pages) {
-      for (const page of data.pages) {
-        const question = page.data?.find((q) => q.id === questionId);
-        if (question) return question;
-      }
-    }
-  }
-
-  return null;
 }

@@ -14,6 +14,7 @@ import { withTryCatch } from "@/lib/utils";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { cacheLife, cacheTag } from "next/cache";
+import { cacheTags } from "@/lib/cache/tags";
 import { Button } from "../ui/button";
 import UserImage from "../ui/userImage";
 
@@ -23,7 +24,7 @@ export async function ProfileDropdown({
   sessionId?: string | null;
 }) {
   "use cache";
-  cacheTag("user-profile");
+  cacheTag(cacheTags.userProfile());
   cacheLife("hours");
   const { result: user } = sessionId
     ? await withTryCatch(getUserById(sessionId))
