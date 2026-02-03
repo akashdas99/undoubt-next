@@ -25,7 +25,7 @@ import {
   sql,
 } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
-import { getProfile } from "./user";
+import { getSession } from "@/lib/session";
 
 export const getQuestions = async (
   keyword: string = "",
@@ -113,12 +113,16 @@ export async function addQuestion(questionData: QuestionType) {
     return errorResponse(parseZodErrors(parsed.error));
   }
   const validatedQuestion = parsed.data;
-  const userSession = await getProfile();
+  const userSession = await getSession();
+
+  if (!userSession) {
+    return errorResponse("You must be logged in to add a question");
+  }
 
   await db.insert(questions).values({
     title: validatedQuestion?.title,
     description: sanitizeHtml(validatedQuestion?.description || ""),
-    authorId: userSession?.id,
+    authorId: userSession.id,
     slug: createSlug(validatedQuestion.title),
   });
   return successResponse();
@@ -164,7 +168,11 @@ export async function editQuestion(questionData: EditQuestionType) {
   }
 
   const validatedQuestion = parsed.data;
-  const userSession = await getProfile();
+  const userSession = await getSession();
+
+  if (!userSession) {
+    return errorResponse("You must be logged in to edit a question");
+  }
 
   // Check if question exists and belongs to user
   const [existingQuestion] = await db
@@ -177,7 +185,7 @@ export async function editQuestion(questionData: EditQuestionType) {
     return errorResponse("Question not found");
   }
 
-  if (existingQuestion.authorId !== userSession?.id) {
+  if (existingQuestion.authorId !== userSession.id) {
     return errorResponse("You don't have permission to edit this question");
   }
 
@@ -201,7 +209,11 @@ export async function deleteQuestion(questionData: DeleteQuestionType) {
   }
 
   const validatedQuestion = parsed.data;
-  const userSession = await getProfile();
+  const userSession = await getSession();
+
+  if (!userSession) {
+    return errorResponse("You must be logged in to delete a question");
+  }
 
   // Check if question exists and belongs to user
   const [existingQuestion] = await db
@@ -214,7 +226,7 @@ export async function deleteQuestion(questionData: DeleteQuestionType) {
     return errorResponse("Question not found");
   }
 
-  if (existingQuestion.authorId !== userSession?.id) {
+  if (existingQuestion.authorId !== userSession.id) {
     return errorResponse("You don't have permission to delete this question");
   }
 

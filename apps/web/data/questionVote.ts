@@ -72,37 +72,3 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
     return errorResponse("Failed to vote on question");
   }
 }
-
-/**
- * Get user's votes for multiple questions in a single query
- * Returns a map of questionId -> vote value (1 for like, -1 for dislike, null for no vote)
- * This is more efficient than calling getQuestionVoteStats for each question
- */
-export async function getUserVotesForQuestions(questionIds: string[]) {
-  try {
-    const user = await getSession();
-
-    // If no user or no questions, return empty map
-    if (!user || questionIds.length === 0) {
-      return {};
-    }
-    // Get all user's votes for the provided questions in a single query
-    const userVotes = await db
-      .select({
-        questionId: questionVotes.questionId,
-        vote: questionVotes.vote,
-      })
-      .from(questionVotes)
-      .where(
-        and(
-          eq(questionVotes.userId, user.id),
-          inArray(questionVotes.questionId, questionIds),
-        ),
-      );
-
-    return userVotes.reduce((a, c) => ({ ...a, [c.questionId]: c.vote }), {});
-  } catch (error) {
-    console.error("Error getting user votes for questions:", error);
-    return errorResponse("Failed to get user votes");
-  }
-}

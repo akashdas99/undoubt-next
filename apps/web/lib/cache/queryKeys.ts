@@ -13,12 +13,6 @@ export const queryKeys = {
     detail: (id: string) => ["questions", "detail", id] as const,
   },
 
-  // User votes
-  userVotes: {
-    all: () => ["userVotes"] as const,
-    byQuestion: (questionId: string) => ["userVotes", questionId] as const,
-  },
-
   // Users
   users: {
     all: () => ["users"] as const,
