@@ -3,10 +3,11 @@ import { parseZodErrors } from "@/lib/utils";
 import { db } from "@/db/drizzle";
 import { answers } from "@/db/schema/answers";
 import { questions } from "@/db/schema/questions";
+import { questionStats } from "@/db/schema/questionStats";
 import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
 import { AnswerSchema, AnswerType } from "@repo/validations/answer";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { users } from "@/db/schema/users";
 
@@ -29,11 +30,17 @@ export async function addAnswer(slug: string, answerData: AnswerType) {
   if (!question?.id) {
     return errorResponse("Question not found");
   }
-  await db.insert(answers).values({
-    description: sanitizeHtml(parsed?.data?.description || ""),
-    authorId: userSession?.id,
-    questionId: question?.id,
-  });
+  await db.batch([
+    db.insert(answers).values({
+      description: sanitizeHtml(parsed?.data?.description || ""),
+      authorId: userSession?.id,
+      questionId: question?.id,
+    }),
+    db
+      .update(questionStats)
+      .set({ answersCount: sql`${questionStats.answersCount} + 1` })
+      .where(eq(questionStats.questionId, question.id)),
+  ]);
   return successResponse();
 }
 export async function updateAnswer(id: string, answerData: AnswerType) {
@@ -76,7 +83,11 @@ export async function deleteAnswer(id: string) {
   if (!userSession) return errorResponse("Unauthorized");
 
   const [answer] = await db
-    .select({ id: answers?.id, authorId: answers?.authorId })
+    .select({
+      id: answers?.id,
+      authorId: answers?.authorId,
+      questionId: answers.questionId,
+    })
     .from(answers)
     .where(eq(answers?.id, id));
   if (!answer) {
@@ -86,7 +97,13 @@ export async function deleteAnswer(id: string) {
   if (answer?.authorId !== userSession?.id) {
     return errorResponse("Not authorized to delete this answer");
   }
-  await db.delete(answers).where(eq(answers?.id, id));
+  await db.batch([
+    db.delete(answers).where(eq(answers?.id, id)),
+    db
+      .update(questionStats)
+      .set({ answersCount: sql`${questionStats.answersCount} - 1` })
+      .where(eq(questionStats.questionId, answer.questionId)),
+  ]);
   return successResponse();
 }
 /**

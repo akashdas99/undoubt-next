@@ -1,9 +1,19 @@
 import { db } from "@/db/drizzle";
 import { questionVotes } from "@/db/schema/questionVotes";
+import { questionStats } from "@/db/schema/questionStats";
 import { questions } from "@/db/schema/questions";
 import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
+
+const recomputeStats = (questionId: string) =>
+  db
+    .update(questionStats)
+    .set({
+      likes: sql`(SELECT COUNT(*) FROM ${questionVotes} WHERE ${questionVotes.questionId} = ${questionId} AND ${questionVotes.vote} = 1)`,
+      dislikes: sql`(SELECT COUNT(*) FROM ${questionVotes} WHERE ${questionVotes.questionId} = ${questionId} AND ${questionVotes.vote} = -1)`,
+    })
+    .where(eq(questionStats.questionId, questionId));
 
 export type VoteType = "like" | "dislike" | "remove";
 
@@ -35,14 +45,17 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
 
     // Handle vote removal
     if (voteType === "remove") {
-      await db
-        .delete(questionVotes)
-        .where(
-          and(
-            eq(questionVotes.questionId, questionId),
-            eq(questionVotes.userId, user.id),
+      await db.batch([
+        db
+          .delete(questionVotes)
+          .where(
+            and(
+              eq(questionVotes.questionId, questionId),
+              eq(questionVotes.userId, user.id),
+            ),
           ),
-        );
+        recomputeStats(questionId),
+      ]);
       return successResponse({ message: "Vote removed" });
     }
 
@@ -50,19 +63,22 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
 
     // Upsert vote (insert or update if exists)
     // This handles the case where user changes from like to dislike or vice versa
-    await db
-      .insert(questionVotes)
-      .values({
-        questionId,
-        userId: user.id,
-        vote: voteValue,
-      })
-      .onConflictDoUpdate({
-        target: [questionVotes.userId, questionVotes.questionId],
-        set: {
+    await db.batch([
+      db
+        .insert(questionVotes)
+        .values({
+          questionId,
+          userId: user.id,
           vote: voteValue,
-        },
-      });
+        })
+        .onConflictDoUpdate({
+          target: [questionVotes.userId, questionVotes.questionId],
+          set: {
+            vote: voteValue,
+          },
+        }),
+      recomputeStats(questionId),
+    ]);
 
     return successResponse({
       message: `Question ${voteType === "like" ? "liked" : "disliked"}`,
