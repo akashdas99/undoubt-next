@@ -1,7 +1,8 @@
+import { randomUUID } from "crypto";
 import { db } from "@/db/drizzle";
-import { answers } from "@/db/schema/answers";
 import { questions } from "@/db/schema/questions";
 import { questionVotes } from "@/db/schema/questionVotes";
+import { questionStats } from "@/db/schema/questionStats";
 import { users } from "@/db/schema/users";
 import { errorResponse, successResponse } from "@/lib/response";
 import createSlug, { parseZodErrors } from "@/lib/utils";
@@ -14,16 +15,7 @@ import {
   QuestionSchema,
   QuestionType,
 } from "@repo/validations/question";
-import {
-  and,
-  count,
-  countDistinct,
-  desc,
-  eq,
-  ilike,
-  or,
-  sql,
-} from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { getSession } from "@/lib/session";
 
@@ -67,23 +59,23 @@ export const getQuestions = async (
       author: { name: users.name, profilePicture: users.profilePicture },
       authorId: questions.authorId,
       createdAt: questions.createdAt,
-      answersCount: countDistinct(answers.id),
+      answersCount: questionStats.answersCount,
       slug: questions.slug,
-      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
-      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
+      likes: questionStats.likes,
+      dislikes: questionStats.dislikes,
       userVote: userId
-        ? sql<
-            number | null
-          >`MAX(CASE WHEN ${questionVotes.userId} = ${userId} THEN ${questionVotes.vote} END)`
+        ? sql<number | null>`(
+            SELECT ${questionVotes.vote} FROM ${questionVotes}
+            WHERE ${questionVotes.questionId} = ${questions.id}
+              AND ${questionVotes.userId} = ${userId}
+          )`
         : sql<null>`NULL`,
     })
     .from(questions)
     .innerJoin(sq, eq(questions.id, sq.id))
     .innerJoin(users, eq(questions.authorId, users.id))
-    .leftJoin(answers, eq(questions.id, answers.questionId))
-    .leftJoin(questionVotes, eq(questions.id, questionVotes.questionId))
-    .orderBy(desc(questions.updatedAt))
-    .groupBy(questions.id, users.id);
+    .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
+    .orderBy(desc(questions.updatedAt));
   return {
     data,
     pagination: {
@@ -119,12 +111,17 @@ export async function addQuestion(questionData: QuestionType) {
     return errorResponse("You must be logged in to add a question");
   }
 
-  await db.insert(questions).values({
-    title: validatedQuestion?.title,
-    description: sanitizeHtml(validatedQuestion?.description || ""),
-    authorId: userSession.id,
-    slug: createSlug(validatedQuestion.title),
-  });
+  const questionId = randomUUID();
+  await db.batch([
+    db.insert(questions).values({
+      id: questionId,
+      title: validatedQuestion?.title,
+      description: sanitizeHtml(validatedQuestion?.description || ""),
+      authorId: userSession.id,
+      slug: createSlug(validatedQuestion.title),
+    }),
+    db.insert(questionStats).values({ questionId }),
+  ]);
   return successResponse();
 }
 export async function getQuestionBySlug(slug: string, userId?: string | null) {
@@ -136,14 +133,16 @@ export async function getQuestionBySlug(slug: string, userId?: string | null) {
       author: { name: users.name, profilePicture: users.profilePicture },
       authorId: questions.authorId,
       createdAt: questions.createdAt,
-      answersCount: countDistinct(answers.id),
+      answersCount: questionStats.answersCount,
       slug: questions.slug,
-      likes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = 1 THEN 1 END)::int`,
-      dislikes: sql<number>`COUNT(CASE WHEN ${questionVotes.vote} = -1 THEN 1 END)::int`,
+      likes: questionStats.likes,
+      dislikes: questionStats.dislikes,
       userVote: userId
-        ? sql<
-            number | null
-          >`MAX(CASE WHEN ${questionVotes.userId} = ${userId} THEN ${questionVotes.vote} END)`
+        ? sql<number | null>`(
+            SELECT ${questionVotes.vote} FROM ${questionVotes}
+            WHERE ${questionVotes.questionId} = ${questions.id}
+              AND ${questionVotes.userId} = ${userId}
+          )`
         : sql<null>`NULL`,
     })
     .from(questions)
@@ -151,9 +150,7 @@ export async function getQuestionBySlug(slug: string, userId?: string | null) {
       users,
       and(eq(questions.slug, slug), eq(questions.authorId, users.id)),
     )
-    .leftJoin(answers, eq(answers.questionId, questions.id))
-    .leftJoin(questionVotes, eq(questions.id, questionVotes.questionId))
-    .groupBy(questions.id, users.id)
+    .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
     .limit(1)
     .orderBy(desc(questions?.updatedAt));
 
