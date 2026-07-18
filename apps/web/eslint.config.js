@@ -1,4 +1,4 @@
-import { nextJsConfig } from "@repo/eslint-config/next-js";
+import { nextJsConfig } from "@workspace/eslint-config/next-js";
 import drizzle from "eslint-plugin-drizzle";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 

@@ -1,11 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  transpilePackages: ["@workspace/ui"],
   cacheComponents: true,
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_CDNHOST,
+        hostname: process.env.NEXT_PUBLIC_CDNHOST!,
         port: "",
         pathname: "/**",
       },

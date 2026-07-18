@@ -7,7 +7,7 @@ import {
   DeleteQuestionType,
   EditQuestionType,
   QuestionType,
-} from "@repo/validations/question";
+} from "@workspace/validations/question";
 import { redirect } from "next/navigation";
 
 export async function addQuestionAction(questionData: QuestionType) {
@@ -28,7 +28,7 @@ export async function editQuestionAction(questionData: EditQuestionType) {
 
 export async function deleteQuestionAction(
   questionData: DeleteQuestionType,
-  shouldRedirect?: boolean,
+  shouldRedirect?: boolean
 ) {
   const res = await withTryCatchResponse(deleteQuestion(questionData));
 
@@ -41,7 +41,7 @@ export async function deleteQuestionAction(
 
 export async function voteOnQuestionAction(
   questionId: string,
-  voteType: VoteType,
+  voteType: VoteType
 ) {
   const res = await withTryCatchResponse(voteOnQuestion(questionId, voteType));
 

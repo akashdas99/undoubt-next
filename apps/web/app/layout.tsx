@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "@workspace/ui/globals.css";
 import Header from "@/components/common/header";
 import { Montserrat, Righteous } from "next/font/google";
 import Providers from "./providers";
@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${montserrat.variable} ${righteous.variable}`}>
       <body>
         <Providers>
-          <div className="min-h-svh flex flex-col items-center font-montserrat">
+          <div className="flex min-h-svh flex-col items-center font-montserrat">
             <Header />
             {children}
           </div>

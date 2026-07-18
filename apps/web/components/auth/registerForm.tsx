@@ -8,7 +8,7 @@ import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { RegisterType } from "@/types/auth";
-import { RegisterSchema } from "@repo/validations/auth";
+import { RegisterSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState } from "react";
@@ -28,7 +28,7 @@ const RegisterForm: React.FC = () => {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<RegisterType>({
@@ -47,12 +47,12 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
+    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
+      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
         Register Account
       </h1>
       <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
-        <FieldGroup className="md:grid grid-cols-2 gap-x-3">
+        <FieldGroup className="grid-cols-2 gap-x-3 md:grid">
           <FormInput
             control={form.control}
             name="name"
@@ -87,19 +87,19 @@ const RegisterForm: React.FC = () => {
         <FieldError errors={[form?.formState?.errors?.root]} />
         <Button
           type="submit"
-          className="mt-5 justify-self-center col-span-2 w-full"
+          className="col-span-2 mt-5 w-full justify-self-center"
           loading={loadingSignup}
         >
           Create Account
         </Button>
       </form>
-      <div className="relative flex py-2 items-center">
+      <div className="relative flex items-center py-2">
         <div className="grow border-t border-gray-400"></div>
-        <span className="shrink mx-4 text-gray-400">Or</span>
+        <span className="mx-4 shrink text-gray-400">Or</span>
         <div className="grow border-t border-gray-400"></div>
       </div>
       <div className="text-sm">
-        <Link className="text-primary underline font-semibold" href={"/login"}>
+        <Link className="font-semibold text-primary underline" href={"/login"}>
           Login
         </Link>{" "}
         if you already have an account

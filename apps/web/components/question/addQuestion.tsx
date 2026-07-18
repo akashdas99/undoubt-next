@@ -3,7 +3,7 @@
 import { addQuestionAction } from "@/actions/question";
 import { FieldGroup } from "@/components/ui/field";
 import { FormEditor, FormInput } from "@/components/ui/form";
-import { QuestionSchema, QuestionType } from "@repo/validations/question";
+import { QuestionSchema, QuestionType } from "@workspace/validations/question";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ export default function AddQuestion() {
       const res = await addQuestionAction(data);
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<QuestionType>({
@@ -32,9 +32,9 @@ export default function AddQuestion() {
   };
 
   return (
-    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
+    <div className="my-3 w-full max-w-screen-lg px-3 md:my-8">
       <div className="bordered-card p-[1em]">
-        <h1 className={`font-righteous text-xl mb-2 md:text-3xl`}>
+        <h1 className={`mb-2 font-righteous text-xl md:text-3xl`}>
           Add Question
         </h1>
         <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -52,11 +52,11 @@ export default function AddQuestion() {
             />
           </FieldGroup>
           {form?.formState?.errors?.root?.message && (
-            <p className="text-[0.6rem] text-destructive font-medium">
+            <p className="text-[0.6rem] font-medium text-destructive">
               {form?.formState?.errors?.root?.message}
             </p>
           )}
-          <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
+          <div className="mt-2 flex flex-col flex-wrap gap-x-2 sm:flex-row">
             <Button type="submit" className="mt-3" loading={isAddingQuestion}>
               Add Question
             </Button>

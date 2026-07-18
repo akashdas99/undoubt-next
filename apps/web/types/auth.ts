@@ -3,4 +3,4 @@ export type {
   LoginType,
   ForgotPasswordType,
   ResetPasswordType,
-} from "@repo/validations/auth";
+} from "@workspace/validations/auth";

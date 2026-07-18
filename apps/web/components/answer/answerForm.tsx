@@ -5,7 +5,7 @@ import { isEmpty } from "@/lib/functions";
 
 import { Answer } from "@/db/schema/answers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnswerSchema, AnswerType } from "@repo/validations/answer";
+import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { useParams } from "next/navigation";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,7 +32,7 @@ export default function AnswerForm({
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<AnswerType>({
@@ -62,11 +62,11 @@ export default function AnswerForm({
         />
       </FieldGroup>
       {form?.formState?.errors?.root?.message && (
-        <p className="text-[0.6rem] text-destructive font-medium">
+        <p className="text-[0.6rem] font-medium text-destructive">
           {form?.formState?.errors?.root?.message}
         </p>
       )}
-      <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
+      <div className="mt-2 flex flex-col flex-wrap gap-x-2 sm:flex-row">
         <Button type="submit" className="mt-3" loading={isAddingAnswer}>
           Submit
         </Button>

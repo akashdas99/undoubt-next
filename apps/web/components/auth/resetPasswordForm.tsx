@@ -7,7 +7,7 @@ import { FieldError, FieldGroup } from "@/components/ui/field";
 import { FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ResetPasswordType } from "@/types/auth";
-import { ResetPasswordSchema } from "@repo/validations/auth";
+import { ResetPasswordSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
@@ -29,7 +29,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<ResetPasswordType>({
@@ -48,11 +48,11 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
+      <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
+        <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
           Password Reset Successful
         </h1>
-        <p className="text-sm mb-4">
+        <p className="mb-4 text-sm">
           Your password has been reset successfully. You can now log in with
           your new password.
         </p>
@@ -68,9 +68,9 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   }
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>Reset Password</h1>
-      <p className="text-sm mb-4">Enter your new password below.</p>
+    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
+      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>Reset Password</h1>
+      <p className="mb-4 text-sm">Enter your new password below.</p>
       <form id="reset-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormPassword
@@ -103,7 +103,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         </Button>
       </form>
       <div className="mt-4 text-sm">
-        <Link className="text-primary underline font-semibold" href={"/login"}>
+        <Link className="font-semibold text-primary underline" href={"/login"}>
           Back to Login
         </Link>
       </div>

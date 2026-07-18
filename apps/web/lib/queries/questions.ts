@@ -48,7 +48,7 @@ export function useQuestionsByKeyword(keyword: string) {
 // Infinite scroll questions
 export function useQuestionsInfinite(
   keyword: string = "",
-  userId?: string | null,
+  userId?: string | null
 ) {
   return useInfiniteQuery({
     queryKey: queryKeys.questions.list(keyword, userId),

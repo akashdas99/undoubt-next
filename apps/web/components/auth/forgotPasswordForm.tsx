@@ -7,7 +7,7 @@ import { FieldError, FieldGroup } from "@/components/ui/field";
 import { FormInput } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ForgotPasswordType } from "@/types/auth";
-import { ForgotPasswordSchema } from "@repo/validations/auth";
+import { ForgotPasswordSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { startTransition, useActionState, useState } from "react";
 import { Button } from "../ui/button";
@@ -23,7 +23,7 @@ export default function ForgotPasswordForm() {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<ForgotPasswordType>({
@@ -40,17 +40,17 @@ export default function ForgotPasswordForm() {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
+      <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
+        <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
           Check Your Email
         </h1>
-        <p className="text-sm mb-4">
+        <p className="mb-4 text-sm">
           If an account exists with that email, a password reset link has been
           sent.
         </p>
         <Link
           href="/login"
-          className="text-sm text-primary hover:underline block"
+          className="block text-sm text-primary hover:underline"
         >
           Back to Login
         </Link>
@@ -59,11 +59,11 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
+    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
+      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
         Forgot Password
       </h1>
-      <p className="text-sm mb-4">
+      <p className="mb-4 text-sm">
         Enter your email address and we&apos;ll send you a link to reset your
         password.
       </p>
@@ -87,7 +87,7 @@ export default function ForgotPasswordForm() {
         </Button>
       </form>
       <div className="mt-4 text-sm">
-        <Link className="text-primary underline font-semibold" href={"/login"}>
+        <Link className="font-semibold text-primary underline" href={"/login"}>
           Back to Login
         </Link>
       </div>
