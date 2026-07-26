@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@workspace/ui/components/dialog";
 
 export default function SearchModal() {
   const [open, setOpen] = useState(false);

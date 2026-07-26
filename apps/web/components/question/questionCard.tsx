@@ -8,7 +8,7 @@ import { CalendarDays, MessageSquare, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardAction,
@@ -16,8 +16,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+} from "@workspace/ui/components/card";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import QuestionForm from "./questionForm";
@@ -62,7 +62,7 @@ const QuestionCard = React.memo(
             <span className="font-montserrat font-medium">
               {question?.author?.name}
             </span>
-            <span className="flex items-center gap-1 text-xs opacity-50 font-normal">
+            <span className="flex items-center gap-1 text-xs font-normal opacity-50">
               <CalendarDays className="w-3" />
               {dayjs(question?.createdAt).format("MMM D, YYYY")}
             </span>
@@ -79,7 +79,7 @@ const QuestionCard = React.memo(
               >
                 <Pencil
                   size={16}
-                  className="group-hover:text-background text-foreground"
+                  className="text-foreground group-hover:text-background"
                 />
               </Button>
               <Button
@@ -90,7 +90,7 @@ const QuestionCard = React.memo(
               >
                 <Trash
                   size={16}
-                  className="group-hover:text-background text-destructive"
+                  className="text-destructive group-hover:text-background"
                 />
               </Button>
             </CardAction>
@@ -108,7 +108,7 @@ const QuestionCard = React.memo(
               condition={!isQuestionPage}
               href={`/question/${question?.slug}`}
             >
-              <div className="font-semibold text-base md:text-xl leading-tight">
+              <div className="text-base leading-tight font-semibold md:text-xl">
                 {question?.title}
               </div>
               {question?.description && (
@@ -120,7 +120,7 @@ const QuestionCard = React.memo(
         <hr className="mx-3 border-t border-gray-300" />
 
         <CardFooter className="justify-between text-xs">
-          <div className="flex gap-2 text-muted-foreground font-semibold">
+          <div className="flex gap-2 font-semibold text-muted-foreground">
             <MessageSquare size={16} />
             <span>{question?.answersCount || "No"} Answers</span>
           </div>
@@ -155,7 +155,7 @@ const QuestionCard = React.memo(
         prev.author?.profilePicture === next.author?.profilePicture,
       prev.userVote === next.userVote
     );
-  },
+  }
 );
 
 QuestionCard.displayName = "QuestionCard";
@@ -164,7 +164,7 @@ const QuestionCardSkeleton: React.FC = () => {
   return (
     <Card size="sm">
       <CardHeader>
-        <Skeleton className="rounded-full h-[30px] w-[30px]" />
+        <Skeleton className="h-[30px] w-[30px] rounded-full" />
         <Skeleton className="h-5 w-28" />
         <span className="flex items-center gap-1 text-xs opacity-50">
           <CalendarDays className="w-3" />

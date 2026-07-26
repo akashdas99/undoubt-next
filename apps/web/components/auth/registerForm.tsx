@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { registerUserAction } from "@/actions/auth";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
@@ -12,7 +12,7 @@ import { RegisterSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();

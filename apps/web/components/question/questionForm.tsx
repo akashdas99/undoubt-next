@@ -1,6 +1,6 @@
 "use client";
 import { addQuestionAction, editQuestionAction } from "@/actions/question";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@workspace/validations/question";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 import { FormEditor, FormInput } from "../ui/form";
 
 export default function QuestionForm({

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
-import { Input } from "./input";
+import { Input } from "@workspace/ui/components/input";
 import Editor from "./editor";
-import { Field, FieldLabel, FieldError } from "./field";
+import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field";
 
 type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -83,7 +83,7 @@ export function FormPassword<T extends FieldValues>({
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               onClick={() => setShowPassword(!showPassword)}
               tabIndex={-1}
             >
@@ -124,7 +124,7 @@ export function FormEditor<T extends FieldValues>({
           <Editor
             content={field.value || ""}
             onChange={field.onChange}
-            className="bg-white min-h-32"
+            className="min-h-32 bg-white"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

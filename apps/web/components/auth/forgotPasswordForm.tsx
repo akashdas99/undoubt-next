@@ -3,14 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { forgotPasswordAction } from "@/actions/auth";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { FormInput } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ForgotPasswordType } from "@/types/auth";
 import { ForgotPasswordSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { startTransition, useActionState, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 
 export default function ForgotPasswordForm() {
   const [showSuccess, setShowSuccess] = useState(false);

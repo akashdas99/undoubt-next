@@ -1,13 +1,13 @@
 "use client";
 
 import { addQuestionAction } from "@/actions/question";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@workspace/ui/components/field";
 import { FormEditor, FormInput } from "@/components/ui/form";
 import { QuestionSchema, QuestionType } from "@workspace/validations/question";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 
 export default function AddQuestion() {
   const [res, handleAddQuestion, isAddingQuestion] = useActionState(

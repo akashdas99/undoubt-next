@@ -1,6 +1,6 @@
 "use client";
 import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 
 import { Answer } from "@/db/schema/answers";
@@ -9,7 +9,7 @@ import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { useParams } from "next/navigation";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 import { FormEditor } from "../ui/form";
 
 export default function AnswerForm({

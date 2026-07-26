@@ -7,8 +7,8 @@ import dayjs from "dayjs";
 import { CalendarDays, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "@workspace/ui/components/button";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
 import AnswerForm from "./answerForm";
 import DeleteAnswerModal from "./deleteAnswerModal";
@@ -44,7 +44,7 @@ export default function AnswerCard({
   };
 
   return (
-    <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
+    <div className="flex flex-col gap-2 border-t-2 border-solid border-foreground/20 pt-[1em]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <UserImage user={answer?.author} className="w-[30px]" />
@@ -66,7 +66,7 @@ export default function AnswerCard({
             >
               <Pencil
                 size={20}
-                className="group-hover:text-background text-foreground"
+                className="text-foreground group-hover:text-background"
               />
             </Button>
 
@@ -98,10 +98,10 @@ export default function AnswerCard({
 
 export const AnswerCardSkeleton = () => {
   return (
-    <div className="pt-[1em] flex flex-col gap-2 border-t-2 border-solid border-foreground/20">
+    <div className="flex flex-col gap-2 border-t-2 border-solid border-foreground/20 pt-[1em]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Skeleton className="rounded-full h-[30px] w-[30px]" />
+          <Skeleton className="h-[30px] w-[30px] rounded-full" />
           <Skeleton className="h-6 w-28" />
           <div className="flex items-center gap-1 text-xs opacity-50">
             <CalendarDays className="w-3" />

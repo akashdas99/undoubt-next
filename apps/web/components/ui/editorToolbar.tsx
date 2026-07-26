@@ -11,7 +11,7 @@ import {
   ListOrdered,
   Strikethrough,
 } from "lucide-react";
-import { Toggle } from "./toggle";
+import { Toggle } from "@workspace/ui/components/toggle";
 
 type EditorToolBarProps = {
   editor: Editor | null;
@@ -69,7 +69,7 @@ export default function EditorToolBar({ editor }: EditorToolBarProps) {
   ];
 
   return (
-    <div className="border rounded-md p-1.5 mb-1 bg-slate-50 space-x-1 sticky  top-10 z-50">
+    <div className="sticky top-10 z-50 mb-1 space-x-1 rounded-md border bg-slate-50 p-1.5">
       {Options.map((option, i) => (
         <Toggle
           key={i}
