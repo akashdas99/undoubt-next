@@ -50,9 +50,6 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.1.0
-      '@tailwindcss/postcss':
-        specifier: ^4.1.18
-        version: 4.3.0
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.101.2(react@19.2.4)
@@ -168,6 +165,9 @@ importers:
         specifier: ^5.0.10
         version: 5.0.14(@types/react@19.2.2)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
     devDependencies:
+      '@tailwindcss/postcss':
+        specifier: ^4.1.18
+        version: 4.3.0
       '@tanstack/eslint-plugin-query':
         specifier: ^5.91.4
         version: 5.101.2(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.2)

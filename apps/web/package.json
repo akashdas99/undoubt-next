@@ -18,7 +18,6 @@
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@workspace/validations": "workspace:*",
-    "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/react-query": "^5.90.20",
     "@tiptap/extension-bullet-list": "^3.17.1",
     "@tiptap/extension-heading": "^3.17.1",
@@ -56,7 +55,7 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.1.18",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
     "@tanstack/eslint-plugin-query": "^5.91.4",
