@@ -36,18 +36,14 @@ export async function ProfileDropdown({
           <Button
             variant="ghost"
             size={"icon"}
-            className="rounded-full p-[2px] transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
-          />
+            className="rounded-full p-0.5 transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
+          >
+            <UserImage user={user} />
+          </Button>
         }
-      >
-        <UserImage user={user} />
-      </DropdownMenuTrigger>
+      />
 
-      <DropdownMenuContent
-        className="border-border/50 w-56 rounded-xl border bg-background/95 p-1.5 shadow-lg backdrop-blur-sm"
-        align="end"
-        sideOffset={8}
-      >
+      <DropdownMenuContent className="frosted-glass" align="end" sideOffset={8}>
         {isEmpty(user) ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">

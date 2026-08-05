@@ -8,10 +8,10 @@ import SearchModal from "./searchModal";
 
 export default async function Header() {
   return (
-    <header className="flex justify-center bg-foreground text-white w-full sticky z-20 top-0">
-      <div className="flex items-center p-3 gap-[20px] justify-between w-full my-auto max-w-[1450px]">
+    <header className="sticky top-0 z-20 flex w-full justify-center bg-foreground text-white">
+      <div className="my-auto flex w-full max-w-362.5 items-center justify-between gap-5 p-3">
         <Link
-          className={`font-righteous bg-primary rounded-tl-lg rounded-br-lg border-2 px-2 text-center text-xl`}
+          className={`rounded-tl-lg rounded-br-lg border-2 bg-primary px-2 text-center font-righteous text-xl`}
           href="/"
         >
           UNdoubt
@@ -25,7 +25,7 @@ export default async function Header() {
           >
             <Plus />
           </Link>
-          <Suspense fallback={<UserImageSkeleton className="w-[36px]" />}>
+          <Suspense fallback={<UserImageSkeleton className="w-9" />}>
             <SessionWrapper
               render={(sessionId) => <ProfileDropdown sessionId={sessionId} />}
             />
