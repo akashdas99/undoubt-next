@@ -96,7 +96,6 @@ const QuestionCard = React.memo(
             </CardAction>
           )}
         </CardHeader>
-        <hr className="mx-3 border-t border-gray-300" />
         <CardContent>
           {isEditing ? (
             <QuestionForm
@@ -117,7 +116,6 @@ const QuestionCard = React.memo(
             </ConditionalLink>
           )}
         </CardContent>
-        <hr className="mx-3 border-t border-gray-300" />
 
         <CardFooter className="justify-between text-xs">
           <div className="flex gap-2 font-semibold text-muted-foreground">
@@ -171,13 +169,11 @@ const QuestionCardSkeleton: React.FC = () => {
           <Skeleton className="h-4 w-20" />
         </span>
       </CardHeader>
-      <hr className="mx-3 border-t border-gray-300" />
       <CardContent className="space-y-2">
         <Skeleton className="h-7 w-2/3" />
         <Skeleton className="h-5 w-full" />
         <Skeleton className="h-5 w-full" />
       </CardContent>
-      <hr className="mx-3 border-t border-gray-300" />
       <CardFooter className="text-xs">
         <div className="flex gap-2 font-semibold">
           <MessageSquare size={16} />

@@ -52,8 +52,11 @@
 :root {
   --background: oklch(0.96 0.008 255);
   --foreground: oklch(0.35 0.005 145);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.012 265);
+  --card: oklch(1 0 0 / 0.55);
+  --card-foreground: oklch(0.22 0.012 270);
+  --card-border: oklch(1 0 0 / 0.6);
+  --card-shadow: 0 8px 40px oklch(0.28 0.04 270 / 0.18);
+  --card-specular: oklch(1 0 0 / 0.95);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.012 265);
   --primary: oklch(0.68 0.155 245);
@@ -86,10 +89,13 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.17 0.005 270);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
+  --card: oklch(1 0 0 / 0.08);
+  --card-foreground: oklch(0.96 0.003 265);
+  --card-border: oklch(1 0 0 / 0.16);
+  --card-shadow: 0 8px 40px oklch(0 0 0 / 0.5);
+  --card-specular: oklch(1 0 0 / 0.35);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.985 0 0);
@@ -130,11 +136,34 @@
   .text-balance {
     text-wrap: balance;
   }
+  .frosted-glass,
   .bordered-card {
-    @apply rounded-3xl;
-    box-shadow:
-      rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
-      rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    background-color: var(--card);
+    box-shadow: var(--card-shadow);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
+  .frosted-glass::before,
+  .bordered-card::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 1;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--card-specular),
+      transparent
+    );
+  }
+  .bordered-card {
+    border-radius: 28px;
   }
   .spinner-loader {
     width: 50px;
