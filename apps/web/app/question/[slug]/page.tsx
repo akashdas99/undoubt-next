@@ -53,8 +53,8 @@ export default function Page({
       <div className="flex flex-col gap-5">
         <Suspense fallback={<QuestionCardSkeleton />}>
           <SessionWrapper
-            render={(userId) => (
-              <QuestionSection params={params} userId={userId} />
+            render={(user) => (
+              <QuestionSection params={params} userId={user?.id ?? null} />
             )}
           />
         </Suspense>

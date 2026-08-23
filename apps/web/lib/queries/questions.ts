@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { queryKeys } from "@/lib/cache/queryKeys";
+import { queryKeys } from "@/lib/queries/keys";
 import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 

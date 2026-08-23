@@ -8,15 +8,18 @@ function Card({
   ...props
 }: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
   return (
-    <div
-      data-slot="card"
-      data-size={size}
-      className={cn(
-        "frosted-glass group/card flex flex-col gap-(--card-spacing) rounded-4xl py-(--card-spacing) text-sm text-card-foreground [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-[28px] *:[img:last-child]:rounded-b-4xl",
-        className
-      )}
-      {...props}
-    />
+    <div className="relative">
+      <div className="bg-card-specular rounded-4xl h-10 absolute -top-0.5 w-full" />
+      <div
+        data-slot="card"
+        data-size={size}
+        className={cn(
+          "bg-background frosted-glass group/card flex flex-col gap-(--card-spacing) rounded-4xl py-(--card-spacing) text-sm text-card-foreground [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-[28px] *:[img:last-child]:rounded-b-4xl",
+          className
+        )}
+        {...props}
+      />
+    </div>
   )
 }
 
@@ -25,7 +28,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1.5 rounded-t-4xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+        "group/card-header @container/card-header flex items-center gap-2 rounded-t-4xl px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
         className
       )}
       {...props}

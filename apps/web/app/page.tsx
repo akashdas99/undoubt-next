@@ -41,7 +41,7 @@ export default function Home() {
         <div className="mb-3 font-righteous text-3xl">Recent Questions</div>
         <Suspense fallback={<QuestionListFallback />}>
           <SessionWrapper
-            render={(userId) => <QuestionList userId={userId} />}
+            render={(user) => <QuestionList userId={user?.id ?? null} />}
           />
         </Suspense>
       </div>

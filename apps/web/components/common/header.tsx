@@ -5,13 +5,14 @@ import { UserImageSkeleton } from "../ui/userImage";
 import { ProfileDropdown } from "./profileDropdown";
 import { SessionWrapper } from "./sessionWrapper";
 import SearchModal from "./searchModal";
+import { ThemeToggle } from "./themeToggle";
 
 export default async function Header() {
   return (
-    <header className="sticky top-0 z-20 flex w-full justify-center bg-foreground text-white">
+    <header className="sticky top-0 z-20 flex w-full justify-center backdrop-blur-sm text-foreground">
       <div className="my-auto flex w-full max-w-362.5 items-center justify-between gap-5 p-3">
         <Link
-          className={`rounded-tl-lg rounded-br-lg border-2 bg-primary px-2 text-center font-righteous text-xl`}
+          className={`rounded-tl-lg rounded-br-lg border-2 bg-primary px-2 text-center font-righteous text-xl text-white`}
           href="/"
         >
           UNdoubt
@@ -25,9 +26,10 @@ export default async function Header() {
           >
             <Plus />
           </Link>
+          <ThemeToggle />
           <Suspense fallback={<UserImageSkeleton className="w-9" />}>
             <SessionWrapper
-              render={(sessionId) => <ProfileDropdown sessionId={sessionId} />}
+              render={(user) => <ProfileDropdown user={user} />}
             />
           </Suspense>
         </div>

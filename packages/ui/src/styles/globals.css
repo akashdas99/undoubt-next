@@ -34,6 +34,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-card-specular: var(--card-specular);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
   --radius-sm: calc(var(--radius) * 0.6);
@@ -55,8 +56,8 @@
   --card: oklch(1 0 0 / 0.55);
   --card-foreground: oklch(0.22 0.012 270);
   --card-border: oklch(1 0 0 / 0.6);
-  --card-shadow: 0 8px 40px oklch(0.28 0.04 270 / 0.18);
-  --card-specular: oklch(1 0 0 / 0.95);
+  --card-shadow: 0 2px 2px oklch(0.28 0.04 270 / 0.18);
+  --card-specular: oklch(1 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.012 265);
   --primary: oklch(0.68 0.155 245);
@@ -89,16 +90,16 @@
 }
 
 .dark {
-  --background: oklch(0.17 0.005 270);
+  --background: oklch(0.35 0.005 145);
   --foreground: oklch(0.985 0 0);
   --card: oklch(1 0 0 / 0.08);
   --card-foreground: oklch(0.96 0.003 265);
   --card-border: oklch(1 0 0 / 0.16);
-  --card-shadow: 0 8px 40px oklch(0 0 0 / 0.5);
+  --card-shadow: 0 2px 2px oklch(0 0 0 / 0.5);
   --card-specular: oklch(1 0 0 / 0.35);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
+  --primary: oklch(0.68 0.155 245);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -140,27 +141,9 @@
   .bordered-card {
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--card-border);
-    background-color: var(--card);
     box-shadow: var(--card-shadow);
     -webkit-backdrop-filter: blur(24px);
     backdrop-filter: blur(24px);
-  }
-  .frosted-glass::before,
-  .bordered-card::before {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-    z-index: 1;
-    height: 1px;
-    pointer-events: none;
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--card-specular),
-      transparent
-    );
   }
   .bordered-card {
     border-radius: 28px;

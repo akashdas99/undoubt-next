@@ -8,27 +8,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { getUserById } from "@/data/user";
 import { isEmpty } from "@/lib/functions";
-import { withTryCatch } from "@/lib/utils";
+import { cacheTags } from "@/lib/cache/tags";
+import type { SessionUser } from "./sessionWrapper";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { cacheLife, cacheTag } from "next/cache";
-import { cacheTags } from "@/lib/cache/tags";
 import { Button } from "@workspace/ui/components/button";
 import UserImage from "../ui/userImage";
 
 export async function ProfileDropdown({
-  sessionId,
+  user,
 }: {
-  sessionId?: string | null;
+  user?: SessionUser | null;
 }) {
   "use cache";
-  cacheTag(cacheTags.userProfile());
+  cacheTag(cacheTags.users.profile());
   cacheLife("hours");
-  const { result: user } = sessionId
-    ? await withTryCatch(getUserById(sessionId))
-    : { result: null };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -36,6 +33,7 @@ export async function ProfileDropdown({
           <Button
             variant="ghost"
             size={"icon"}
+            data-slot="dropdown-menu-trigger"
             className="rounded-full p-0.5 transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
           >
             <UserImage user={user} />

@@ -1,4 +1,5 @@
 import { getTopContributors } from "@/data/user";
+import { Card, CardContent } from "@workspace/ui/components/card";
 import ContributorCard from "./contributorCard";
 
 const TopContributorsList: React.FC = async () => {
@@ -14,13 +15,15 @@ const TopContributorsList: React.FC = async () => {
   }
 
   return (
-    <aside className="hidden lg:block p-3 sticky z-10 top-[60px] self-start">
+    <aside className="sticky top-[60px] z-10 hidden self-start p-3 lg:block">
       <div className="mb-3 font-righteous text-3xl">Top Contributors</div>
-      <div className="space-y-3 p-3 pr-5 bordered-card w-[384px]">
-        {activeContributors.map((user, index) => (
-          <ContributorCard key={user.id} user={user} rank={index + 1} />
-        ))}
-      </div>
+      <Card size="sm" className="w-[384px]">
+        <CardContent className="flex flex-col gap-3">
+          {activeContributors.map((user, index) => (
+            <ContributorCard key={user.id} user={user} rank={index + 1} />
+          ))}
+        </CardContent>
+      </Card>
     </aside>
   );
 };

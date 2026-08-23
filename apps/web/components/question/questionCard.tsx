@@ -56,7 +56,7 @@ const QuestionCard = React.memo(
 
     return (
       <Card size="sm">
-        <CardHeader className="flex-row items-center justify-between gap-0">
+        <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <UserImage user={question?.author} className="w-[30px]" />
             <span className="font-montserrat font-medium">
@@ -141,16 +141,16 @@ const QuestionCard = React.memo(
     // Compare all relevant fields
     return (
       prev.id === next.id &&
-        prev.title === next.title &&
-        prev.description === next.description &&
-        prev.slug === next.slug &&
-        prev.likes === next.likes &&
-        prev.dislikes === next.dislikes &&
-        prev.answersCount === next.answersCount &&
-        prev.createdAt === next.createdAt &&
-        prev.authorId === next.authorId &&
-        prev.author?.name === next.author?.name &&
-        prev.author?.profilePicture === next.author?.profilePicture,
+      prev.title === next.title &&
+      prev.description === next.description &&
+      prev.slug === next.slug &&
+      prev.likes === next.likes &&
+      prev.dislikes === next.dislikes &&
+      prev.answersCount === next.answersCount &&
+      prev.createdAt === next.createdAt &&
+      prev.authorId === next.authorId &&
+      prev.author?.name === next.author?.name &&
+      prev.author?.profilePicture === next.author?.profilePicture,
       prev.userVote === next.userVote
     );
   }

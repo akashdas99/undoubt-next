@@ -27,7 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${righteous.variable}`}>
+    <html
+      lang="en"
+      className={`${montserrat.variable} ${righteous.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <Providers>
           <div className="flex min-h-svh flex-col items-center font-montserrat">
