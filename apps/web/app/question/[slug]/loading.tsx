@@ -4,15 +4,15 @@ import { QuestionCardSkeleton } from "@/components/question/questionCard";
 
 export default function Loading() {
   return (
-    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
-      <div className="flex flex-col gap-5">
+    <div className="my-xl w-full max-w-content px-xl">
+      <div className="flex flex-col gap-md">
         <QuestionCardSkeleton />
         <AddAnswer />
-        <div className="bordered-card p-[1em]">
-          <div className="active-neo section-heading mb-2 font-righteous text-xl">
+        <div className="bordered-card p-md">
+          <div className="active-neo section-heading mb-xs font-righteous text-title">
             Recent Answers
           </div>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-md">
             <AnswerCardSkeleton />
             <AnswerCardSkeleton />
             <AnswerCardSkeleton />

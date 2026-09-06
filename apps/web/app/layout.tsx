@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-montserrat-family",
 });
 
 const righteous = Righteous({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-righteous",
+  variable: "--font-righteous-family",
 });
 
 export default function RootLayout({

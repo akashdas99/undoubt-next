@@ -15,8 +15,8 @@ const TopContributorsList: React.FC = async () => {
   }
 
   return (
-    <aside className="sticky top-[60px] z-10 hidden self-start p-3 lg:block">
-      <div className="mb-3 font-righteous text-3xl">Top Contributors</div>
+    <aside className="sticky top-17 z-10 hidden self-start p-sm lg:block">
+      <div className="mb-xs font-righteous text-display">Top Contributors</div>
       <Card size="sm" className="w-[384px]">
         <CardContent className="flex flex-col gap-3">
           {activeContributors.map((user, index) => (

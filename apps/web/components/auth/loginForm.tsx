@@ -56,8 +56,8 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
-      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>Welcome Back</h1>
+    <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+      <h1 className={`mb-xs font-righteous text-display`}>Welcome Back</h1>
       <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput

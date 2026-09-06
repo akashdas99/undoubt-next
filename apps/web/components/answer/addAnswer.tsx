@@ -34,8 +34,8 @@ export default function AddAnswer() {
         </Button>
       ) : (
         <div className="flex grow items-center justify-center">
-          <div className="bordered-card w-full rounded-xl p-8">
-            <h1 className={`mb-6 font-righteous text-3xl`}>Add Answer</h1>
+          <div className="bordered-card w-full p-md">
+            <h1 className={`mb-xs font-righteous text-display`}>Add Answer</h1>
             <AnswerForm closeAnswerForm={() => setShowEditor(false)} />
           </div>
         </div>

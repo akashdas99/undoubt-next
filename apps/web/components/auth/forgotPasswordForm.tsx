@@ -40,8 +40,8 @@ export default function ForgotPasswordForm() {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
-        <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
+      <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+        <h1 className={`mb-xs font-righteous text-display`}>
           Check Your Email
         </h1>
         <p className="mb-4 text-sm">
@@ -59,8 +59,8 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
-      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
+    <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+      <h1 className={`mb-xs font-righteous text-display`}>
         Forgot Password
       </h1>
       <p className="mb-4 text-sm">

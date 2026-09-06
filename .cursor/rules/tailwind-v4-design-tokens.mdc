@@ -1,0 +1,51 @@
+---
+description: Tailwind v4 CSS-first design tokens. Use when adding colors, type, radius, shadows, spacing, or other theme values.
+globs: packages/ui/src/styles/**/*.css, **/*.{css,tsx}
+alwaysApply: true
+---
+
+# Tailwind v4 design tokens
+
+Source of truth: `packages/ui/src/styles/globals.css`. No `tailwind.config.js` theme keys. No `@utility` for tokens.
+
+## Layers
+
+- **Colors**: oklch on `:root` / `.dark` (`--primary`), map in `@theme inline` (`--color-primary: var(--primary)`).
+- **Spacing + radius (B)**: t-shirt / scale in `@theme` (not `inline`). Override the **same** variable at `48rem` and `64rem`. No `clamp()` on padding or radius.
+- **Display type (A)**: `--text-display` / `--text-title` use `clamp()`. Do not clamp `text-sm` / `text-xs`.
+- **Shadows, fonts**: `@theme` name is the token. `--shadow-card` (inset specular in dark via `--card-specular`). next/font vars are `--font-*-family`, mapped to `--font-montserrat` / `--font-righteous` / `--font-sans` / `--font-display`.
+
+Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
+
+## Spacing (t-shirt only)
+
+`xxs` 4 · `xs` 8 · `sm` 12→16 · `md` 16→20 · `lg` 20→24 · `xl` 24→32 · `2xl` 32→40 · `3xl` 48.
+
+`p-sm` / `gap-md` / `px-xl` once — not `md:p-md`. Numeric `p-4` is the fixed 4/8px grid.
+
+Do **not** add semantic spacing (`page`, `section`, `stack`, `gutter`, `inline`, `p-card`). Card padding is `p-md` / `--spacing-md`. Header uses `p-sm`.
+
+`--spacing-xl` also generates `max-w-xl` (small). Never use `max-w-sm|md|xl` for layout.
+
+## Widths (`--container-*`)
+
+| Token | Class | Role |
+|---|---|---|
+| `--container-content` | `max-w-content` | Main column 64rem |
+| `--container-form` | `max-w-form` | Auth 36rem |
+| `--container-dialog` | `max-w-dialog` | Dialogs 28rem |
+| `--container-narrow` | `max-w-narrow` | Empty/error 20rem |
+
+## Radius (B)
+
+Step `--radius` 8→10→12px so `rounded-sm` … `rounded-4xl` grow together.
+
+- `rounded-card` → `--radius-4xl`
+- `rounded-panel` → `--radius-3xl`
+- `rounded-full` is static
+
+Do not also override `--radius-card` in media queries.
+
+## Shadows
+
+`shadow-card` on cards and the sticky header. Do not invent a second card shadow name.

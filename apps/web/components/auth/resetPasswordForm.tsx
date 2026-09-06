@@ -48,8 +48,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
-        <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>
+      <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+        <h1 className={`mb-xs font-righteous text-display`}>
           Password Reset Successful
         </h1>
         <p className="mb-4 text-sm">
@@ -68,8 +68,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   }
 
   return (
-    <div className="bordered-card my-auto w-11/12 max-w-md rounded-xl p-8">
-      <h1 className={`mb-3 font-righteous text-3xl md:mb-6`}>Reset Password</h1>
+    <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+      <h1 className={`mb-xs font-righteous text-display`}>Reset Password</h1>
       <p className="mb-4 text-sm">Enter your new password below.</p>
       <form id="reset-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>

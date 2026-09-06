@@ -43,7 +43,7 @@ export default function InfiniteQuestionList({
 
   return (
     <>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-md">
         {questions.map((question) => (
           <QuestionCard key={question?.id} question={question} />
         ))}
