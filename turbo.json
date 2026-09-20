@@ -11,7 +11,31 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["SECRET", "RESEND_API_KEY", "EMAIL_FROM", "DATABASE_URI"]
+      "env": [
+        "SECRET",
+        "RESEND_API_KEY",
+        "EMAIL_FROM",
+        "DATABASE_URI",
+        "API_URL",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_BASEURL",
+        "COOKIE_DOMAIN"
+      ]
+    },
+    "api#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**"],
+      "env": [
+        "PORT",
+        "DATABASE_URI",
+        "SECRET",
+        "RESEND_API_KEY",
+        "EMAIL_FROM",
+        "NEXT_PUBLIC_BASEURL",
+        "WEB_ORIGIN",
+        "COOKIE_DOMAIN"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -20,6 +44,7 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }

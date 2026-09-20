@@ -1,6 +1,6 @@
 import { InferSelectModel } from "drizzle-orm";
 import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { createdAt, updatedAt } from "../helpers/timestamps";
+import { createdAt, updatedAt } from "../helpers/timestamps.js";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
