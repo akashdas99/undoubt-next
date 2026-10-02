@@ -14,6 +14,9 @@ export class TokensService {
     if (!secret) {
       throw new Error('SECRET is not set');
     }
+    if (secret.length < 32) {
+      throw new Error('SECRET must be at least 32 characters');
+    }
     return new TextEncoder().encode(secret);
   }
 

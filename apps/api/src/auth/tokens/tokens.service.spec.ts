@@ -5,6 +5,7 @@ describe('TokensService', () => {
   let service: TokensService;
 
   beforeEach(async () => {
+    process.env.SECRET = 'a'.repeat(32);
     const module: TestingModule = await Test.createTestingModule({
       providers: [TokensService],
     }).compile();
@@ -14,5 +15,17 @@ describe('TokensService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('rejects a SECRET shorter than 32 characters', async () => {
+    process.env.SECRET = 'too-short';
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [TokensService],
+    }).compile();
+    const shortSecretService = module.get<TokensService>(TokensService);
+
+    await expect(
+      shortSecretService.issueAccessToken({ id: 'id', userName: 'user' }),
+    ).rejects.toThrow('SECRET must be at least 32 characters');
   });
 });

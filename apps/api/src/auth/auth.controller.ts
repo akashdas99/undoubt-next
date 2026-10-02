@@ -48,6 +48,7 @@ export class AuthController {
 
   @Post('forgot-password')
   @HttpCode(204)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @ApiOperation({ summary: 'Request a password reset email' })
   async forgotPassword(@Body() body: ForgotPasswordDto) {
     await this.auth.forgotPassword(body);
@@ -55,6 +56,7 @@ export class AuthController {
 
   @Post('reset-password')
   @HttpCode(204)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @ApiOperation({ summary: 'Reset password with token' })
   async resetPassword(@Body() body: ResetPasswordDto) {
     await this.auth.resetPassword(body);
