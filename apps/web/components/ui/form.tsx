@@ -79,18 +79,18 @@ export function FormPassword<T extends FieldValues>({
               placeholder={placeholder}
               autoComplete={autoComplete}
               aria-invalid={fieldState.invalid}
-              className="pr-10"
+              className="pr-2xl"
             />
             <button
               type="button"
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute top-1/2 right-sm -translate-y-1/2 text-muted-foreground hover:text-foreground"
               onClick={() => setShowPassword(!showPassword)}
               tabIndex={-1}
             >
               {showPassword ? (
-                <EyeOff className="size-4" />
+                <EyeOff className="size-md" />
               ) : (
-                <Eye className="size-4" />
+                <Eye className="size-md" />
               )}
             </button>
           </div>
@@ -124,7 +124,7 @@ export function FormEditor<T extends FieldValues>({
           <Editor
             content={field.value || ""}
             onChange={field.onChange}
-            className="min-h-32 bg-white"
+            className="min-h-3xl bg-white"
           />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

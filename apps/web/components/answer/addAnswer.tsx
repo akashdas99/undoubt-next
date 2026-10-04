@@ -35,7 +35,7 @@ export default function AddAnswer() {
       ) : (
         <div className="flex grow items-center justify-center">
           <div className="bordered-card w-full p-md">
-            <h1 className={`mb-xs font-righteous text-display`}>Add Answer</h1>
+            <h1 className={`mb-xs font-display text-display`}>Add Answer</h1>
             <AnswerForm closeAnswerForm={() => setShowEditor(false)} />
           </div>
         </div>
@@ -44,5 +44,5 @@ export default function AddAnswer() {
   );
 }
 export const AddAnswerSkeleton = () => {
-  return <Skeleton className="h-10 w-[150px] rounded-md" />;
+  return <Skeleton className="h-2xl w-3xl rounded-md" />;
 };

@@ -61,7 +61,7 @@ export default function Page({
         <QuestionDeleteModal redirectOnDelete />
         <AddAnswer />
         <div className="bordered-card p-md">
-          <div className="active-neo section-heading mb-xs font-righteous text-title">
+          <div className="active-neo section-heading mb-xs font-display text-title">
             Recent Answers
           </div>
           <AnswerList params={params} />

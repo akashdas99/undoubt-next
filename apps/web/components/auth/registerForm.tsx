@@ -48,11 +48,9 @@ const RegisterForm: React.FC = () => {
 
   return (
     <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-      <h1 className={`mb-xs font-righteous text-display`}>
-        Register Account
-      </h1>
+      <h1 className={`mb-xs font-display text-display`}>Register Account</h1>
       <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
-        <FieldGroup className="grid-cols-2 gap-x-3 md:grid">
+        <FieldGroup className="grid-cols-2 gap-x-sm md:grid">
           <FormInput
             control={form.control}
             name="name"
@@ -87,15 +85,15 @@ const RegisterForm: React.FC = () => {
         <FieldError errors={[form?.formState?.errors?.root]} />
         <Button
           type="submit"
-          className="col-span-2 mt-5 w-full justify-self-center"
+          className="col-span-2 mt-lg w-full justify-self-center"
           loading={loadingSignup}
         >
           Create Account
         </Button>
       </form>
-      <div className="relative flex items-center py-2">
+      <div className="relative flex items-center py-xs">
         <div className="grow border-t border-gray-400"></div>
-        <span className="mx-4 shrink text-gray-400">Or</span>
+        <span className="mx-md shrink text-gray-400">Or</span>
         <div className="grow border-t border-gray-400"></div>
       </div>
       <div className="text-sm">

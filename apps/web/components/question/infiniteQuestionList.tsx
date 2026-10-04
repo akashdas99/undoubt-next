@@ -27,7 +27,7 @@ export default function InfiniteQuestionList({
           fetchNextPage();
         }
       },
-      { threshold: INTERSECTION_THRESHOLD },
+      { threshold: INTERSECTION_THRESHOLD }
     );
 
     if (observerRef.current) {
@@ -43,27 +43,27 @@ export default function InfiniteQuestionList({
 
   return (
     <>
-      <div className="flex flex-col gap-md">
+      <div className="flex flex-col gap-lg">
         {questions.map((question) => (
           <QuestionCard key={question?.id} question={question} />
         ))}
       </div>
 
       {hasNextPage && (
-        <div ref={observerRef} className="py-8 text-center">
+        <div ref={observerRef} className="py-2xl text-center">
           {isFetching ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+            <div className="flex items-center justify-center gap-xs">
+              <div className="size-xl animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
               <span>Loading more questions...</span>
             </div>
           ) : (
-            <div className="h-10" />
+            <div className="h-2xl" />
           )}
         </div>
       )}
 
       {!hasNextPage && questions.length > 0 && (
-        <div className="py-8 text-center text-gray-500">
+        <div className="py-2xl text-center text-muted-foreground">
           No more questions to load
         </div>
       )}

@@ -10,10 +10,15 @@ Source of truth: `packages/ui/src/styles/globals.css`. No `tailwind.config.js` t
 
 ## Layers
 
-- **Colors**: oklch on `:root` / `.dark` (`--primary`), map in `@theme inline` (`--color-primary: var(--primary)`).
-- **Spacing + radius (B)**: t-shirt / scale in `@theme` (not `inline`). Override the **same** variable at `48rem` and `64rem`. No `clamp()` on padding or radius.
+Both `@theme` and `@theme inline` emit CSS variables. The difference is the **utility**: `@theme` uses `var(--token)`; `@theme inline` copies the value into the class.
+
+- **`@theme inline` (pointers only)**: `--color-*` → `var(--primary)` etc. Fonts → `var(--font-*-family)`. So `bg-primary` is `var(--primary)` on the element, not a wrapper resolved at `:root`.
+- **`@theme` (overridable values)**: spacing, radius, `--shadow-card`, display type, `--container-*`. Utilities follow later overrides (`48rem` / `64rem` spacing + `--radius`; `.dark { --shadow-card }`).
+- **Colors**: oklch on `:root` / `.dark` (`--primary`). Never `--color-primary: var(--primary)` in `@theme` (not inline).
+- **Spacing + radius (B)**: t-shirt / scale in `@theme`. Override the **same** variable at `48rem` and `64rem`. No `clamp()` on padding or radius. Do not put spacing in `@theme inline` (`p-sm` would bake `0.75rem`).
 - **Display type (A)**: `--text-display` / `--text-title` use `clamp()`. Do not clamp `text-sm` / `text-xs`.
-- **Shadows, fonts**: `@theme` name is the token. `--shadow-card` (inset specular in dark via `--card-specular`). next/font vars are `--font-*-family`, mapped to `--font-montserrat` / `--font-righteous` / `--font-sans` / `--font-display`.
+- **Shadows**: `--shadow-card` in `@theme` (inset `var(--card-specular)`). Dark mode may retarget `--shadow-card`.
+- **Fonts**: `@theme inline` maps `--font-sans` and `--font-display` to `--font-*-family` from `next/font`. Use `font-sans` / `font-display` in components—not `font-montserrat` / `font-righteous`.
 
 Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
 
@@ -21,7 +26,7 @@ Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
 
 `xxs` 4 · `xs` 8 · `sm` 12→16 · `md` 16→20 · `lg` 20→24 · `xl` 24→32 · `2xl` 32→40 · `3xl` 48.
 
-`p-sm` / `gap-md` / `px-xl` once — not `md:p-md`. Numeric `p-4` is the fixed 4/8px grid.
+`p-sm` / `gap-md` / `px-xl` once — not `md:p-md`. Product UI uses t-shirt spacing only (`p-sm`, `gap-md`, `px-xl`). Do not use numeric spacing utilities (`p-4`, `px-2`, `gap-3`, `mt-6`, `w-10`, etc.) in `apps/web` or `packages/ui` components.
 
 Do **not** add semantic spacing (`page`, `section`, `stack`, `gutter`, `inline`, `p-card`). Card padding is `p-md` / `--spacing-md`. Header uses `p-sm`.
 

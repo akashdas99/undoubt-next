@@ -17,11 +17,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "@workspace/ui/components/button";
 import UserImage from "../ui/userImage";
 
-export async function ProfileDropdown({
-  user,
-}: {
-  user?: SessionUser | null;
-}) {
+export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
   "use cache";
   cacheTag(cacheTags.users.profile());
   cacheLife("hours");
@@ -34,7 +30,7 @@ export async function ProfileDropdown({
             variant="ghost"
             size={"icon"}
             data-slot="dropdown-menu-trigger"
-            className="rounded-full p-0.5 transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
+            className="rounded-full p-xxs transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
           >
             <UserImage user={user} />
           </Button>
@@ -44,19 +40,19 @@ export async function ProfileDropdown({
       <DropdownMenuContent className="frosted-glass" align="end" sideOffset={8}>
         {isEmpty(user) ? (
           <DropdownMenuGroup>
-            <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+            <DropdownMenuLabel className="px-xs py-xs text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Get Started
             </DropdownMenuLabel>
             <DropdownMenuItem
               render={<Link href={"/register"} />}
-              className="mx-1 my-0.5 rounded-lg"
+              className="mx-xxs my-xxs rounded-lg"
             >
               <UserPlus className="text-primary" />
               <span>Create Account</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               render={<Link href={"/login"} />}
-              className="mx-1 my-0.5 rounded-lg"
+              className="mx-xxs my-xxs rounded-lg"
             >
               <LogIn className="text-primary" />
               <span>Login</span>
@@ -65,8 +61,8 @@ export async function ProfileDropdown({
         ) : (
           <>
             <DropdownMenuGroup>
-              <div className="flex items-center gap-3 px-2 py-2">
-                <UserImage user={user} className="h-10 w-10" />
+              <div className="flex items-center gap-sm px-xs py-xs">
+                <UserImage user={user} className="size-2xl" />
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-sm font-medium">
                     {user?.name}
@@ -78,28 +74,28 @@ export async function ProfileDropdown({
               </div>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator className="my-1.5" />
+            <DropdownMenuSeparator className="my-xs" />
 
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="px-2 py-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              <DropdownMenuLabel className="px-xs py-xxs text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Account
               </DropdownMenuLabel>
               <DropdownMenuItem
                 render={<Link href={"/profile"} />}
-                className="mx-1 my-0.5 rounded-lg"
+                className="mx-xxs my-xxs rounded-lg"
               >
                 <UserRoundCog className="text-primary" />
                 <span>Profile Settings</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator className="my-1.5" />
+            <DropdownMenuSeparator className="my-xs" />
 
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={logoutUserAction}
                 variant="destructive"
-                className="mx-1 my-0.5 rounded-lg"
+                className="mx-xxs my-xxs rounded-lg"
               >
                 <LogOut />
                 <span>Log out</span>

@@ -39,17 +39,17 @@ export function ConfirmationModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-righteous font-normal">
+          <DialogTitle className="font-display font-normal">
             {title}
           </DialogTitle>
-          <DialogDescription className="font-montserrat">
+          <DialogDescription className="font-sans">
             {description}
           </DialogDescription>
         </DialogHeader>
         {error && (
           <p className="text-xs text-destructive font-medium">{error}</p>
         )}
-        <DialogFooter className="font-montserrat">
+        <DialogFooter className="font-sans">
           <Button
             type="button"
             variant="destructive"

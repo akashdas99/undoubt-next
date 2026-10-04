@@ -34,9 +34,7 @@ export default function AddQuestion() {
   return (
     <div className="my-xl w-full max-w-content px-xl">
       <div className="bordered-card p-2xl">
-        <h1 className={`mb-xs font-righteous text-display`}>
-          Add Question
-        </h1>
+        <h1 className={`mb-xs font-display text-display`}>Add Question</h1>
         <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <FormInput
@@ -52,12 +50,12 @@ export default function AddQuestion() {
             />
           </FieldGroup>
           {form?.formState?.errors?.root?.message && (
-            <p className="text-[0.6rem] font-medium text-destructive">
+            <p className="text-xs font-medium text-destructive">
               {form?.formState?.errors?.root?.message}
             </p>
           )}
-          <div className="mt-2 flex flex-col flex-wrap gap-x-2 sm:flex-row">
-            <Button type="submit" className="mt-3" loading={isAddingQuestion}>
+          <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
+            <Button type="submit" className="mt-sm" loading={isAddingQuestion}>
               Add Question
             </Button>
           </div>

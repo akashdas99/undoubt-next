@@ -49,10 +49,10 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   if (showSuccess) {
     return (
       <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-        <h1 className={`mb-xs font-righteous text-display`}>
+        <h1 className={`mb-xs font-display text-display`}>
           Password Reset Successful
         </h1>
-        <p className="mb-4 text-sm">
+        <p className="mb-md text-sm">
           Your password has been reset successfully. You can now log in with
           your new password.
         </p>
@@ -69,8 +69,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   return (
     <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-      <h1 className={`mb-xs font-righteous text-display`}>Reset Password</h1>
-      <p className="mb-4 text-sm">Enter your new password below.</p>
+      <h1 className={`mb-xs font-display text-display`}>Reset Password</h1>
+      <p className="mb-md text-sm">Enter your new password below.</p>
       <form id="reset-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormPassword
@@ -96,13 +96,13 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         />
         <Button
           type="submit"
-          className="mt-3 w-full"
+          className="mt-sm w-full"
           loading={loadingResetPassword}
         >
           Reset Password
         </Button>
       </form>
-      <div className="mt-4 text-sm">
+      <div className="mt-md text-sm">
         <Link className="font-semibold text-primary underline" href={"/login"}>
           Back to Login
         </Link>

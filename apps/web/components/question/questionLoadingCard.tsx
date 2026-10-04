@@ -3,10 +3,10 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 
 const QuestionLoadingCard = () => {
   return (
-    <div className="bordered-card flex flex-col gap-2 p-md">
-      <Skeleton className="h-6 w-full" />
-      <Skeleton className="h-6 w-80" />
-      <Skeleton className="h-6 w-20" />
+    <div className="bordered-card flex flex-col gap-xs p-md">
+      <Skeleton className="h-xl w-full" />
+      <Skeleton className="h-xl w-(--container-narrow)" />
+      <Skeleton className="h-xl w-3xl" />
     </div>
   );
 };

@@ -21,7 +21,7 @@ export default function SearchModal() {
         <Search />
       </DialogTrigger>
       <DialogContent
-        className="w-10/12 sm:max-w-[425px]"
+        className="w-10/12 sm:max-w-dialog"
         showCloseButton={false}
       >
         <DialogTitle>Search</DialogTitle>

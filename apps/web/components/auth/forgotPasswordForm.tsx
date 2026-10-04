@@ -41,10 +41,8 @@ export default function ForgotPasswordForm() {
   if (showSuccess) {
     return (
       <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-        <h1 className={`mb-xs font-righteous text-display`}>
-          Check Your Email
-        </h1>
-        <p className="mb-4 text-sm">
+        <h1 className={`mb-xs font-display text-display`}>Check Your Email</h1>
+        <p className="mb-md text-sm">
           If an account exists with that email, a password reset link has been
           sent.
         </p>
@@ -60,10 +58,8 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-      <h1 className={`mb-xs font-righteous text-display`}>
-        Forgot Password
-      </h1>
-      <p className="mb-4 text-sm">
+      <h1 className={`mb-xs font-display text-display`}>Forgot Password</h1>
+      <p className="mb-md text-sm">
         Enter your email address and we&apos;ll send you a link to reset your
         password.
       </p>
@@ -80,13 +76,13 @@ export default function ForgotPasswordForm() {
         <FieldError errors={[form?.formState?.errors?.root]} />
         <Button
           type="submit"
-          className="mt-3 w-full"
+          className="mt-sm w-full"
           loading={loadingForgotPassword}
         >
           Send Reset Link
         </Button>
       </form>
-      <div className="mt-4 text-sm">
+      <div className="mt-md text-sm">
         <Link className="font-semibold text-primary underline" href={"/login"}>
           Back to Login
         </Link>

@@ -9,7 +9,7 @@ export default function Loading() {
         <QuestionCardSkeleton />
         <AddAnswer />
         <div className="bordered-card p-md">
-          <div className="active-neo section-heading mb-xs font-righteous text-title">
+          <div className="active-neo section-heading mb-xs font-display text-title">
             Recent Answers
           </div>
           <div className="flex flex-col gap-md">

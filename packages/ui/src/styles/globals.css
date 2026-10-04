@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./typeset.css";
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../apps/**/*.{ts,tsx}";
@@ -42,30 +43,20 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-  --radius-card: var(--radius-4xl);
-  --radius-panel: var(--radius-3xl);
-  --shadow-card:
-    0 2px 2px oklch(0.28 0.04 270 / 0.18), inset 0 2px 2px var(--card-specular);
-  --font-sans:
-    var(--font-montserrat-family), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
   --font-display:
-    var(--font-righteous-family), ui-sans-serif, system-ui, sans-serif;
-  --font-montserrat:
-    var(--font-montserrat-family), ui-sans-serif, system-ui, sans-serif;
-  --font-righteous:
-    var(--font-righteous-family), ui-sans-serif, system-ui, sans-serif;
+    var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    var(--font-mono-family), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
 }
 
 /*
-  T-shirt spacing (B): names keep rank; values step at 48rem / 64rem.
-  Type (A): clamp on display/title only.
+  T-shirt spacing: names keep rank; values step at 48rem / 64rem.
+  Named --spacing-* keys also match sizing utilities (w-*, max-w-*), so the
+  --max-width-* pins below keep max-w-sm..2xl on the container scale.
+  Type: clamp on display/title only.
+  Radius / shadow: @theme so utilities use var(--token) and follow overrides.
 */
 @theme {
   --spacing-xxs: 0.25rem;
@@ -86,6 +77,27 @@
   --container-form: 36rem;
   --container-dialog: 28rem;
   --container-narrow: 20rem;
+
+  --max-width-xs: var(--container-xs);
+  --max-width-sm: var(--container-sm);
+  --max-width-md: var(--container-md);
+  --max-width-lg: var(--container-lg);
+  --max-width-xl: var(--container-xl);
+  --max-width-2xl: var(--container-2xl);
+  --max-width-3xl: var(--container-3xl);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-card: var(--radius-4xl);
+  --radius-panel: var(--radius-3xl);
+
+  --shadow-card:
+    0 2px 2px oklch(0.28 0.04 270 / 0.18), inset 0 2px 2px var(--card-specular);
 }
 
 :root {
@@ -124,6 +136,9 @@
   --sidebar-accent-foreground: oklch(0.22 0.008 265);
   --sidebar-border: oklch(0.92 0.005 265);
   --sidebar-ring: oklch(0.15 0.012 265);
+  /* shadcn/typeset defaults reference --font-heading / --font-mono */
+  --font-heading:
+    var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark {
@@ -132,9 +147,9 @@
   --card: oklch(1 0 0 / 0.08);
   --card-foreground: oklch(0.96 0.003 265);
   --card-border: oklch(1 0 0 / 0.16);
+  --card-specular: oklch(1 0 0 / 0.35);
   --shadow-card:
     0 2px 2px oklch(0 0 0 / 0.5), inset 0 2px 2px var(--card-specular);
-  --card-specular: oklch(1 0 0 / 0.35);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.68 0.155 245);
@@ -145,8 +160,9 @@
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  /* Solid destructive surface with light text (was dark bg + bright fg) */
+  --destructive: oklch(0.6 0.21 25);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
@@ -167,51 +183,61 @@
 
 @layer base {
   body {
-    @apply bg-background text-base text-foreground antialiased;
+    @apply bg-background font-sans text-base text-foreground antialiased;
   }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(1turn);
   }
-  .frosted-glass,
-  .bordered-card {
-    position: relative;
-    box-shadow: var(--shadow-card);
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
+}
+
+@keyframes animation-wave {
+  0% {
+    transform: translateX(-100%);
   }
-  .bordered-card {
-    overflow: hidden;
-    border-radius: var(--radius-card);
+  100% {
+    transform: translateX(100%);
   }
-  .spinner-loader {
-    width: 50px;
-    padding: 8px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    -webkit-mask:
-      conic-gradient(#0000 10%, #000),
-      linear-gradient(#000 0 0) content-box;
-    mask:
-      conic-gradient(#0000 10%, #000),
-      linear-gradient(#000 0 0) content-box;
-    -webkit-mask-composite: source-out;
-    mask-composite: subtract;
-    animation: l3 1s infinite linear;
-  }
-  @keyframes l3 {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-  .animate-wave {
-    position: relative;
-    overflow: hidden;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-  }
-  .animate-wave:after {
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility frosted-glass {
+  position: relative;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(24px);
+}
+
+@utility bordered-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(24px);
+}
+
+@utility spinner-loader {
+  width: 50px;
+  padding: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  mask:
+    conic-gradient(#0000 10%, #000),
+    linear-gradient(#000 0 0) content-box;
+  mask-composite: subtract;
+  animation: spinner-rotate 1s infinite linear;
+}
+
+@utility animate-wave {
+  position: relative;
+  overflow: hidden;
+  mask-image: radial-gradient(white, black);
+
+  &::after {
     content: "";
     background: linear-gradient(
       90deg,
@@ -220,20 +246,9 @@
       rgba(255, 255, 255, 0) 80%
     );
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 100%;
+    inset: 0;
     transform: translateX(-100%);
     animation: animation-wave 1s linear infinite;
-  }
-  @keyframes animation-wave {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
   }
 }
 

@@ -7,7 +7,7 @@ const TopContributorsList: React.FC = async () => {
 
   // Filter out users with 0 contributions
   const activeContributors = contributors.filter(
-    (user) => user.questionCount > 0 || user.answerCount > 0,
+    (user) => user.questionCount > 0 || user.answerCount > 0
   );
 
   if (activeContributors.length === 0) {
@@ -15,10 +15,10 @@ const TopContributorsList: React.FC = async () => {
   }
 
   return (
-    <aside className="sticky top-17 z-10 hidden self-start p-sm lg:block">
-      <div className="mb-xs font-righteous text-display">Top Contributors</div>
-      <Card size="sm" className="w-[384px]">
-        <CardContent className="flex flex-col gap-3">
+    <aside className="sticky top-3xl z-10 hidden self-start p-md lg:block">
+      <div className="mb-md font-display text-display">Top Contributors</div>
+      <Card size="sm" className="w-(--container-dialog)">
+        <CardContent className="flex flex-col gap-sm">
           {activeContributors.map((user, index) => (
             <ContributorCard key={user.id} user={user} rank={index + 1} />
           ))}

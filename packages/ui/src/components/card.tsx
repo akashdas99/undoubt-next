@@ -12,7 +12,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "bg-background frosted-glass group/card flex flex-col gap-(--card-spacing) rounded-card py-(--card-spacing) text-sm text-card-foreground [--card-spacing:var(--spacing-md)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-card *:[img:last-child]:rounded-b-card",
+        "bg-background frosted-glass group/card flex flex-col gap-(--card-spacing) rounded-card py-(--card-spacing) text-sm text-card-foreground [--card-spacing:var(--spacing-md)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:var(--spacing-md)] *:[img:first-child]:rounded-t-card *:[img:last-child]:rounded-b-card",
         className
       )}
       {...props}
@@ -25,7 +25,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header flex items-center gap-2 rounded-t-card px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
+        "group/card-header @container/card-header flex items-center gap-xs rounded-t-card px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
         className
       )}
       {...props}

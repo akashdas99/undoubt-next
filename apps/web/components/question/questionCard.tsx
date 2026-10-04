@@ -57,18 +57,18 @@ const QuestionCard = React.memo(
     return (
       <Card size="sm">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserImage user={question?.author} className="w-[30px]" />
-            <span className="font-montserrat font-medium">
+          <CardTitle className="flex items-center gap-xs">
+            <UserImage user={question?.author} className="w-2xl" />
+            <span className="font-sans font-medium">
               {question?.author?.name}
             </span>
-            <span className="flex items-center gap-1 text-xs font-normal opacity-50">
-              <CalendarDays className="w-3" />
+            <span className="flex items-center gap-xxs text-xs font-normal opacity-50">
+              <CalendarDays className="w-sm" />
               {dayjs(question?.createdAt).format("MMM D, YYYY")}
             </span>
           </CardTitle>
           {isAuthor && (
-            <CardAction className="flex items-center gap-2">
+            <CardAction className="flex items-center gap-xs">
               <Button
                 variant={"ghost"}
                 size="icon-sm"
@@ -118,7 +118,7 @@ const QuestionCard = React.memo(
         </CardContent>
 
         <CardFooter className="justify-between text-xs">
-          <div className="flex gap-2 font-semibold text-muted-foreground">
+          <div className="flex gap-xs font-semibold text-muted-foreground">
             <MessageSquare size={16} />
             <span>{question?.answersCount || "No"} Answers</span>
           </div>
@@ -141,16 +141,16 @@ const QuestionCard = React.memo(
     // Compare all relevant fields
     return (
       prev.id === next.id &&
-      prev.title === next.title &&
-      prev.description === next.description &&
-      prev.slug === next.slug &&
-      prev.likes === next.likes &&
-      prev.dislikes === next.dislikes &&
-      prev.answersCount === next.answersCount &&
-      prev.createdAt === next.createdAt &&
-      prev.authorId === next.authorId &&
-      prev.author?.name === next.author?.name &&
-      prev.author?.profilePicture === next.author?.profilePicture,
+        prev.title === next.title &&
+        prev.description === next.description &&
+        prev.slug === next.slug &&
+        prev.likes === next.likes &&
+        prev.dislikes === next.dislikes &&
+        prev.answersCount === next.answersCount &&
+        prev.createdAt === next.createdAt &&
+        prev.authorId === next.authorId &&
+        prev.author?.name === next.author?.name &&
+        prev.author?.profilePicture === next.author?.profilePicture,
       prev.userVote === next.userVote
     );
   }
@@ -162,22 +162,22 @@ const QuestionCardSkeleton: React.FC = () => {
   return (
     <Card size="sm">
       <CardHeader>
-        <Skeleton className="h-[30px] w-[30px] rounded-full" />
-        <Skeleton className="h-5 w-28" />
-        <span className="flex items-center gap-1 text-xs opacity-50">
-          <CalendarDays className="w-3" />
-          <Skeleton className="h-4 w-20" />
+        <Skeleton className="size-2xl rounded-full" />
+        <Skeleton className="h-lg w-3xl" />
+        <span className="flex items-center gap-xxs text-xs opacity-50">
+          <CalendarDays className="w-sm" />
+          <Skeleton className="h-md w-3xl" />
         </span>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <Skeleton className="h-7 w-2/3" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-full" />
+      <CardContent className="space-y-xs">
+        <Skeleton className="h-2xl w-2/3" />
+        <Skeleton className="h-lg w-full" />
+        <Skeleton className="h-lg w-full" />
       </CardContent>
       <CardFooter className="text-xs">
-        <div className="flex gap-2 font-semibold">
+        <div className="flex gap-xs font-semibold">
           <MessageSquare size={16} />
-          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-md w-3xl" />
         </div>
       </CardFooter>
     </Card>

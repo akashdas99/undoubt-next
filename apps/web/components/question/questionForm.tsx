@@ -80,18 +80,22 @@ export default function QuestionForm({
           />
         </FieldGroup>
         {form?.formState?.errors?.root?.message && (
-          <p className="text-[0.6rem] font-medium text-destructive">
+          <p className="text-xs font-medium text-destructive">
             {form?.formState?.errors?.root?.message}
           </p>
         )}
-        <div className="mt-2 flex flex-col flex-wrap gap-x-2 sm:flex-row">
-          <Button type="submit" className="mt-3" loading={isSubmittingQuestion}>
+        <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
+          <Button
+            type="submit"
+            className="mt-sm"
+            loading={isSubmittingQuestion}
+          >
             {question ? "Save Changes" : "Add Question"}
           </Button>
           <Button
             type="button"
             onClick={onClose}
-            className="mt-3"
+            className="mt-sm"
             variant={"outline"}
           >
             Cancel

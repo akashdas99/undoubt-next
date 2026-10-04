@@ -6,7 +6,7 @@ import SearchModal from "./searchModal";
 
 export default function NavigationSection() {
   return (
-    <div className="flex items-center gap-5 text-xs">
+    <div className="flex items-center gap-lg text-xs">
       <SearchModal />
       <Link href={"/question"} prefetch={false} className="flex rounded-full">
         <Plus />
