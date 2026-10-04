@@ -209,7 +209,6 @@
 @utility frosted-glass {
   position: relative;
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(24px);
 }
 
 @utility bordered-card {
@@ -217,7 +216,6 @@
   overflow: hidden;
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(24px);
 }
 
 @utility spinner-loader {
