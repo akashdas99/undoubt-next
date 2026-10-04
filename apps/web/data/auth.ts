@@ -19,7 +19,7 @@ import {
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
-} from "@repo/validations/auth";
+} from "@workspace/validations/auth";
 import bcryptjs from "bcryptjs";
 import { nanoid } from "nanoid";
 import { eq, or } from "drizzle-orm";
@@ -38,8 +38,8 @@ export async function registerUser(userData: RegisterType) {
     .where(
       or(
         eq(users.email, validatedUser.email),
-        eq(users.userName, validatedUser.userName),
-      ),
+        eq(users.userName, validatedUser.userName)
+      )
     )
     .limit(1);
 
@@ -51,7 +51,7 @@ export async function registerUser(userData: RegisterType) {
           }
         : {
             userName: { message: "UserName already exists" },
-          },
+          }
     );
   }
   //hash password
@@ -104,7 +104,7 @@ export async function loginUser(userData: LoginType) {
 
   const isCorrectPassword = await bcryptjs.compare(
     validatedUser.password,
-    user.password,
+    user.password
   );
   if (!isCorrectPassword) {
     return errorResponse({

@@ -1,27 +1,41 @@
+import type { ReactNode } from "react";
 import { getProfile } from "@/data/user";
 import UserImage from "../ui/userImage";
 import ImageUpload from "./imageUpload";
+
+function ProfileRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-xxs text-sm sm:flex-row sm:gap-xs">
+      <div className="shrink-0 font-medium opacity-70">{label}</div>
+      <div className="min-w-0 flex-1">{children}</div>
+    </div>
+  );
+}
 
 export default async function Profile() {
   const data = await getProfile();
 
   return (
-    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
-      <div className="bordered-card p-[1em]">
-        <h1 className={`font-righteous text-3xl mb-2`}>Profile Information</h1>
-        <div className="flex flex-col gap-5 sm:flex-row sm:justify-between items-start">
+    <div className="my-xl w-full max-w-content px-xl">
+      <div className="bordered-card p-md">
+        <h1 className="mb-xs font-display text-display">Profile Information</h1>
+        <div className="flex flex-col items-start gap-md sm:flex-row sm:justify-between">
           <div className="relative">
-            <UserImage user={data} className="w-[36px]" />
+            <UserImage user={data} className="w-2xl" />
             <ImageUpload />
           </div>
-          <div className="grid grid-cols-[min-content_auto] text-sm gap-y-2 gap-x-2 flex-1">
-            <div className="font-medium opacity-70">Name</div>
-            <div>{data?.name}</div>
-            <div className="font-medium opacity-70">Username</div>
-            <div>{data?.userName}</div>
-
-            <div className="font-medium opacity-70">Registered</div>
-            <div>{new Date(data?.createdAt).toLocaleDateString()}</div>
+          <div className="flex flex-1 flex-col gap-xs text-sm">
+            <ProfileRow label="Name">{data?.name}</ProfileRow>
+            <ProfileRow label="Username">{data?.userName}</ProfileRow>
+            <ProfileRow label="Registered">
+              {new Date(data?.createdAt).toLocaleDateString()}
+            </ProfileRow>
           </div>
         </div>
       </div>

@@ -12,17 +12,17 @@ export default async function ResetPasswordPage({
 
   if (!token) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-          <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+          <h1 className={`mb-xs font-display text-display`}>
             Invalid Reset Link
           </h1>
-          <p className="text-sm mb-4">
+          <p className="mb-md text-sm">
             This password reset link is invalid or has expired.
           </p>
           <Link
             href="/forgot-password"
-            className="text-sm text-primary hover:underline block"
+            className="block text-sm text-primary hover:underline"
           >
             Request a new reset link
           </Link>
@@ -32,7 +32,7 @@ export default async function ResetPasswordPage({
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <ResetPasswordForm token={token} />
     </div>
   );

@@ -4,8 +4,8 @@ import { useProfile } from "@/lib/queries/user";
 import { FilePenLine } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "@workspace/ui/components/button";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import AnswerForm from "./answerForm";
 
 export default function AddAnswer() {
@@ -33,9 +33,9 @@ export default function AddAnswer() {
           <FilePenLine /> {isLoggedIn ? "Answer" : "Login"}
         </Button>
       ) : (
-        <div className="flex items-center justify-center grow">
-          <div className="bordered-card p-8 rounded-xl  w-full">
-            <h1 className={`font-righteous text-3xl mb-6`}>Add Answer</h1>
+        <div className="flex grow items-center justify-center">
+          <div className="bordered-card w-full p-md">
+            <h1 className={`mb-xs font-display text-display`}>Add Answer</h1>
             <AnswerForm closeAnswerForm={() => setShowEditor(false)} />
           </div>
         </div>
@@ -44,5 +44,5 @@ export default function AddAnswer() {
   );
 }
 export const AddAnswerSkeleton = () => {
-  return <Skeleton className="h-10 w-[150px] rounded-md" />;
+  return <Skeleton className="h-2xl w-3xl rounded-md" />;
 };

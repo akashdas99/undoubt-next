@@ -5,18 +5,19 @@ import { UserImageSkeleton } from "../ui/userImage";
 import { ProfileDropdown } from "./profileDropdown";
 import { SessionWrapper } from "./sessionWrapper";
 import SearchModal from "./searchModal";
+import { ThemeToggle } from "./themeToggle";
 
 export default async function Header() {
   return (
-    <header className="flex justify-center bg-foreground text-white w-full sticky z-20 top-0">
-      <div className="flex items-center p-3 gap-[20px] justify-between w-full my-auto max-w-[1450px]">
+    <header className="sticky top-0 z-20 flex w-full justify-center bg-background/80 text-foreground shadow-card backdrop-blur-sm">
+      <div className="my-auto flex w-full max-w-content items-center justify-between gap-xs p-sm">
         <Link
-          className={`font-righteous bg-primary rounded-tl-lg rounded-br-lg border-2 px-2 text-center text-xl`}
+          className="rounded-tl-lg rounded-br-lg border-2 bg-primary px-xs text-center font-display text-xl text-white"
           href="/"
         >
           UNdoubt
         </Link>
-        <div className="flex items-center gap-5 text-xs">
+        <div className="flex items-center gap-xs text-xs">
           <SearchModal />
           <Link
             href={"/question"}
@@ -25,9 +26,10 @@ export default async function Header() {
           >
             <Plus />
           </Link>
-          <Suspense fallback={<UserImageSkeleton className="w-[36px]" />}>
+          <ThemeToggle />
+          <Suspense fallback={<UserImageSkeleton className="w-2xl" />}>
             <SessionWrapper
-              render={(sessionId) => <ProfileDropdown sessionId={sessionId} />}
+              render={(user) => <ProfileDropdown user={user} />}
             />
           </Suspense>
         </div>

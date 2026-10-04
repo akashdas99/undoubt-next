@@ -1,6 +1,6 @@
-import * as React from "react";
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@workspace/ui/lib/utils"
 
 function Card({
   className,
@@ -12,12 +12,12 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "bordered-card text-card-foreground gap-6 overflow-hidden py-6 text-sm has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 group/card flex flex-col",
-        className,
+        "bg-background frosted-glass group/card flex flex-col gap-(--card-spacing) rounded-card py-(--card-spacing) text-sm text-card-foreground [--card-spacing:var(--spacing-md)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:var(--spacing-md)] *:[img:first-child]:rounded-t-card *:[img:last-child]:rounded-b-card",
+        className
       )}
       {...props}
     />
-  );
+  )
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
@@ -25,35 +25,32 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-header"
       className={cn(
-        "flex items-center gap-2 px-6 group-data-[size=sm]/card:px-4",
-        className,
+        "group/card-header @container/card-header flex items-center gap-xs rounded-t-card px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
+        className
       )}
       {...props}
     />
-  );
+  )
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn(
-        "text-base leading-normal font-medium group-data-[size=sm]/card:text-sm",
-        className,
-      )}
+      className={cn("text-base font-medium", className)}
       {...props}
     />
-  );
+  )
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
-  );
+  )
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
@@ -62,21 +59,21 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card-action"
       className={cn(
         "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className,
+        className
       )}
       {...props}
     />
-  );
+  )
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"
-      className={cn("px-6 group-data-[size=sm]/card:px-4", className)}
+      className={cn("px-(--card-spacing)", className)}
       {...props}
     />
-  );
+  )
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
@@ -84,12 +81,12 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-footer"
       className={cn(
-        "rounded-b-xl px-6 group-data-[size=sm]/card:px-4 [.border-t]:pt-6 group-data-[size=sm]/card:[.border-t]:pt-4 flex items-center",
-        className,
+        "flex items-center rounded-b-card px-(--card-spacing) [.border-t]:pt-(--card-spacing)",
+        className
       )}
       {...props}
     />
-  );
+  )
 }
 
 export {
@@ -100,4 +97,4 @@ export {
   CardAction,
   CardDescription,
   CardContent,
-};
+}

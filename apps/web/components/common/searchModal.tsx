@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@workspace/ui/components/dialog";
 
 export default function SearchModal() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function SearchModal() {
         <Search />
       </DialogTrigger>
       <DialogContent
-        className="w-10/12 sm:max-w-[425px]"
+        className="w-10/12 sm:max-w-dialog"
         showCloseButton={false}
       >
         <DialogTitle>Search</DialogTitle>

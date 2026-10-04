@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "@workspace/ui/components/dialog";
+import { Button } from "@workspace/ui/components/button";
 import { Trash } from "lucide-react";
 
 export default function DeleteAnswerModal({
@@ -34,23 +34,23 @@ export default function DeleteAnswerModal({
       >
         <Trash
           size={20}
-          className="group-hover:text-background text-destructive"
+          className="text-destructive group-hover:text-background"
         />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-righteous font-normal">
+          <DialogTitle className="font-display font-normal">
             Are you absolutely sure?
           </DialogTitle>
-          <DialogDescription className="font-montserrat">
+          <DialogDescription className="font-sans">
             This action cannot be undone. This will permanently delete your
             answer.
           </DialogDescription>
         </DialogHeader>
         {error && (
-          <p className="text-[0.6rem] text-destructive font-medium">{error}</p>
+          <p className="text-xs font-medium text-destructive">{error}</p>
         )}
-        <DialogFooter className="font-montserrat">
+        <DialogFooter className="font-sans">
           <Button
             type="button"
             variant="destructive"

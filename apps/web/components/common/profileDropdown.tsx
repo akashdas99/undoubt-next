@@ -7,28 +7,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { getUserById } from "@/data/user";
+} from "@workspace/ui/components/dropdown-menu";
 import { isEmpty } from "@/lib/functions";
-import { withTryCatch } from "@/lib/utils";
+import { cacheTags } from "@/lib/cache/tags";
+import type { SessionUser } from "./sessionWrapper";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import { cacheLife, cacheTag } from "next/cache";
-import { cacheTags } from "@/lib/cache/tags";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 import UserImage from "../ui/userImage";
 
-export async function ProfileDropdown({
-  sessionId,
-}: {
-  sessionId?: string | null;
-}) {
+export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
   "use cache";
-  cacheTag(cacheTags.userProfile());
+  cacheTag(cacheTags.users.profile());
   cacheLife("hours");
-  const { result: user } = sessionId
-    ? await withTryCatch(getUserById(sessionId))
-    : { result: null };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -36,33 +29,30 @@ export async function ProfileDropdown({
           <Button
             variant="ghost"
             size={"icon"}
-            className="rounded-full p-[2px] data-popup-open:ring-2 data-popup-open:ring-primary/50 hover:ring-2 hover:ring-primary/30 transition-shadow"
-          />
+            data-slot="dropdown-menu-trigger"
+            className="rounded-full p-xxs transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
+          >
+            <UserImage user={user} />
+          </Button>
         }
-      >
-        <UserImage user={user} />
-      </DropdownMenuTrigger>
+      />
 
-      <DropdownMenuContent
-        className="w-56 bg-background/95 backdrop-blur-sm border border-border/50 shadow-lg rounded-xl p-1.5"
-        align="end"
-        sideOffset={8}
-      >
+      <DropdownMenuContent className="frosted-glass" align="end" sideOffset={8}>
         {isEmpty(user) ? (
           <DropdownMenuGroup>
-            <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1.5">
+            <DropdownMenuLabel className="px-xs py-xs text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               Get Started
             </DropdownMenuLabel>
             <DropdownMenuItem
               render={<Link href={"/register"} />}
-              className="rounded-lg mx-1 my-0.5"
+              className="mx-xxs my-xxs rounded-lg"
             >
               <UserPlus className="text-primary" />
               <span>Create Account</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               render={<Link href={"/login"} />}
-              className="rounded-lg mx-1 my-0.5"
+              className="mx-xxs my-xxs rounded-lg"
             >
               <LogIn className="text-primary" />
               <span>Login</span>
@@ -71,41 +61,41 @@ export async function ProfileDropdown({
         ) : (
           <>
             <DropdownMenuGroup>
-              <div className="flex items-center gap-3 px-2 py-2">
-                <UserImage user={user} className="w-10 h-10" />
-                <div className="flex flex-col min-w-0">
-                  <span className="font-medium text-sm truncate">
+              <div className="flex items-center gap-sm px-xs py-xs">
+                <UserImage user={user} className="size-2xl" />
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate text-sm font-medium">
                     {user?.name}
                   </span>
-                  <span className="text-xs text-muted-foreground truncate">
+                  <span className="truncate text-xs text-muted-foreground">
                     {user?.email}
                   </span>
                 </div>
               </div>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator className="my-1.5" />
+            <DropdownMenuSeparator className="my-xs" />
 
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+              <DropdownMenuLabel className="px-xs py-xxs text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Account
               </DropdownMenuLabel>
               <DropdownMenuItem
                 render={<Link href={"/profile"} />}
-                className="rounded-lg mx-1 my-0.5"
+                className="mx-xxs my-xxs rounded-lg"
               >
                 <UserRoundCog className="text-primary" />
                 <span>Profile Settings</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator className="my-1.5" />
+            <DropdownMenuSeparator className="my-xs" />
 
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={logoutUserAction}
                 variant="destructive"
-                className="rounded-lg mx-1 my-0.5"
+                className="mx-xxs my-xxs rounded-lg"
               >
                 <LogOut />
                 <span>Log out</span>

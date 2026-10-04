@@ -18,7 +18,7 @@ export default async function AnswerList({
       {answers?.length === 0 ? (
         <p>No Answer</p>
       ) : (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-md">
           {answers?.map((answer) => (
             <AnswerCard key={answer?.id} answer={answer} />
           ))}
