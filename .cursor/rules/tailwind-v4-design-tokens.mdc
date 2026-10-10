@@ -30,7 +30,7 @@ Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
 
 Do **not** add semantic spacing (`page`, `section`, `stack`, `gutter`, `inline`, `p-card`). Card padding is `p-md` / `--spacing-md`. Header uses `p-sm`.
 
-`--spacing-xl` also generates `max-w-xl` (small). Never use `max-w-sm|md|xl` for layout.
+Layout widths are `max-w-content`, `max-w-form`, `max-w-dialog`, and `max-w-narrow`. Do not use `max-w-sm`, `max-w-md`, or `max-w-xl` for page layout.
 
 ## Widths (`--container-*`)
 
