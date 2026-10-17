@@ -18,7 +18,7 @@ export default function UserImage({
   return (
     <div
       className={cn(
-        "relative flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-solid border-primary bg-accent align-middle font-bold text-foreground",
+        "relative flex size-2xl shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-solid border-primary bg-accent text-sm leading-none font-bold text-foreground",
         className
       )}
     >
@@ -28,10 +28,10 @@ export default function UserImage({
           alt=""
           fill
           sizes="3rem"
-          className="aspect-square object-cover"
+          className="object-cover"
         />
       ) : (
-        user?.name?.slice(0, 1)
+        <span className="uppercase">{user?.name?.slice(0, 1)}</span>
       )}
     </div>
   );

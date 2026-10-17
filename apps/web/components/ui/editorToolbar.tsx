@@ -69,7 +69,7 @@ export default function EditorToolBar({ editor }: EditorToolBarProps) {
   ];
 
   return (
-    <div className="sticky top-2xl z-50 mb-xxs space-x-xxs rounded-md border bg-slate-50 p-xs">
+    <div className="sticky top-2xl z-50 mb-xxs space-x-xxs rounded-full border border-field-border bg-input/50 p-xs text-foreground">
       {Options.map((option, i) => (
         <Toggle
           key={i}

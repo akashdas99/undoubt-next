@@ -45,34 +45,33 @@ const BRAND_COPY = {
 
 export default function AuthBrandPanel() {
   return (
-    <aside
-      aria-label="About Undoubt"
-      className="hidden min-h-svh flex-col gap-2xl bg-primary pt-3xl text-primary-foreground lg:flex"
-    >
-      <div className="flex flex-col gap-md px-3xl">
-        <h2 className="font-display text-display">{BRAND_COPY.headline}</h2>
-        <p className="text-primary-foreground/90">{BRAND_COPY.pitch}</p>
-      </div>
-      <div className="min-h-0 w-full flex-1 pr-sm pl-3xl">
-        <div className="relative h-full w-full">
-          <AuthConstellation />
-          <ul
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-          >
-            {TOPIC_PILLS.map((pill) => (
-              <li
-                key={pill.label}
-                className={cn(
-                  "absolute w-fit rounded-full border border-primary-foreground/20 bg-primary-foreground/15 px-sm py-xxs text-sm backdrop-blur-sm",
-                  PLACE_CLASS[pill.place],
-                  TILT_CLASS[pill.tilt]
-                )}
-              >
-                {pill.label}
-              </li>
-            ))}
-          </ul>
+    <aside aria-label="About Undoubt" className="hidden py-xl lg:block">
+      <div className="flex h-full flex-col gap-2xl rounded-l-4xl bg-primary pt-3xl text-primary-foreground">
+        <div className="flex flex-col gap-md px-3xl">
+          <h2 className="font-display text-display">{BRAND_COPY.headline}</h2>
+          <p className="text-primary-foreground/90">{BRAND_COPY.pitch}</p>
+        </div>
+        <div className="min-h-0 w-full flex-1 pr-sm pl-3xl">
+          <div className="relative h-full w-full">
+            <AuthConstellation />
+            <ul
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+            >
+              {TOPIC_PILLS.map((pill) => (
+                <li
+                  key={pill.label}
+                  className={cn(
+                    "absolute w-fit rounded-full border border-primary-foreground/20 bg-primary-foreground/15 px-sm py-xxs text-sm backdrop-blur-sm",
+                    PLACE_CLASS[pill.place],
+                    TILT_CLASS[pill.tilt]
+                  )}
+                >
+                  {pill.label}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </aside>

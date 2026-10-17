@@ -22,6 +22,7 @@ export function ThemeToggle() {
       aria-label={
         mounted && isDark ? "Switch to light mode" : "Switch to dark mode"
       }
+      className="text-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted dark:hover:bg-muted"
       disabled={!mounted}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
