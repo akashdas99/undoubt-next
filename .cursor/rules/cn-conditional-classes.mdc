@@ -1,0 +1,45 @@
+---
+description: Use cn() for conditional and merged className values in React components.
+globs: apps/**/*.{tsx,jsx},packages/ui/**/*.{tsx,jsx}
+alwaysApply: false
+---
+
+# Conditional styling with `cn()`
+
+Use `cn()` (clsx + tailwind-merge) whenever `className` combines a base string with conditionals, props, or variants. Do not use template literals, string concatenation, or `.filter(Boolean).join(" ")` for Tailwind classes.
+
+## Imports
+
+| Package | Import |
+|---------|--------|
+| `apps/web` | `import { cn } from "@/lib/utils"` |
+| `packages/ui` | `import { cn } from "@workspace/ui/lib/utils"` |
+
+## Do
+
+```tsx
+<div
+  className={cn(
+    "flex gap-md p-sm",
+    isActive && "bg-accent",
+    disabled && "pointer-events-none opacity-50",
+    className
+  )}
+/>
+```
+
+- Pass `className` from props last so callers can override.
+- Use object form for named flags: `cn("base", { "text-primary": selected })`.
+- Prefer `cn()` even for static-only classes when the component already accepts `className`.
+
+## Don't
+
+```tsx
+className={`flex ${isActive ? "bg-accent" : ""}`}
+className={["typeset", preset, className].filter(Boolean).join(" ")}
+className="p-sm " + (error ? "border-destructive" : "")
+```
+
+## Why
+
+`twMerge` resolves conflicting Tailwind utilities (e.g. `p-sm` vs `p-md`) in one `className`. Template strings leave both classes on the element and produce unpredictable styles.

@@ -60,11 +60,11 @@ export default function QuestionVoteButton({
                   likes: Math.max(0, question.likes + changes.likesDelta),
                   dislikes: Math.max(
                     0,
-                    question.dislikes + changes.dislikesDelta,
+                    question.dislikes + changes.dislikesDelta
                   ),
                   userVote: changes.userVote,
                 }
-              : question,
+              : question
           ),
         })),
       };
@@ -80,12 +80,12 @@ export default function QuestionVoteButton({
 
     await voteOnQuestionAction(
       questionId,
-      isRemoving ? "remove" : newVote === 1 ? "like" : "dislike",
+      isRemoving ? "remove" : newVote === 1 ? "like" : "dislike"
     );
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-xs">
       <VoteButton
         icon={
           <ArrowBigUp
@@ -128,7 +128,7 @@ function VoteButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center text-muted-foreground hover:underline gap-1 rounded-lg`}
+      className="flex items-center gap-xxs rounded-lg text-muted-foreground hover:underline"
       aria-label={label}
     >
       {icon}

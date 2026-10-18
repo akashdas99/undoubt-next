@@ -9,8 +9,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@workspace/ui/components/dialog";
+import { Button } from "@workspace/ui/components/button";
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -39,17 +39,17 @@ export function ConfirmationModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-righteous font-normal">
+          <DialogTitle className="font-display font-normal">
             {title}
           </DialogTitle>
-          <DialogDescription className="font-montserrat">
+          <DialogDescription className="font-sans">
             {description}
           </DialogDescription>
         </DialogHeader>
         {error && (
           <p className="text-xs text-destructive font-medium">{error}</p>
         )}
-        <DialogFooter className="font-montserrat">
+        <DialogFooter className="font-sans">
           <Button
             type="button"
             variant="destructive"

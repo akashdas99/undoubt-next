@@ -3,16 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { loginUserAction } from "@/actions/auth";
-import { FieldError, FieldGroup } from "@/components/ui/field";
 import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { LoginType } from "@/types/auth";
-import { LoginSchema } from "@repo/validations/auth";
+import { Button } from "@workspace/ui/components/button";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
+import { LoginSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
-import { Button } from "../ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function LoginForm() {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<LoginType>({
@@ -56,26 +56,26 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6 `}>Welcome Back</h1>
+    <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
+      <h1 className={`mb-lg font-display text-display`}>Welcome Back</h1>
       <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput
             control={form.control}
             name="email"
             label="Email"
-            placeholder="Email"
+            placeholder="you@example.com"
             autoComplete="email"
           />
           <FormPassword
             control={form.control}
             name="password"
             label="Password"
-            placeholder="Password"
+            placeholder="Enter your password"
             autoComplete="current-password"
           />
         </FieldGroup>
-        <div className="flex justify-end mt-1">
+        <div className="mt-sm flex justify-end">
           <Link
             href="/forgot-password"
             className="text-sm text-primary hover:underline"
@@ -84,17 +84,12 @@ export default function LoginForm() {
           </Link>
         </div>
         <FieldError errors={[form?.formState?.errors?.root]} />
-        <div className="grid grid-cols-2 gap-x-2 mt-2">
-          <Button
-            type="submit"
-            className="mt-3"
-            loading={!isGuest && loadingLogin}
-          >
+        <div className="mt-lg grid grid-cols-2 gap-md">
+          <Button type="submit" loading={!isGuest && loadingLogin}>
             Login
           </Button>
           <Button
             type="button"
-            className="mt-3"
             variant={"outline"}
             onClick={onGuestLogin}
             loading={isGuest && loadingLogin}
@@ -103,14 +98,14 @@ export default function LoginForm() {
           </Button>
         </div>
       </form>
-      <div className="relative flex py-2 items-center">
+      <div className="relative flex items-center py-lg">
         <div className="grow border-t border-gray-400"></div>
-        <span className="shrink mx-4 text-gray-400">Or</span>
+        <span className="mx-md shrink text-gray-400">Or</span>
         <div className="grow border-t border-gray-400"></div>
       </div>
       <div className="text-sm">
         <Link
-          className="text-primary underline font-semibold"
+          className="font-semibold text-primary underline"
           href={"/register"}
         >
           Register

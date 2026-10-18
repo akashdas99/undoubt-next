@@ -1,12 +1,16 @@
 /**
- * Cache tag factory for centralized, type-safe cache tag management.
- * Use these functions to generate consistent cache tags across the app.
+ * Cache tag factory for centralized, type-safe Next.js cache tag management.
+ * Use these with cacheTag() / revalidateTag().
  */
 
 export const cacheTags = {
-  // Users
-  userProfile: () => "user-profile" as const,
+  users: {
+    profile: () => "users:profile" as const,
+  },
 } as const;
 
-// Type helper for cache tag values
-export type CacheTag = ReturnType<(typeof cacheTags)[keyof typeof cacheTags]>;
+type CacheTagLeaf = {
+  [K in keyof typeof cacheTags]: (typeof cacheTags)[K][keyof (typeof cacheTags)[K]];
+}[keyof typeof cacheTags];
+
+export type CacheTag = ReturnType<CacheTagLeaf>;

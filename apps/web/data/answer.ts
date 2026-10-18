@@ -6,7 +6,7 @@ import { questions } from "@/db/schema/questions";
 import { questionStats } from "@/db/schema/questionStats";
 import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
-import { AnswerSchema, AnswerType } from "@repo/validations/answer";
+import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { desc, eq, sql } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { users } from "@/db/schema/users";
@@ -116,7 +116,7 @@ export async function deleteAnswer(id: string) {
 export async function getAnswersByQuestionSlug(
   slug: string,
   limit: number = 50,
-  page: number = 1,
+  page: number = 1
 ) {
   const offset = limit * (page - 1);
   const answerList = await db

@@ -4,7 +4,7 @@ import { deleteQuestionAction } from "@/actions/question";
 import { PaginatedResponse } from "@/lib/queries/questions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ConfirmationModal } from "../ui/confirmationModal";
+import { ConfirmationModal } from "@workspace/ui/components/confirmationModal";
 import { useUIStoreSelector } from "@/store/useUIStore";
 
 type QuestionDeleteModalProps = {
@@ -20,7 +20,7 @@ export default function QuestionDeleteModal({
       "deleteModal",
       "setDeleteLoading",
       "setDeleteError",
-      "closeDeleteModal",
+      "closeDeleteModal"
     );
   const router = useRouter();
 
@@ -31,7 +31,7 @@ export default function QuestionDeleteModal({
 
     const res = await deleteQuestionAction(
       { id: deleteModal.questionId },
-      false,
+      false
     );
 
     setDeleteLoading(false);

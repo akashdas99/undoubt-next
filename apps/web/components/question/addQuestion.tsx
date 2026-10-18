@@ -1,13 +1,13 @@
 "use client";
 
 import { addQuestionAction } from "@/actions/question";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@workspace/ui/components/field";
 import { FormEditor, FormInput } from "@/components/ui/form";
-import { QuestionSchema, QuestionType } from "@repo/validations/question";
+import { QuestionSchema, QuestionType } from "@workspace/validations/question";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 
 export default function AddQuestion() {
   const [res, handleAddQuestion, isAddingQuestion] = useActionState(
@@ -15,7 +15,7 @@ export default function AddQuestion() {
       const res = await addQuestionAction(data);
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<QuestionType>({
@@ -32,11 +32,9 @@ export default function AddQuestion() {
   };
 
   return (
-    <div className="w-full my-3 md:my-8 max-w-screen-lg px-3">
-      <div className="bordered-card p-[1em]">
-        <h1 className={`font-righteous text-xl mb-2 md:text-3xl`}>
-          Add Question
-        </h1>
+    <div className="my-xl w-full max-w-content px-xl">
+      <div className="bordered-card p-2xl">
+        <h1 className={`mb-xs font-display text-display`}>Add Question</h1>
         <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <FormInput
@@ -52,12 +50,12 @@ export default function AddQuestion() {
             />
           </FieldGroup>
           {form?.formState?.errors?.root?.message && (
-            <p className="text-[0.6rem] text-destructive font-medium">
+            <p className="text-xs font-medium text-destructive">
               {form?.formState?.errors?.root?.message}
             </p>
           )}
-          <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-            <Button type="submit" className="mt-3" loading={isAddingQuestion}>
+          <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
+            <Button type="submit" className="mt-sm" loading={isAddingQuestion}>
               Add Question
             </Button>
           </div>

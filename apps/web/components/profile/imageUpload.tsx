@@ -31,9 +31,9 @@ export default function AvatarUploadPage() {
       <label
         role="button"
         htmlFor="uploadfile"
-        className="absolute bottom-0 right-0 bg-primary rounded-full p-1"
+        className="absolute right-0 bottom-0 rounded-full bg-primary p-xxs"
       >
-        <Pencil className="w-2 h-2" color="#ffffff" />
+        <Pencil className="size-xs" color="#ffffff" />
       </label>
       <input id="uploadfile" type="file" hidden onChange={handleUpload} />
     </>

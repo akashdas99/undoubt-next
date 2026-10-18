@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { queryKeys } from "@/lib/cache/queryKeys";
+import { queryKeys } from "@/lib/queries/keys";
 import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
@@ -48,7 +48,7 @@ export function useQuestionsByKeyword(keyword: string) {
 // Infinite scroll questions
 export function useQuestionsInfinite(
   keyword: string = "",
-  userId?: string | null,
+  userId?: string | null
 ) {
   return useInfiniteQuery({
     queryKey: queryKeys.questions.list(keyword, userId),

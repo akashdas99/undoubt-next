@@ -1,4 +1,5 @@
 import { getTopContributors } from "@/data/user";
+import { Card, CardContent } from "@workspace/ui/components/card";
 import ContributorCard from "./contributorCard";
 
 const TopContributorsList: React.FC = async () => {
@@ -6,7 +7,7 @@ const TopContributorsList: React.FC = async () => {
 
   // Filter out users with 0 contributions
   const activeContributors = contributors.filter(
-    (user) => user.questionCount > 0 || user.answerCount > 0,
+    (user) => user.questionCount > 0 || user.answerCount > 0
   );
 
   if (activeContributors.length === 0) {
@@ -14,13 +15,15 @@ const TopContributorsList: React.FC = async () => {
   }
 
   return (
-    <aside className="hidden lg:block p-3 sticky z-10 top-[60px] self-start">
-      <div className="mb-3 font-righteous text-3xl">Top Contributors</div>
-      <div className="space-y-3 p-3 pr-5 bordered-card w-[384px]">
-        {activeContributors.map((user, index) => (
-          <ContributorCard key={user.id} user={user} rank={index + 1} />
-        ))}
-      </div>
+    <aside className="sticky top-3xl z-10 hidden self-start p-md lg:block">
+      <div className="mb-md font-display text-display">Top Contributors</div>
+      <Card size="sm" className="w-(--container-dialog)">
+        <CardContent className="flex flex-col gap-sm">
+          {activeContributors.map((user, index) => (
+            <ContributorCard key={user.id} user={user} rank={index + 1} />
+          ))}
+        </CardContent>
+      </Card>
     </aside>
   );
 };

@@ -21,12 +21,12 @@ const useTiptapEditor = ({
       StarterKit.configure({
         codeBlock: {
           HTMLAttributes: {
-            class: "bg-foreground text-white p-2",
+            class: "bg-foreground p-xs text-white",
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: "list-decimal ml-3",
+            class: "ml-sm list-decimal",
           },
         },
       }),
@@ -39,7 +39,7 @@ const useTiptapEditor = ({
 
       BulletList.configure({
         HTMLAttributes: {
-          class: "list-disc ml-3",
+          class: "ml-sm list-disc",
         },
       }),
     ],
@@ -47,8 +47,8 @@ const useTiptapEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-          className,
+          "w-full rounded-md border border-input bg-transparent px-sm py-xxs text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+          className
         ),
       },
     },

@@ -14,7 +14,7 @@ import {
   EditQuestionType,
   QuestionSchema,
   QuestionType,
-} from "@repo/validations/question";
+} from "@workspace/validations/question";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { getSession } from "@/lib/session";
@@ -23,14 +23,14 @@ export const getQuestions = async (
   keyword: string = "",
   limit: number = 10,
   page: number = 1,
-  userId?: string | null,
+  userId?: string | null
 ) => {
   // Build WHERE conditions for filtering
   const whereConditions = [];
   if (keyword) {
     const keywordCondition = or(
       ilike(questions.title, `%${keyword}%`),
-      ilike(questions.description, `%${keyword}%`),
+      ilike(questions.description, `%${keyword}%`)
     );
     if (keywordCondition) whereConditions.push(keywordCondition);
   }
@@ -148,7 +148,7 @@ export async function getQuestionBySlug(slug: string, userId?: string | null) {
     .from(questions)
     .innerJoin(
       users,
-      and(eq(questions.slug, slug), eq(questions.authorId, users.id)),
+      and(eq(questions.slug, slug), eq(questions.authorId, users.id))
     )
     .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
     .limit(1)
