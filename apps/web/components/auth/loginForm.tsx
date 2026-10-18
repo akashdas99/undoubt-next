@@ -3,6 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { loginUserAction } from "@/actions/auth";
+import { AuthHeading } from "@/components/auth/authHeading";
+import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
@@ -56,8 +58,11 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bordered-card my-auto w-11/12 max-w-form p-2xl">
-      <h1 className={`mb-lg font-display text-display`}>Welcome Back</h1>
+    <>
+      <AuthHeading
+        title="Welcome Back"
+        description="Continue exploring answers, discussions, and solutions."
+      />
       <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput
@@ -71,7 +76,7 @@ export default function LoginForm() {
             control={form.control}
             name="password"
             label="Password"
-            placeholder="Enter your password"
+            placeholder="Your password"
             autoComplete="current-password"
           />
         </FieldGroup>
@@ -84,34 +89,28 @@ export default function LoginForm() {
           </Link>
         </div>
         <FieldError errors={[form?.formState?.errors?.root]} />
-        <div className="mt-lg grid grid-cols-2 gap-md">
-          <Button type="submit" loading={!isGuest && loadingLogin}>
+        <div className="mt-lg flex flex-col gap-sm">
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            loading={!isGuest && loadingLogin}
+          >
             Login
           </Button>
           <Button
             type="button"
-            variant={"outline"}
+            variant="outline"
+            size="lg"
+            className="w-full"
             onClick={onGuestLogin}
             loading={isGuest && loadingLogin}
           >
-            Guest Login
+            Explore as Guest
           </Button>
         </div>
       </form>
-      <div className="relative flex items-center py-lg">
-        <div className="grow border-t border-gray-400"></div>
-        <span className="mx-md shrink text-gray-400">Or</span>
-        <div className="grow border-t border-gray-400"></div>
-      </div>
-      <div className="text-sm">
-        <Link
-          className="font-semibold text-primary underline"
-          href={"/register"}
-        >
-          Register
-        </Link>{" "}
-        if you do not have an account
-      </div>
-    </div>
+      <AuthSwitchLink to="/register" prompt="New to Undoubt?" />
+    </>
   );
 }

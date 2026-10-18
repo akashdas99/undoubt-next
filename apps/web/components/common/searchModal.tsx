@@ -2,6 +2,7 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import QuestionSearch from "../question/questionSearch";
+import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +18,16 @@ export default function SearchModal() {
   };
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Search questions"
+            className="text-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted dark:hover:bg-muted"
+          />
+        }
+      >
         <Search />
       </DialogTrigger>
       <DialogContent

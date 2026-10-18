@@ -30,16 +30,16 @@ Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
 
 Do **not** add semantic spacing (`page`, `section`, `stack`, `gutter`, `inline`, `p-card`). Card padding is `p-md` / `--spacing-md`. Header uses `p-sm`.
 
-`--spacing-xl` also generates `max-w-xl` (small). Never use `max-w-sm|md|xl` for layout.
+Layout widths are `max-w-content`, `max-w-form`, `max-w-dialog`, and `max-w-narrow`. Do not use `max-w-sm`, `max-w-md`, or `max-w-xl` for page layout.
 
 ## Widths (`--container-*`)
 
-| Token | Class | Role |
-|---|---|---|
+| Token                 | Class           | Role              |
+| --------------------- | --------------- | ----------------- |
 | `--container-content` | `max-w-content` | Main column 64rem |
-| `--container-form` | `max-w-form` | Auth 36rem |
-| `--container-dialog` | `max-w-dialog` | Dialogs 28rem |
-| `--container-narrow` | `max-w-narrow` | Empty/error 20rem |
+| `--container-form`    | `max-w-form`    | Auth 36rem        |
+| `--container-dialog`  | `max-w-dialog`  | Dialogs 28rem     |
+| `--container-narrow`  | `max-w-narrow`  | Empty/error 20rem |
 
 ## Radius (B)
 

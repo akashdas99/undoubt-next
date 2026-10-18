@@ -1,11 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { useMemo } from "react"
 
-import { cn } from "@workspace/ui/lib/utils"
 import { Label } from "@workspace/ui/components/label"
 import { Separator } from "@workspace/ui/components/separator"
+import { cn } from "@workspace/ui/lib/utils"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -43,7 +43,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-group"
       className={cn(
-        "group/field-group @container/field-group flex w-full flex-col gap-2xl data-[slot=checkbox-group]:gap-sm *:data-[slot=field-group]:gap-md",
+        "group/field-group @container/field-group flex w-full flex-col gap-lg data-[slot=checkbox-group]:gap-sm *:data-[slot=field-group]:gap-md",
         className
       )}
       {...props}
@@ -225,14 +225,10 @@ function FieldError({
 }
 
 export {
-  Field,
-  FieldLabel,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldContent,
-  FieldTitle,
+    Field, FieldContent, FieldDescription,
+    FieldError,
+    FieldGroup, FieldLabel, FieldLegend,
+    FieldSeparator,
+    FieldSet, FieldTitle
 }
+

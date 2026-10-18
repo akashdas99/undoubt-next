@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
-import Header from "@/components/common/header";
+import type { Metadata } from "next";
 import { JetBrains_Mono, Montserrat, Righteous } from "next/font/google";
 import Providers from "./providers";
 
@@ -40,7 +39,6 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className="flex min-h-svh flex-col items-center font-sans">
-            <Header />
             {children}
           </div>
         </Providers>

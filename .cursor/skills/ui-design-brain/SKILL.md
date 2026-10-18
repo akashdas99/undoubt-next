@@ -129,7 +129,7 @@ Write production-ready code following these rules:
 
 ```
 Stack:       React + Tailwind CSS (unless user specifies otherwise)
-Spacing:     Tailwind spacing scale (p-2, gap-4, etc.) on an 8px grid
+Spacing:     This repo's t-shirt tokens only (p-sm, gap-md, px-xl). See .cursor/rules/tailwind-v4-design-tokens.mdc
 Colors:      CSS variables or Tailwind config for palette consistency
 Typography:  Tailwind text utilities; expressive font pairings via Google Fonts
 States:      Implement hover, focus, active, disabled for all interactive elements

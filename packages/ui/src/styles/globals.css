@@ -28,6 +28,7 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-field-border: var(--field-border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -97,7 +98,8 @@
   --radius-panel: var(--radius-3xl);
 
   --shadow-card:
-    0 2px 2px oklch(0.28 0.04 270 / 0.18), inset 0 2px 2px var(--card-specular);
+    0 2px 2px oklch(0.28 0.04 270 / 0.18),
+    inset 0 4px 2px -3px var(--card-specular);
 }
 
 :root {
@@ -120,6 +122,7 @@
   --destructive: oklch(0.68 0.22 25);
   --destructive-foreground: oklch(0.98 0.008 265);
   --border: oklch(0.92 0.005 265);
+  --field-border: oklch(0.9 0.008 265);
   --input: oklch(0.92 0.005 265);
   --ring: oklch(0.15 0.012 265);
   --chart-1: oklch(0.68 0.18 35);
@@ -139,6 +142,9 @@
   /* shadcn/typeset defaults reference --font-heading / --font-mono */
   --font-heading:
     var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
+  --shadow-header:
+    0 2px 2px oklch(0.28 0.04 270 / 0.18),
+    inset 0 4px 2px -3px var(--card-specular);
 }
 
 .dark {
@@ -149,7 +155,8 @@
   --card-border: oklch(1 0 0 / 0.16);
   --card-specular: oklch(1 0 0 / 0.35);
   --shadow-card:
-    0 2px 2px oklch(0 0 0 / 0.5), inset 0 2px 2px var(--card-specular);
+    0 2px 2px oklch(0 0 0 / 0.5), inset 0 4px 2px -3px var(--card-specular);
+  --shadow-header: 0 2px 2px oklch(0 0 0 / 0.5);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.68 0.155 245);
@@ -164,6 +171,7 @@
   --destructive: oklch(0.6 0.21 25);
   --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.269 0 0);
+  --field-border: oklch(1 0 0 / 0.2);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
@@ -184,6 +192,10 @@
 @layer base {
   body {
     @apply bg-background font-sans text-base text-foreground antialiased;
+  }
+
+  a:focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-primary;
   }
 }
 
@@ -206,6 +218,10 @@
   text-wrap: balance;
 }
 
+@utility shadow-header {
+  box-shadow: var(--shadow-header);
+}
+
 @utility frosted-glass {
   position: relative;
   box-shadow: var(--shadow-card);
@@ -223,9 +239,11 @@
   padding: 8px;
   aspect-ratio: 1;
   border-radius: 50%;
-  mask:
-    conic-gradient(#0000 10%, #000),
-    linear-gradient(#000 0 0) content-box;
+  --spinner-mask:
+    conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--spinner-mask);
+  mask: var(--spinner-mask);
+  -webkit-mask-composite: source-out;
   mask-composite: subtract;
   animation: spinner-rotate 1s infinite linear;
 }

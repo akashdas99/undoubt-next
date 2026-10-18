@@ -1,10 +1,10 @@
 ---
 name: harness
 description: >-
-  Agentic harness in Cursor only: plan with Sonnet 5.5, build with Composer,
-  verify with lint/types/build plus Sonnet diff review. Use when the user asks
-  to run the harness, agentic pipeline, plan-build-verify loop, or
-  plan with Sonnet and build with Composer.
+  Agentic harness in Cursor only: plan with Grok, wait for explicit user
+  approval, then build with Composer, verify with lint/types/build plus Sonnet
+  diff review. Use when the user asks to run the harness, agentic pipeline,
+  plan-build-verify loop, or plan with Grok and build with Composer.
 ---
 
 # Agentic harness (skill-only)
@@ -15,7 +15,7 @@ Run **plan → build → verify** inside Cursor. No CLI package—this skill is 
 
 | Phase  | Model                      | Subagent type                 |
 | ------ | -------------------------- | ----------------------------- |
-| Plan   | `claude-sonnet-5-5-medium` | `generalPurpose` or Plan mode |
+| Plan   | `grok-4.7-medium`          | `generalPurpose` or Plan mode |
 | Build  | `composer-2.5`             | `generalPurpose`              |
 | Review | `claude-sonnet-5-5-medium` | `generalPurpose`              |
 
@@ -36,9 +36,11 @@ Create `.harness/<runId>/` and write:
 
 ```mermaid
 flowchart LR
-  task[User task] --> planPhase[Plan Sonnet]
+  task[User task] --> planPhase[Plan Grok]
   planPhase --> planFile[plan.md]
-  planFile --> buildPhase[Build Composer]
+  planFile --> planApproval[User approves plan]
+  planApproval -->|rejected or iterate| planPhase
+  planApproval -->|approved| buildPhase[Build Composer]
   buildPhase --> cmdVerify[pnpm lint check-types build]
   cmdVerify -->|fail| fixLoop[Composer fix]
   fixLoop --> cmdVerify
@@ -50,23 +52,41 @@ flowchart LR
 ### 0. Intake
 
 - Restate the user task in one sentence.
-- Ask for `--plan-only` equivalent if they only want a plan (stop after phase 1).
+- Ask for **plan-only** if they only want a plan (stop after phase 1; no build approval needed).
+- Otherwise the default run is **plan → user approval → build → verify** (approval is mandatory before any product code edits).
 - Default **max fix iterations**: 3 (command failures or review rejections each count as one iteration toward the same cap).
 
-### 1. Plan (Sonnet 5.5)
+### 1. Plan (Grok)
 
 **Goal:** Read-only exploration; produce an actionable plan. No product code edits.
 
 Options (pick one):
 
-- **Recommended:** Spawn a Task subagent with `model: claude-sonnet-5-5-medium`, thoroughness `medium`, prompt: explore repo, write plan to `.harness/<runId>/plan.md`, include files to touch, steps, and how to verify. Do not implement.
+- **Recommended:** Spawn a Task subagent with `model: grok-4.7-medium`, thoroughness `medium`, prompt: explore repo, write plan to `.harness/<runId>/plan.md`, include files to touch, steps, and how to verify. Do not implement.
 - **Alternative:** Switch to **Plan** mode yourself, produce the plan, save to `.harness/<runId>/plan.md`.
 
 **Gate:** `plan.md` must be non-empty and match the user task. If plan-only, write `report.md` and summarize for the user—**stop**.
 
+### 1b. Plan approval (required before build)
+
+**Do not start phase 2 until the user explicitly approves the plan.**
+
+After `plan.md` is written:
+
+1. Present the plan summary (or point to `.harness/<runId>/plan.md` and any Cursor plan file if one was created).
+2. **Stop** and wait for approval. Treat these as approval to build: e.g. “approve”, “go ahead”, “implement the plan”, “execute”, “ship it”, “LGTM”, or confirming the attached plan.
+3. Treat these as **not** approval: silence, new requirements, “change the plan…”, questions only, or ambiguous “looks good but…”. Revise the plan (phase 1) and ask again.
+4. Record in `report.md`: `plan_approval: pending` then `plan_approval: approved` with a short note of what the user said.
+
+If the user rejects or requests plan changes, update `plan.md`, set `plan_approval: pending` again, and re-present—still **no build** until a clear approve.
+
+**Exception:** User said plan-only at intake—skip this gate and never enter build.
+
 ### 2. Build (Composer)
 
-Spawn a **single** Task subagent with `model: composer-2.5` (or implement inline if user asked you to build directly—prefer subagent for isolation).
+**Prerequisite:** `plan_approval: approved` in `report.md` (or equivalent explicit user message in the same thread).
+
+Spawn a **single** Task subagent with `model: composer-2.5` (or implement inline only after approval—prefer subagent for isolation).
 
 Prompt must include:
 
@@ -130,9 +150,11 @@ Keep scope minimal; do not change unrelated files.
 - Minimize scope; one plan, one build stream per iteration.
 - Do not commit unless the user asks.
 - Plan phase must not ship feature code.
+- **Never build or edit product code between plan completion and explicit user approval** (unless plan-only was requested).
 - Prefer subagents for plan/build/review so models match the table.
 
 ## When the user says "run harness"
 
 1. Read this skill and execute the workflow.
-2. Do not reference `pnpm harness` or `@cursor/sdk`—they are not part of this repo.
+2. After plan, **pause for approval** before Composer build—same expectation as Plan mode “approve plan then implement”.
+3. Do not reference `pnpm harness` or `@cursor/sdk`—they are not part of this repo.

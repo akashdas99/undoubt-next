@@ -1,4 +1,7 @@
 import { logoutUserAction } from "@/actions/auth";
+import { cacheTags } from "@/lib/cache/tags";
+import { isEmpty } from "@/lib/functions";
+import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { isEmpty } from "@/lib/functions";
-import { cacheTags } from "@/lib/cache/tags";
-import type { SessionUser } from "./sessionWrapper";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
-import Link from "next/link";
 import { cacheLife, cacheTag } from "next/cache";
-import { Button } from "@workspace/ui/components/button";
+import Link from "next/link";
 import UserImage from "../ui/userImage";
+import type { SessionUser } from "./sessionWrapper";
 
 export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
   "use cache";
@@ -30,7 +30,7 @@ export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
             variant="ghost"
             size={"icon"}
             data-slot="dropdown-menu-trigger"
-            className="rounded-full p-xxs transition-shadow hover:ring-2 hover:ring-primary/30 data-popup-open:ring-2 data-popup-open:ring-primary/50"
+            className="rounded-full p-0 text-foreground transition-shadow hover:bg-muted hover:text-foreground hover:ring-2 hover:ring-foreground/25 aria-expanded:bg-muted data-popup-open:ring-2 data-popup-open:ring-foreground/40 dark:hover:bg-muted"
           >
             <UserImage user={user} />
           </Button>
