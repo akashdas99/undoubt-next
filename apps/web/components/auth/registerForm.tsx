@@ -56,14 +56,14 @@ const RegisterForm: React.FC = () => {
             control={form.control}
             name="name"
             label="Name"
-            placeholder="Alex Morgan"
+            placeholder="Full name"
             autoComplete="name"
           />
           <FormInput
             control={form.control}
             name="userName"
             label="Username"
-            placeholder="alexmorgan"
+            placeholder="yourname"
             autoComplete="username"
           />
           <FormInput
