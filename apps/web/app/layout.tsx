@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
+import type { Metadata } from "next";
 import { JetBrains_Mono, Montserrat, Righteous } from "next/font/google";
 import Providers from "./providers";
 

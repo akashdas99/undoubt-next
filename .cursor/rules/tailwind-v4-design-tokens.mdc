@@ -34,12 +34,12 @@ Layout widths are `max-w-content`, `max-w-form`, `max-w-dialog`, and `max-w-narr
 
 ## Widths (`--container-*`)
 
-| Token | Class | Role |
-|---|---|---|
+| Token                 | Class           | Role              |
+| --------------------- | --------------- | ----------------- |
 | `--container-content` | `max-w-content` | Main column 64rem |
-| `--container-form` | `max-w-form` | Auth 36rem |
-| `--container-dialog` | `max-w-dialog` | Dialogs 28rem |
-| `--container-narrow` | `max-w-narrow` | Empty/error 20rem |
+| `--container-form`    | `max-w-form`    | Auth 36rem        |
+| `--container-dialog`  | `max-w-dialog`  | Dialogs 28rem     |
+| `--container-narrow`  | `max-w-narrow`  | Empty/error 20rem |
 
 ## Radius (B)
 

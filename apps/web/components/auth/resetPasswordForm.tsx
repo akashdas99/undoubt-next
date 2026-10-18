@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { resetPasswordAction } from "@/actions/auth";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
-import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ResetPasswordType } from "@/types/auth";
+import { Button } from "@workspace/ui/components/button";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { ResetPasswordSchema } from "@workspace/validations/auth";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
-import { Button } from "@workspace/ui/components/button";
 
 interface ResetPasswordFormProps {
   token: string;

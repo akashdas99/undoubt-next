@@ -1,4 +1,7 @@
 import { logoutUserAction } from "@/actions/auth";
+import { cacheTags } from "@/lib/cache/tags";
+import { isEmpty } from "@/lib/functions";
+import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { isEmpty } from "@/lib/functions";
-import { cacheTags } from "@/lib/cache/tags";
-import type { SessionUser } from "./sessionWrapper";
 import { LogIn, LogOut, UserPlus, UserRoundCog } from "lucide-react";
-import Link from "next/link";
 import { cacheLife, cacheTag } from "next/cache";
-import { Button } from "@workspace/ui/components/button";
+import Link from "next/link";
 import UserImage from "../ui/userImage";
+import type { SessionUser } from "./sessionWrapper";
 
 export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
   "use cache";

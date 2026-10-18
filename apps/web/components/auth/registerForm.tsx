@@ -5,15 +5,15 @@ import { useForm } from "react-hook-form";
 import { registerUserAction } from "@/actions/auth";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
-import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { FormInput, FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { RegisterType } from "@/types/auth";
+import { Button } from "@workspace/ui/components/button";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { RegisterSchema } from "@workspace/validations/auth";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState } from "react";
-import { Button } from "@workspace/ui/components/button";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();

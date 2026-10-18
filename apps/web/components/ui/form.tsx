@@ -1,11 +1,11 @@
 "use client";
 
+import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field";
+import { Input } from "@workspace/ui/components/input";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
-import { Input } from "@workspace/ui/components/input";
 import Editor from "./editor";
-import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field";
 
 type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
