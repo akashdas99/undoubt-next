@@ -1,5 +1,6 @@
 import { isEmpty } from "@/lib/functions";
-import { Button } from "@workspace/ui/components/button";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@workspace/ui/components/button";
 import { Info, LogIn, Plus, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -13,38 +14,44 @@ import { ThemeToggle } from "./themeToggle";
 function GuestAccountLinks() {
   return (
     <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
+      <Link
+        href="/login"
         aria-label="Login"
-        render={<Link href="/login" />}
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "icon" }),
+          "text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
+        )}
       >
         <LogIn />
-      </Button>
-      <Button
-        variant="outline"
-        className="hidden md:inline-flex"
-        render={<Link href="/login" />}
+      </Link>
+      <Link
+        href="/login"
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "hidden md:inline-flex"
+        )}
       >
         Login
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
+      </Link>
+      <Link
+        href="/register"
         aria-label="Create Account"
-        render={<Link href="/register" />}
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "icon" }),
+          "text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
+        )}
       >
         <UserPlus />
-      </Button>
-      <Button
-        variant="default"
-        className="hidden md:inline-flex"
-        render={<Link href="/register" />}
+      </Link>
+      <Link
+        href="/register"
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "hidden md:inline-flex"
+        )}
       >
         Create Account
-      </Button>
+      </Link>
     </>
   );
 }

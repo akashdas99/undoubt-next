@@ -61,6 +61,7 @@ export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
             Account
           </DropdownMenuLabel>
           <DropdownMenuItem
+            nativeButton={false}
             render={<Link href={"/profile"} />}
             className="mx-xxs my-xxs rounded-lg"
           >

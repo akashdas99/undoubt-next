@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@workspace/ui/components/button";
+import { buttonVariants } from "@workspace/ui/components/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,27 +13,33 @@ export function HeaderNavLink({
   className,
   children,
   prefetch = true,
-  ...props
-}: React.ComponentProps<typeof Button> & {
+  size = "default",
+  "aria-label": ariaLabel,
+}: {
   href: string;
+  className?: string;
+  children: React.ReactNode;
   prefetch?: boolean;
+  size?: "default" | "icon";
+  "aria-label"?: string;
 }) {
   const pathname = usePathname();
   const active = pathname === href;
 
   return (
-    <Button
-      variant="ghost"
+    <Link
+      href={href}
+      prefetch={prefetch}
+      aria-label={ariaLabel}
       aria-current={active ? "page" : undefined}
       className={cn(
+        buttonVariants({ variant: "ghost", size }),
         itemClassName,
         active && "bg-white dark:bg-muted",
         className
       )}
-      render={<Link href={href} prefetch={prefetch} />}
-      {...props}
     >
       {children}
-    </Button>
+    </Link>
   );
 }
