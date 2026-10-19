@@ -48,7 +48,7 @@ export default function DeleteAnswerModal({
           </DialogDescription>
         </DialogHeader>
         {error && (
-          <p className="text-xs font-medium text-destructive">{error}</p>
+          <p className="text-sm font-medium text-destructive">{error}</p>
         )}
         <DialogFooter className="font-sans">
           <Button

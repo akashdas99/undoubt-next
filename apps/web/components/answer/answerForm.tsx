@@ -1,6 +1,6 @@
 "use client";
 import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
-import { FieldGroup } from "@workspace/ui/components/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 
 import { Answer } from "@/db/schema/answers";
@@ -61,11 +61,7 @@ export default function AnswerForm({
           label="Description"
         />
       </FieldGroup>
-      {form?.formState?.errors?.root?.message && (
-        <p className="text-xs font-medium text-destructive">
-          {form?.formState?.errors?.root?.message}
-        </p>
-      )}
+      <FieldError errors={[form.formState.errors.root]} />
       <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
         <Button type="submit" className="mt-sm" loading={isAddingAnswer}>
           Submit
