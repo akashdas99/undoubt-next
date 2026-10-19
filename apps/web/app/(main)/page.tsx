@@ -17,9 +17,9 @@ function QuestionListFallback() {
 
 function ContributorsFallback() {
   return (
-    <aside className="sticky top-3xl z-10 hidden self-start p-md lg:block">
+    <aside className="sticky top-[calc(var(--spacing-sm)+var(--spacing-2xl)+var(--spacing-xs)*3+var(--spacing-md))] z-10 hidden self-start p-md lg:block">
       <div className="mb-md font-display text-display">Top Contributors</div>
-      <div className="bordered-card flex w-(--container-dialog) flex-col gap-sm p-md">
+      <div className="bordered-card flex w-dialog flex-col gap-sm p-md">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center gap-sm">
             <Skeleton className="size-2xl rounded-full" />
