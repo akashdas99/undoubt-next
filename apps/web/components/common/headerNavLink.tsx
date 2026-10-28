@@ -35,7 +35,8 @@ export function HeaderNavLink({
       className={cn(
         buttonVariants({ variant: "ghost", size }),
         itemClassName,
-        active && "bg-white dark:bg-muted",
+        active &&
+          "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:hover:bg-primary/20",
         className
       )}
     >

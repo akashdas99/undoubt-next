@@ -1,14 +1,16 @@
 import { isEmpty } from "@/lib/functions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@workspace/ui/components/button";
-import { Info, LogIn, Plus, UserPlus } from "lucide-react";
+import { Separator } from "@workspace/ui/components/separator";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ProfileDropdown } from "./profileDropdown";
+import { ProfileMenu } from "./profileMenu";
 import SearchModal from "./searchModal";
 import { SessionWrapper } from "./sessionWrapper";
 import { HeaderNavLink } from "./headerNavLink";
 import { Logo } from "./logo";
+import { MobileNav } from "./mobileNav";
 import { ThemeToggle } from "./themeToggle";
 
 function GuestAccountLinks() {
@@ -16,43 +18,36 @@ function GuestAccountLinks() {
     <>
       <Link
         href="/login"
-        aria-label="Login"
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          "text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
-        )}
-      >
-        <LogIn />
-      </Link>
-      <Link
-        href="/login"
-        className={cn(
-          buttonVariants({ variant: "outline" }),
-          "hidden md:inline-flex"
-        )}
+        className={cn(buttonVariants({ variant: "outline" }))}
       >
         Login
       </Link>
       <Link
         href="/register"
-        aria-label="Create Account"
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          "text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white md:hidden dark:hover:bg-muted dark:aria-expanded:bg-muted"
-        )}
+        className={cn(buttonVariants({ variant: "default" }))}
       >
-        <UserPlus />
+        Sign up
+      </Link>
+    </>
+  );
+}
+
+function GuestMenuLinks() {
+  return (
+    <div className="flex flex-col gap-sm">
+      <Link
+        href="/login"
+        className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+      >
+        Login
       </Link>
       <Link
         href="/register"
-        className={cn(
-          buttonVariants({ variant: "default" }),
-          "hidden md:inline-flex"
-        )}
+        className={cn(buttonVariants({ variant: "default" }), "w-full")}
       >
-        Create Account
+        Sign up
       </Link>
-    </>
+    </div>
   );
 }
 
@@ -65,55 +60,50 @@ export default async function Header() {
           className="flex items-center justify-start gap-xs"
         >
           <SearchModal />
-          <HeaderNavLink
-            href="/question"
-            prefetch={false}
-            size="icon"
-            className="sm:hidden"
-            aria-label="Ask a question"
-          >
-            <Plus />
-          </HeaderNavLink>
-          <HeaderNavLink
-            href="/question"
-            prefetch={false}
-            className="hidden sm:inline-flex"
-          >
-            <Plus />
-            Ask
-          </HeaderNavLink>
-          <HeaderNavLink
-            href="/about"
-            size="icon"
-            className="sm:hidden"
-            aria-label="About"
-          >
-            <Info />
-          </HeaderNavLink>
-          <HeaderNavLink href="/about" className="hidden sm:inline-flex">
-            About
-          </HeaderNavLink>
+          <div className="hidden items-center gap-xs md:flex">
+            <Separator orientation="vertical" className="h-lg self-center!" />
+            <HeaderNavLink href="/question" prefetch={false}>
+              Ask
+            </HeaderNavLink>
+            <Separator orientation="vertical" className="h-lg self-center!" />
+            <HeaderNavLink href="/about">About</HeaderNavLink>
+          </div>
         </nav>
         <Logo className="justify-self-center" />
-        <nav
-          aria-label="Account"
-          className="flex items-center justify-end gap-xs"
-        >
+        <div className="flex items-center justify-end gap-xs">
           <Suspense fallback={null}>
             <SessionWrapper
               render={(user) => (
-                <>
+                <nav
+                  aria-label="Account"
+                  className="hidden items-center gap-xs md:flex"
+                >
                   <ThemeToggle />
                   {isEmpty(user) ? (
                     <GuestAccountLinks />
                   ) : (
                     <ProfileDropdown user={user} />
                   )}
-                </>
+                </nav>
               )}
             />
           </Suspense>
-        </nav>
+          <MobileNav
+            account={
+              <Suspense fallback={null}>
+                <SessionWrapper
+                  render={(user) =>
+                    isEmpty(user) || user == null ? (
+                      <GuestMenuLinks />
+                    ) : (
+                      <ProfileMenu user={user} />
+                    )
+                  }
+                />
+              </Suspense>
+            }
+          />
+        </div>
       </div>
     </header>
   );

@@ -32,7 +32,7 @@ export default function AddQuestion() {
   };
 
   return (
-    <div className="my-xl w-full max-w-content px-xl">
+    <div className="mx-auto my-xl w-full max-w-content px-xl">
       <div className="bordered-card p-2xl">
         <h1 className={`mb-xs font-display text-display`}>Add Question</h1>
         <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>

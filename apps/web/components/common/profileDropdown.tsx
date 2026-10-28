@@ -41,7 +41,7 @@ export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
         }
       />
 
-      <DropdownMenuContent className="frosted-glass" align="end" sideOffset={8}>
+      <DropdownMenuContent align="end">
         <DropdownMenuGroup>
           <div className="flex items-center gap-sm px-xs py-xs">
             <UserImage user={user} className="size-2xl" />
@@ -63,7 +63,7 @@ export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
           <DropdownMenuItem
             nativeButton={false}
             render={<Link href={"/profile"} />}
-            className="mx-xxs my-xxs rounded-lg"
+            className="mx-xxs my-xxs rounded-2xl"
           >
             <UserRoundCog className="text-primary" />
             <span>Profile Settings</span>
@@ -76,7 +76,7 @@ export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
           <DropdownMenuItem
             onClick={logoutUserAction}
             variant="destructive"
-            className="mx-xxs my-xxs rounded-lg"
+            className="mx-xxs my-xxs rounded-2xl"
           >
             <LogOut />
             <span>Log out</span>
