@@ -1,9 +1,43 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import * as THREE from "three";
 
+let desktopMedia: MediaQueryList | null | undefined;
+
+function getDesktopMedia() {
+  if (desktopMedia === undefined) {
+    const lg = getComputedStyle(document.documentElement)
+      .getPropertyValue("--breakpoint-lg")
+      .trim();
+    desktopMedia = lg ? window.matchMedia(`(min-width: ${lg})`) : null;
+  }
+  return desktopMedia;
+}
+
+function subscribeDesktop(onChange: () => void) {
+  const media = getDesktopMedia();
+  if (!media) return () => {};
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+const getDesktopSnapshot = () => getDesktopMedia()?.matches ?? false;
+const getDesktopServerSnapshot = () => false;
+
 export function AuthConstellation() {
+  const isDesktop = useSyncExternalStore(
+    subscribeDesktop,
+    getDesktopSnapshot,
+    getDesktopServerSnapshot
+  );
+
+  if (!isDesktop) return null;
+
+  return <ConstellationCanvas />;
+}
+
+function ConstellationCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

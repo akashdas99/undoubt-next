@@ -1,7 +1,7 @@
 "use client";
 
 import { addQuestionAction } from "@/actions/question";
-import { FieldGroup } from "@workspace/ui/components/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { FormEditor, FormInput } from "@/components/ui/form";
 import { QuestionSchema, QuestionType } from "@workspace/validations/question";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +32,7 @@ export default function AddQuestion() {
   };
 
   return (
-    <div className="my-xl w-full max-w-content px-xl">
+    <div className="mx-auto my-xl w-full max-w-content px-xl">
       <div className="bordered-card p-2xl">
         <h1 className={`mb-xs font-display text-display`}>Add Question</h1>
         <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -49,11 +49,7 @@ export default function AddQuestion() {
               label="Description"
             />
           </FieldGroup>
-          {form?.formState?.errors?.root?.message && (
-            <p className="text-xs font-medium text-destructive">
-              {form?.formState?.errors?.root?.message}
-            </p>
-          )}
+          <FieldError errors={[form.formState.errors.root]} />
           <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
             <Button type="submit" className="mt-sm" loading={isAddingQuestion}>
               Add Question

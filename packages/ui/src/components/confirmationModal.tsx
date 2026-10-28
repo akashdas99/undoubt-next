@@ -47,7 +47,7 @@ export function ConfirmationModal({
           </DialogDescription>
         </DialogHeader>
         {error && (
-          <p className="text-xs text-destructive font-medium">{error}</p>
+          <p className="text-sm font-medium text-destructive">{error}</p>
         )}
         <DialogFooter className="font-sans">
           <Button

@@ -15,7 +15,7 @@ const TopContributorsList: React.FC = async () => {
   }
 
   return (
-    <aside className="sticky top-3xl z-10 hidden self-start p-md lg:block">
+    <aside className="sticky top-[calc(var(--spacing-sm)+var(--spacing-2xl)+var(--spacing-xs)*3+var(--spacing-md))] z-10 hidden self-start px-md lg:block">
       <div className="mb-md font-display text-display">Top Contributors</div>
       <Card size="sm" className="w-(--container-dialog)">
         <CardContent className="flex flex-col gap-sm">

@@ -1,6 +1,6 @@
 "use client";
 import { addQuestionAction, editQuestionAction } from "@/actions/question";
-import { FieldGroup } from "@workspace/ui/components/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -79,11 +79,7 @@ export default function QuestionForm({
             label="Description"
           />
         </FieldGroup>
-        {form?.formState?.errors?.root?.message && (
-          <p className="text-xs font-medium text-destructive">
-            {form?.formState?.errors?.root?.message}
-          </p>
-        )}
+        <FieldError errors={[form.formState.errors.root]} />
         <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
           <Button
             type="submit"
