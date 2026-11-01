@@ -1,5 +1,6 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
+import { AnswerListSkeleton } from "@/components/answer/answerListSkeleton";
 import { QuestionCardSkeleton } from "@/components/question/questionCardSkeleton";
 import QuestionDeleteModal from "@/components/question/questionDeleteModal";
 import QuestionSection from "@/components/question/questionSection";
@@ -59,7 +60,9 @@ export default function Page({
           <div className="active-neo section-heading mb-xs font-display text-title">
             Recent Answers
           </div>
-          <AnswerList params={params} />
+          <Suspense fallback={<AnswerListSkeleton />}>
+            <AnswerList params={params} />
+          </Suspense>
         </div>
       </div>
     </div>
