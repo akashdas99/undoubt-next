@@ -15,4 +15,4 @@ export default function QuestionShareButton() {}
 import QuestionShareButton from "./questionShareButton";
 ```
 
-A loading skeleton that only represents that component may stay in the same file, as `QuestionCardSkeleton` does in `questionCard.tsx`.
+A loading skeleton that only represents that component may stay in the same file. `QuestionCardSkeleton` is its own module in `questionCardSkeleton.tsx`.
