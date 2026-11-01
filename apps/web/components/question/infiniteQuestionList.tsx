@@ -3,7 +3,7 @@
 import { INTERSECTION_THRESHOLD } from "@/lib/constants";
 import { useQuestionsInfinite } from "@/lib/queries/questions";
 import { useEffect, useRef } from "react";
-import QuestionCard from "./questionCard";
+import HomeQuestionCard from "./homeQuestionCard";
 import QuestionDeleteModal from "./questionDeleteModal";
 
 interface InfiniteQuestionListProps {
@@ -45,7 +45,7 @@ export default function InfiniteQuestionList({
     <>
       <div className="flex flex-col gap-lg">
         {questions.map((question) => (
-          <QuestionCard key={question?.id} question={question} />
+          <HomeQuestionCard key={question?.id} question={question} />
         ))}
       </div>
 

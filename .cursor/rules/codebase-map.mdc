@@ -1,0 +1,41 @@
+---
+description: Where things live in apps/web and environment gotchas, so agents skip re-discovery
+alwaysApply: true
+---
+
+# Codebase map (apps/web)
+
+## Environment gotchas
+
+- Next.js docs are in `apps/web/node_modules/next/dist/docs/` (not the repo root). The Read tool gets "Permission denied" there and Glob skips `node_modules`, so use Shell: `Get-Content <path>` or `Select-String -Path <path> -Pattern "..."`.
+- Shell is PowerShell. For paths with brackets like `[slug]`, use the Read tool or `Get-Content -LiteralPath`.
+- `next.config.ts` has `cacheComponents: true`. Anything reading cookies, `getSession()`, or non-static `params` must sit inside `<Suspense>` or a `loading.tsx`.
+- `cacheComponents` also hides pages with React `<Activity>` instead of unmounting them, so `useState`, form values and open dialogs survive navigating away and back. Reset them in the event handler before `router.push`/`replace`. When no handler runs (back button, other links), use a `useLayoutEffect` cleanup, gated by a ref when only some exits should reset (see `preserving-ui-state.md` in the Next docs and `questionForm.tsx`).
+- The Tiptap `Editor` only reads `content` once, at mount. It now syncs when its value changes from outside (e.g. `form.reset()`), so keep that effect.
+- `app/(main)/question/[slug]/loading.tsx` also wraps nested routes such as `[slug]/edit`. Give nested segments their own `loading.tsx`.
+- The route guard is `proxy.ts` (not `middleware.ts`). It matches exact paths only (`/question`, `/profile`), so nested pages must check the session themselves.
+- Add `"use client"` only when the file uses state, effects, event handlers, or browser APIs. A file that only renders other components does not need it. A server component can render a client component.
+
+## Server
+
+- Data and DB logic: `data/*.ts` (Drizzle). `data/question.ts` has `getQuestions`, `getQuestionBySlug(slug, userId)`, `addQuestion`, `editQuestion`, `deleteQuestion`. Edit and delete check ownership. Slugs never change on edit.
+- Server actions: `actions/*.ts`, wrapped in `withTryCatchResponse` (`lib/utils.ts`). Responses use `successResponse(data)` and `errorResponse(msg | fieldErrors)` from `lib/response.ts`, with `{ success, data | errors }` and root errors under `errors.root`.
+- Session: `getSession()` in `lib/session.ts` (JWT in cookie `token`) returns `{ id, userName } | null`. `components/common/sessionWrapper.tsx` only reads the session (no DB) for pages that need the id. `profileWrapper.tsx` calls `getProfile()` (`data/user.ts`, wrapped in `React.cache`) and hydrates the profile cache. `useProfile()` never fetches (`enabled = false`), so it only works where `ProfileWrapper` has hydrated it, which the header in `(main)/layout.tsx` does on every main page.
+- Zod schemas: `packages/validations` (`QuestionSchema`, `EditQuestionSchema`, `DeleteQuestionSchema`).
+
+## Client data
+
+- React Query lives in `lib/queries/*.ts`, with keys in `lib/queries/keys.ts`.
+- `useUpdateQuestionCache()` (`updateQuestion`, `removeQuestion`) patches question list and detail caches.
+- `questionCardFooter.tsx` takes a `renderVote` prop. The home card passes `questionVoteButton.tsx`. The detail card passes `hydratedQuestionVote.tsx`, which hydrates the detail cache around the vote button.
+
+## Components
+
+- Home list uses `homeQuestionCard.tsx` (clamped description, thumbnail, share). The question page uses `questionDetailCard.tsx` (full description). Both render `questionCardHeader.tsx`, which has no `"use client"`. Edit and delete live in `questionCardActions.tsx`. `questionCardSkeleton.tsx` is the loading placeholder.
+- Form fields: `components/ui/form.tsx` (`FormInput`, `FormPassword`, `FormEditor`), built on react-hook-form `Controller`. `FormEditor` wraps the Tiptap `components/ui/editor.tsx`.
+- Shared UI: `packages/ui/src/components`, imported as `@workspace/ui/components/*`. Available: button, card, combobox, confirmationModal (`ConfirmationModal`), dialog, dropdown-menu, field, input, input-group, label, pageLoader, separator, skeleton, textarea, toggle.
+- Constants: `lib/constants.ts`. Dates: `lib/date.ts`.
+
+## Routes
+
+`app/(main)`: `/`, `/about`, `/profile`, `/question` (add question), `/question/[slug]`, `/question/[slug]/edit` (checks author). Add and edit share `components/question/questionForm.tsx`. `app/(auth)`: `/login`, `/register`, `/forgot-password`, `/reset-password`.

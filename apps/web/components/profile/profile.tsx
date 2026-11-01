@@ -22,7 +22,7 @@ export default async function Profile() {
   const data = await getProfile();
 
   return (
-    <div className="my-xl w-full max-w-content px-xl">
+    <div className="mx-auto my-xl w-full max-w-content px-xl">
       <div className="bordered-card p-md">
         <h1 className="mb-xs font-display text-display">Profile Information</h1>
         <div className="flex flex-col items-start gap-md sm:flex-row sm:justify-between">

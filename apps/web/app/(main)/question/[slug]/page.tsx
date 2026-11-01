@@ -1,7 +1,6 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import AnswerList from "@/components/answer/answerList";
-import { SessionWrapper } from "@/components/common/sessionWrapper";
-import { QuestionCardSkeleton } from "@/components/question/questionCard";
+import { QuestionCardSkeleton } from "@/components/question/questionCardSkeleton";
 import QuestionDeleteModal from "@/components/question/questionDeleteModal";
 import QuestionSection from "@/components/question/questionSection";
 import { getAllQuestions, getQuestionBySlug } from "@/data/question";
@@ -49,14 +48,10 @@ export default function Page({
   params: Promise<{ slug: string }>;
 }) {
   return (
-    <div className="my-xl w-full max-w-content px-xl">
+    <div className="mx-auto my-xl w-full max-w-content px-xl">
       <div className="flex flex-col gap-md">
         <Suspense fallback={<QuestionCardSkeleton />}>
-          <SessionWrapper
-            render={(user) => (
-              <QuestionSection params={params} userId={user?.id ?? null} />
-            )}
-          />
+          <QuestionSection params={params} />
         </Suspense>
         <QuestionDeleteModal redirectOnDelete />
         <AddAnswer />

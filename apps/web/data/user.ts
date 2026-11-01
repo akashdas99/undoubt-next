@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema/users";
@@ -27,14 +28,14 @@ export async function getUserById(userId: string) {
   return user;
 }
 
-export async function getProfile() {
+export const getProfile = cache(async function getProfile() {
   const session = await getSession();
   if (!session?.id) {
     throw new Error("Session not found");
   }
 
   return getUserById(session.id);
-}
+});
 
 export async function getTopContributors(limit: number = 10) {
   const questionCounts = db
@@ -64,22 +65,22 @@ export async function getTopContributors(limit: number = 10) {
       createdAt: users.createdAt,
       questionCount:
         sql<number>`COALESCE(${questionCounts.questionCount}, 0)`.as(
-          "questionCount",
+          "questionCount"
         ),
       answerCount: sql<number>`COALESCE(${answerCounts.answerCount}, 0)`.as(
-        "answerCount",
+        "answerCount"
       ),
     })
     .from(users)
     .leftJoin(questionCounts, eq(questionCounts.authorId, users.id))
     .leftJoin(answerCounts, eq(answerCounts.authorId, users.id))
     .where(
-      sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0) > 0`,
+      sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0) > 0`
     )
     .orderBy(
       desc(
-        sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0)`,
-      ),
+        sql`COALESCE(${questionCounts.questionCount}, 0) + COALESCE(${answerCounts.answerCount}, 0)`
+      )
     )
     .limit(limit);
 

@@ -2,9 +2,8 @@
 
 import { voteOnQuestionAction } from "@/actions/question";
 import { isEmpty } from "@/lib/functions";
+import { useQuestion, useUpdateQuestionCache } from "@/lib/queries/questions";
 import { useProfile } from "@/lib/queries/user";
-import { type PaginatedResponse } from "@/lib/queries/questions";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -14,6 +13,7 @@ interface QuestionVoteButtonProps {
   likes: number;
   dislikes: number;
   userVote: number | null;
+  slug?: string;
 }
 
 function calculateVoteChanges(newVote: 1 | -1, currentVote: number | null) {
@@ -35,46 +35,30 @@ export default function QuestionVoteButton({
   likes,
   dislikes,
   userVote,
+  slug,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const { updateQuestion } = useUpdateQuestionCache();
   const { data: user } = useProfile();
+  const { data: question } = useQuestion(slug ?? "");
+  const currentLikes = question ? question.likes : likes;
+  const currentDislikes = question ? question.dislikes : dislikes;
+  const currentVote = question ? question.userVote : userVote;
 
   const updateQuestionsCache = (newVote: 1 | -1) => {
-    const changes = calculateVoteChanges(newVote, userVote);
+    const changes = calculateVoteChanges(newVote, currentVote);
 
-    queryClient.setQueriesData<{
-      pages: PaginatedResponse[];
-      pageParams: number[];
-    }>({ queryKey: ["questions", "list"] }, (oldData) => {
-      if (!oldData) return oldData;
-
-      return {
-        ...oldData,
-        pages: oldData.pages.map((page) => ({
-          ...page,
-          data: page.data?.map((question) =>
-            question.id === questionId
-              ? {
-                  ...question,
-                  likes: Math.max(0, question.likes + changes.likesDelta),
-                  dislikes: Math.max(
-                    0,
-                    question.dislikes + changes.dislikesDelta
-                  ),
-                  userVote: changes.userVote,
-                }
-              : question
-          ),
-        })),
-      };
-    });
+    updateQuestion(questionId, (question) => ({
+      likes: Math.max(0, question.likes + changes.likesDelta),
+      dislikes: Math.max(0, question.dislikes + changes.dislikesDelta),
+      userVote: changes.userVote,
+    }));
   };
 
   const handleVote = async (newVote: 1 | -1) => {
     if (isEmpty(user)) return router.push("/login");
 
-    const isRemoving = userVote === newVote;
+    const isRemoving = currentVote === newVote;
 
     updateQuestionsCache(newVote);
 
@@ -85,16 +69,16 @@ export default function QuestionVoteButton({
   };
 
   return (
-    <div className="flex items-center gap-xs">
+    <div className="flex items-center gap-sm rounded-full border border-border/60 px-sm py-xxs">
       <VoteButton
         icon={
           <ArrowBigUp
             size={18}
-            fill={userVote === 1 ? "var(--primary)" : "none"}
-            stroke={userVote === 1 ? "var(--primary)" : "currentColor"}
+            fill={currentVote === 1 ? "var(--primary)" : "none"}
+            stroke={currentVote === 1 ? "var(--primary)" : "currentColor"}
           />
         }
-        count={likes}
+        count={currentLikes}
         onClick={() => handleVote(1)}
         label="Like question"
       />
@@ -102,11 +86,11 @@ export default function QuestionVoteButton({
         icon={
           <ArrowBigDown
             size={18}
-            fill={userVote === -1 ? "var(--destructive)" : "none"}
-            stroke={userVote === -1 ? "var(--destructive)" : "currentColor"}
+            fill={currentVote === -1 ? "var(--destructive)" : "none"}
+            stroke={currentVote === -1 ? "var(--destructive)" : "currentColor"}
           />
         }
-        count={dislikes}
+        count={currentDislikes}
         onClick={() => handleVote(-1)}
         label="Dislike question"
       />
@@ -128,7 +112,7 @@ function VoteButton({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-xxs rounded-lg text-muted-foreground hover:underline"
+      className="flex items-center gap-xxs rounded-full text-muted-foreground transition-colors hover:text-foreground"
       aria-label={label}
     >
       {icon}

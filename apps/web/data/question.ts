@@ -157,6 +157,51 @@ export async function getQuestionBySlug(slug: string, userId?: string | null) {
   return question;
 }
 
+export async function getQuestionContentBySlug(slug: string) {
+  const [question] = await db
+    .select({
+      id: questions.id,
+      title: questions.title,
+      description: questions.description,
+      author: { name: users.name, profilePicture: users.profilePicture },
+      authorId: questions.authorId,
+      createdAt: questions.createdAt,
+      slug: questions.slug,
+    })
+    .from(questions)
+    .innerJoin(users, eq(questions.authorId, users.id))
+    .where(eq(questions.slug, slug))
+    .limit(1);
+
+  return question;
+}
+
+export async function getQuestionStatsBySlug(
+  slug: string,
+  userId?: string | null
+) {
+  const [stats] = await db
+    .select({
+      id: questions.id,
+      answersCount: questionStats.answersCount,
+      likes: questionStats.likes,
+      dislikes: questionStats.dislikes,
+      userVote: userId
+        ? sql<number | null>`(
+            SELECT ${questionVotes.vote} FROM ${questionVotes}
+            WHERE ${questionVotes.questionId} = ${questions.id}
+              AND ${questionVotes.userId} = ${userId}
+          )`
+        : sql<null>`NULL`,
+    })
+    .from(questions)
+    .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
+    .where(eq(questions.slug, slug))
+    .limit(1);
+
+  return stats;
+}
+
 export async function editQuestion(questionData: EditQuestionType) {
   // Validate question data
   const parsed = EditQuestionSchema.safeParse(questionData);
@@ -173,7 +218,7 @@ export async function editQuestion(questionData: EditQuestionType) {
 
   // Check if question exists and belongs to user
   const [existingQuestion] = await db
-    .select({ authorId: questions.authorId })
+    .select({ authorId: questions.authorId, slug: questions.slug })
     .from(questions)
     .where(eq(questions.id, validatedQuestion.id))
     .limit(1);
@@ -195,7 +240,10 @@ export async function editQuestion(questionData: EditQuestionType) {
     })
     .where(eq(questions.id, validatedQuestion.id));
 
-  return successResponse({ message: "Question updated successfully" });
+  return successResponse({
+    message: "Question updated successfully",
+    slug: existingQuestion.slug,
+  });
 }
 
 export async function deleteQuestion(questionData: DeleteQuestionType) {

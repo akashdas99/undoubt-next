@@ -2,6 +2,7 @@
 
 import useTiptapEditor from "@/hooks/useTiptapEditor";
 import { EditorContent } from "@tiptap/react";
+import { useEffect } from "react";
 import EditorToolBar from "./editorToolbar";
 
 type EditorProps = {
@@ -15,6 +16,14 @@ const Editor = ({ className, content, onChange }: EditorProps) => {
     className,
     onChange,
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    const current = editor.getText() ? editor.getHTML() : "";
+    if (content !== current)
+      editor.commands.setContent(content, { emitUpdate: false });
+  }, [editor, content]);
+
   return (
     <>
       <EditorToolBar editor={editor} />

@@ -15,9 +15,9 @@ import { LogOut, UserRoundCog } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
-import type { SessionUser } from "./sessionWrapper";
+import type { ProfileUser } from "./profileWrapper";
 
-export async function ProfileDropdown({ user }: { user?: SessionUser | null }) {
+export async function ProfileDropdown({ user }: { user?: ProfileUser | null }) {
   "use cache";
   cacheTag(cacheTags.users.profile());
   cacheLife("hours");

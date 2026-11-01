@@ -1,0 +1,21 @@
+---
+description: Keep shared constants in apps/web/lib/constants.ts, not beside the code that uses them.
+alwaysApply: true
+---
+
+# Constants live in one file
+
+Put reusable numbers, format strings, delays, and limits in `apps/web/lib/constants.ts`. Import them where they are used.
+
+Do this for values that name a product or formatting choice (page size, debounce, date formats, time windows). Leave a value inline when it is used once and has no name worth sharing (a `0`, a `1`, a local index).
+
+```ts
+// constants.ts
+export const SHORT_DATE_FORMAT = "MMM D, YYYY";
+export const RELATIVE_DATE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+// date.ts
+import { RELATIVE_DATE_WINDOW_MS, SHORT_DATE_FORMAT } from "@/lib/constants";
+```
+
+Do not declare those values inside a component, hook, or helper.

@@ -13,10 +13,10 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
 import { Separator } from "@workspace/ui/components/separator";
-import { Info, Menu, MessageCircle, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { HeaderNavLink } from "./headerNavLink";
+import { HeaderNavLinks } from "./headerNavLinks";
 import { Logo } from "./logo";
 import { ThemeToggle } from "./themeToggle";
 
@@ -65,23 +65,7 @@ export function MobileNav({ account }: { account: React.ReactNode }) {
               <X />
             </DialogClose>
           </div>
-          <nav aria-label="Find and ask" className="flex flex-col gap-sm">
-            <HeaderNavLink
-              href="/question"
-              prefetch={false}
-              className="w-full justify-start rounded-2xl px-md"
-            >
-              <MessageCircle />
-              Ask
-            </HeaderNavLink>
-            <HeaderNavLink
-              href="/about"
-              className="w-full justify-start rounded-2xl px-md"
-            >
-              <Info />
-              About
-            </HeaderNavLink>
-          </nav>
+          <HeaderNavLinks variant="menu" pathname={pathname} />
           <div className="mt-auto flex flex-col gap-sm">
             <div className="flex items-center justify-between gap-sm px-md">
               <span className="text-sm text-muted-foreground">Theme</span>

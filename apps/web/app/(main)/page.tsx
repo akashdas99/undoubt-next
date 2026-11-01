@@ -1,6 +1,6 @@
 import { SessionWrapper } from "@/components/common/sessionWrapper";
 import TopContributorsList from "@/components/contributors/topContributorsList";
-import { QuestionCardSkeleton } from "@/components/question/questionCard";
+import { QuestionCardSkeleton } from "@/components/question/questionCardSkeleton";
 import QuestionList from "@/components/question/questionList";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
@@ -41,7 +41,7 @@ export default function Home() {
         <div className="mb-md font-display text-display">Recent Questions</div>
         <Suspense fallback={<QuestionListFallback />}>
           <SessionWrapper
-            render={(user) => <QuestionList userId={user?.id ?? null} />}
+            render={(session) => <QuestionList userId={session?.id ?? null} />}
           />
         </Suspense>
       </div>
