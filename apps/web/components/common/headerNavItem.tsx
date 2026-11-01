@@ -1,19 +1,17 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@workspace/ui/components/button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const itemClassName =
   "text-foreground hover:bg-white hover:text-foreground aria-expanded:bg-white aria-expanded:text-foreground dark:hover:bg-muted dark:aria-expanded:bg-muted";
 
-export function HeaderNavLink({
+export function HeaderNavItem({
   href,
   className,
   children,
   prefetch = true,
   size = "default",
+  active = false,
   "aria-label": ariaLabel,
 }: {
   href: string;
@@ -21,11 +19,9 @@ export function HeaderNavLink({
   children: React.ReactNode;
   prefetch?: boolean;
   size?: "default" | "icon";
+  active?: boolean;
   "aria-label"?: string;
 }) {
-  const pathname = usePathname();
-  const active = pathname === href;
-
   return (
     <Link
       href={href}

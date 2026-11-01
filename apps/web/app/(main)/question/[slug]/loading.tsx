@@ -1,10 +1,10 @@
 import AddAnswer from "@/components/answer/addAnswer";
 import { AnswerCardSkeleton } from "@/components/answer/answerCard";
-import { QuestionCardSkeleton } from "@/components/question/questionCard";
+import { QuestionCardSkeleton } from "@/components/question/questionCardSkeleton";
 
 export default function Loading() {
   return (
-    <div className="my-xl w-full max-w-content px-xl">
+    <div className="mx-auto my-xl w-full max-w-content px-xl">
       <div className="flex flex-col gap-md">
         <QuestionCardSkeleton />
         <AddAnswer />

@@ -1,16 +1,17 @@
 import { isEmpty } from "@/lib/functions";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@workspace/ui/components/button";
-import { Separator } from "@workspace/ui/components/separator";
+import { Button, buttonVariants } from "@workspace/ui/components/button";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ProfileDropdown } from "./profileDropdown";
-import { ProfileMenu } from "./profileMenu";
-import SearchModal from "./searchModal";
-import { SessionWrapper } from "./sessionWrapper";
-import { HeaderNavLink } from "./headerNavLink";
+import { ActiveHeaderNavLinks } from "./activeHeaderNavLinks";
+import { HeaderNavLinks } from "./headerNavLinks";
 import { Logo } from "./logo";
 import { MobileNav } from "./mobileNav";
+import { ProfileDropdown } from "./profileDropdown";
+import { ProfileMenu } from "./profileMenu";
+import { ProfileWrapper } from "./profileWrapper";
+import SearchModal from "./searchModal";
 import { ThemeToggle } from "./themeToggle";
 
 function GuestAccountLinks() {
@@ -60,19 +61,14 @@ export default async function Header() {
           className="flex items-center justify-start gap-xs"
         >
           <SearchModal />
-          <div className="hidden items-center gap-xs md:flex">
-            <Separator orientation="vertical" className="h-lg self-center!" />
-            <HeaderNavLink href="/question" prefetch={false}>
-              Ask
-            </HeaderNavLink>
-            <Separator orientation="vertical" className="h-lg self-center!" />
-            <HeaderNavLink href="/about">About</HeaderNavLink>
-          </div>
+          <Suspense fallback={<HeaderNavLinks variant="bar" />}>
+            <ActiveHeaderNavLinks variant="bar" />
+          </Suspense>
         </nav>
         <Logo className="justify-self-center" />
         <div className="flex items-center justify-end gap-xs">
           <Suspense fallback={null}>
-            <SessionWrapper
+            <ProfileWrapper
               render={(user) => (
                 <nav
                   aria-label="Account"
@@ -88,21 +84,35 @@ export default async function Header() {
               )}
             />
           </Suspense>
-          <MobileNav
-            account={
-              <Suspense fallback={null}>
-                <SessionWrapper
-                  render={(user) =>
-                    isEmpty(user) || user == null ? (
-                      <GuestMenuLinks />
-                    ) : (
-                      <ProfileMenu user={user} />
-                    )
-                  }
-                />
-              </Suspense>
+          <Suspense
+            fallback={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                disabled
+                className="text-foreground md:hidden"
+              >
+                <Menu />
+              </Button>
             }
-          />
+          >
+            <MobileNav
+              account={
+                <Suspense fallback={null}>
+                  <ProfileWrapper
+                    render={(user) =>
+                      isEmpty(user) || user == null ? (
+                        <GuestMenuLinks />
+                      ) : (
+                        <ProfileMenu user={user} />
+                      )
+                    }
+                  />
+                </Suspense>
+              }
+            />
+          </Suspense>
         </div>
       </div>
     </header>

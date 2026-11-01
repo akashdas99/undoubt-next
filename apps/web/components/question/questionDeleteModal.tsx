@@ -1,11 +1,11 @@
 "use client";
 
 import { deleteQuestionAction } from "@/actions/question";
-import { PaginatedResponse } from "@/lib/queries/questions";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateQuestionCache } from "@/lib/queries/questions";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "@workspace/ui/components/confirmationModal";
 import { useUIStoreSelector } from "@/store/useUIStore";
+import { startTransition } from "react";
 
 type QuestionDeleteModalProps = {
   redirectOnDelete?: boolean;
@@ -14,7 +14,7 @@ type QuestionDeleteModalProps = {
 export default function QuestionDeleteModal({
   redirectOnDelete = false,
 }: QuestionDeleteModalProps) {
-  const queryClient = useQueryClient();
+  const { removeQuestion } = useUpdateQuestionCache();
   const { deleteModal, setDeleteLoading, closeDeleteModal, setDeleteError } =
     useUIStoreSelector(
       "deleteModal",
@@ -24,41 +24,29 @@ export default function QuestionDeleteModal({
     );
   const router = useRouter();
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteModal?.questionId) return;
+  const handleDeleteConfirm = () => {
+    const questionId = deleteModal?.questionId;
+    if (!questionId) return;
 
     setDeleteLoading(true);
 
-    const res = await deleteQuestionAction(
-      { id: deleteModal.questionId },
-      false
-    );
+    startTransition(async () => {
+      const res = await deleteQuestionAction({ id: questionId }, false);
 
-    setDeleteLoading(false);
+      setDeleteLoading(false);
 
-    if (!res?.success) {
-      setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
-    } else {
-      // Remove deleted question from React Query cache
-      queryClient.setQueriesData<{
-        pages: PaginatedResponse[];
-        pageParams: number[];
-      }>({ queryKey: ["questions", "list"] }, (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page) => ({
-            ...page,
-            data: page.data?.filter((q) => q.id !== deleteModal.questionId),
-          })),
-        };
-      });
+      if (!res?.success) {
+        setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
+        return;
+      }
+
+      removeQuestion(questionId);
       closeDeleteModal();
 
       if (redirectOnDelete) {
         router.push("/");
       }
-    }
+    });
   };
 
   return (

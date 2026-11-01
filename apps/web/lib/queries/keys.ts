@@ -11,8 +11,8 @@ export const queryKeys = {
       [...queryKeys.questions.lists(), keyword, userId] as const,
     search: (keyword: string) =>
       [...queryKeys.questions.all(), "search", keyword] as const,
-    detail: (id: string) =>
-      [...queryKeys.questions.all(), "detail", id] as const,
+    details: () => [...queryKeys.questions.all(), "detail"] as const,
+    detail: (slug: string) => [...queryKeys.questions.details(), slug] as const,
   },
 
   users: {

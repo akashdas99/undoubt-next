@@ -5,9 +5,9 @@ import { Button } from "@workspace/ui/components/button";
 import { LogOut, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
-import type { SessionUser } from "./sessionWrapper";
+import type { ProfileUser } from "./profileWrapper";
 
-export function ProfileMenu({ user }: { user: SessionUser }) {
+export function ProfileMenu({ user }: { user: ProfileUser }) {
   return (
     <div className="flex flex-col gap-sm">
       <div className="flex items-center gap-sm rounded-panel bg-card p-sm">

@@ -1,0 +1,18 @@
+---
+description: Put each React component in its own file instead of defining it inside another component.
+alwaysApply: true
+---
+
+# One component per file
+
+When adding a component, create a new file next to the component that uses it and import it. Do not declare a second component in the same file.
+
+```tsx
+// questionShareButton.tsx
+export default function QuestionShareButton() {}
+
+// questionCard.tsx
+import QuestionShareButton from "./questionShareButton";
+```
+
+A loading skeleton that only represents that component may stay in the same file. `QuestionCardSkeleton` is its own module in `questionCardSkeleton.tsx`.

@@ -1,9 +1,9 @@
 "use client";
 
 import { deleteAnswerAction } from "@/actions/answer";
+import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
-import dayjs from "dayjs";
 import { CalendarDays, Pencil } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -51,7 +51,7 @@ export default function AnswerCard({
           <div className="font-sans font-medium">{answer?.author?.name}</div>
           <div className="flex items-center gap-xxs text-xs opacity-50">
             <CalendarDays className="w-sm" />
-            {dayjs(answer?.createdAt).format("MMM D, YYYY")}
+            {formatShortDate(answer?.createdAt)}
           </div>
         </div>
         {isAuthor && (

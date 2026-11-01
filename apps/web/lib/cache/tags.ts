@@ -7,6 +7,9 @@ export const cacheTags = {
   users: {
     profile: () => "users:profile" as const,
   },
+  questions: {
+    content: (slug: string) => `questionContent:${slug}` as const,
+  },
 } as const;
 
 type CacheTagLeaf = {
