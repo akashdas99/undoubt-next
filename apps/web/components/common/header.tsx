@@ -6,12 +6,12 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ActiveHeaderNavLinks } from "./activeHeaderNavLinks";
 import { HeaderNavLinks } from "./headerNavLinks";
-import { ProfileDropdown } from "./profileDropdown";
-import { ProfileMenu } from "./profileMenu";
-import SearchModal from "./searchModal";
-import { ProfileWrapper } from "./profileWrapper";
 import { Logo } from "./logo";
 import { MobileNav } from "./mobileNav";
+import { ProfileDropdown } from "./profileDropdown";
+import { ProfileMenu } from "./profileMenu";
+import { ProfileWrapper } from "./profileWrapper";
+import SearchModal from "./searchModal";
 import { ThemeToggle } from "./themeToggle";
 
 function GuestAccountLinks() {
