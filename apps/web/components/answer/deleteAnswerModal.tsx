@@ -1,14 +1,7 @@
-import React from "react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@workspace/ui/components/dialog";
+"use client";
+
+import { useState } from "react";
+import { ConfirmationModal } from "@workspace/ui/components/confirmationModal";
 import { Button } from "@workspace/ui/components/button";
 import { Trash } from "lucide-react";
 
@@ -21,49 +14,31 @@ export default function DeleteAnswerModal({
   isDeleting: boolean;
   onDelete: () => void;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="group hover:bg-destructive"
-          />
-        }
+    <>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="text-destructive hover:bg-destructive/10 hover:text-destructive dark:hover:bg-destructive/20"
+        aria-label="Delete answer"
+        onClick={() => setOpen(true)}
       >
-        <Trash
-          size={20}
-          className="text-destructive group-hover:text-background"
-        />
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="font-display font-normal">
-            Are you absolutely sure?
-          </DialogTitle>
-          <DialogDescription className="font-sans">
-            This action cannot be undone. This will permanently delete your
-            answer.
-          </DialogDescription>
-        </DialogHeader>
-        {error && (
-          <p className="text-sm font-medium text-destructive">{error}</p>
-        )}
-        <DialogFooter className="font-sans">
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={onDelete}
-            loading={isDeleting}
-          >
-            Delete
-          </Button>
-          <DialogClose render={<Button type="button" variant="outline" />}>
-            Close
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <Trash size={16} />
+      </Button>
+      <ConfirmationModal
+        open={open}
+        onOpenChange={setOpen}
+        onConfirm={onDelete}
+        title="Delete Answer?"
+        description="This action cannot be undone. This will permanently delete your answer."
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isDeleting}
+        error={error}
+      />
+    </>
   );
 }

@@ -4,16 +4,15 @@ import { deleteAnswerAction } from "@/actions/answer";
 import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
-import { CalendarDays, Pencil } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useState } from "react";
-import { Button } from "@workspace/ui/components/button";
-import { Skeleton } from "@workspace/ui/components/skeleton";
-import TextEditorContent from "../ui/textEditorContent";
-import AnswerForm from "./answerForm";
-import DeleteAnswerModal from "./deleteAnswerModal";
 import { Answer } from "@/db/schema/answers";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { CalendarDays } from "lucide-react";
+import { useParams } from "next/navigation";
+import { startTransition, useActionState } from "react";
+import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
+import DeleteAnswerModal from "./deleteAnswerModal";
+import EditAnswerModal from "./editAnswerModal";
 
 export default function AnswerCard({
   answer,
@@ -25,22 +24,19 @@ export default function AnswerCard({
     };
   };
 }) {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useProfile();
-
   const params = useParams<{ slug: string }>();
   const isAuthor = !isLoading && answer?.authorId === user?.id;
 
-  const onDelete = async () => {
-    setIsDeleting(true);
-    const res = await deleteAnswerAction(answer?.id as string, params?.slug);
+  const [res, handleDelete, isDeleting] = useActionState(
+    async () => deleteAnswerAction(answer.id, params.slug),
+    { errors: {}, success: false }
+  );
 
-    if (!res?.success) {
-      setDeleteError(("errors" in res && res?.errors?.root?.message) || "");
-      setIsDeleting(false);
-    } else setIsEditing(false);
+  const deleteError = ("errors" in res && res.errors?.root?.message) || "";
+
+  const onDelete = () => {
+    startTransition(() => handleDelete());
   };
 
   return (
@@ -56,17 +52,7 @@ export default function AnswerCard({
         </div>
         {isAuthor && (
           <div className="flex items-center gap-xs">
-            <Button
-              variant={"ghost"}
-              size="icon-sm"
-              className="group hover:bg-primary"
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              <Pencil
-                size={20}
-                className="text-foreground group-hover:text-background"
-              />
-            </Button>
+            <EditAnswerModal answer={answer} />
 
             <DeleteAnswerModal
               error={deleteError}
@@ -76,20 +62,9 @@ export default function AnswerCard({
           </div>
         )}
       </div>
-      <>
-        {isEditing ? (
-          <AnswerForm
-            answer={answer}
-            closeAnswerForm={() => setIsEditing(false)}
-          />
-        ) : (
-          <>
-            {answer?.description && (
-              <TextEditorContent content={answer?.description} />
-            )}
-          </>
-        )}
-      </>
+      {answer?.description && (
+        <TextEditorContent content={answer?.description} />
+      )}
     </div>
   );
 }

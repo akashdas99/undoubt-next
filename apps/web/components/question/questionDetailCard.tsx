@@ -32,7 +32,7 @@ export default async function QuestionDetailCard({
   };
 
   return (
-    <Card size="sm" className="relative border border-border/60">
+    <Card size="sm" className="relative">
       <QuestionCardHeader question={headerQuestion} />
       <CardContent>
         <div className="space-y-xs">

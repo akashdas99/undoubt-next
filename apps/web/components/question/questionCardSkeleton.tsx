@@ -8,7 +8,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export function QuestionCardSkeleton() {
   return (
-    <Card size="sm" className="border border-border/60">
+    <Card size="sm">
       <CardHeader>
         <Skeleton className="size-2xl rounded-full" />
         <Skeleton className="h-md w-3xl" />

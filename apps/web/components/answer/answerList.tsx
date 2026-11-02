@@ -1,17 +1,13 @@
 import { getAnswersByQuestionSlug } from "@/data/answer";
 import AnswerCard from "./answerCard";
 
-async function getCachedAnswersByQuestionSlug(slug: string) {
-  return getAnswersByQuestionSlug(slug);
-}
-
 export default async function AnswerList({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug = "" } = await params;
-  const { data: answers } = await getCachedAnswersByQuestionSlug(slug);
+  const { data: answers } = await getAnswersByQuestionSlug(slug);
 
   return (
     <>

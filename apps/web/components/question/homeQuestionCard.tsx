@@ -17,39 +17,38 @@ function getFirstImage(html?: string) {
 
 function HomeQuestionCard({ question }: { question: Question }) {
   const href = `/question/${question.slug}`;
-  const { ref: descRef, isClamped } = useIsClamped<HTMLDivElement>(true);
+  const { ref: descRef, isClamped } = useIsClamped<HTMLAnchorElement>(true);
   const thumbnail = getFirstImage(question.description);
 
   return (
-    <Card size="sm" className="relative border border-border/60">
+    <Card size="sm" className="relative">
       <QuestionCardHeader question={question} />
       <CardContent>
         <div className="flex items-start gap-md">
           <div className="min-w-0 flex-1 space-y-xs">
-            <div className="text-lg leading-tight font-semibold">
-              <Link
-                href={href}
-                className="line-clamp-2 outline-none after:absolute after:inset-0 after:content-['']"
-              >
-                {question.title}
-              </Link>
-            </div>
+            <Link
+              href={href}
+              className="line-clamp-2 text-lg leading-tight font-semibold outline-none"
+            >
+              {question.title}
+            </Link>
             {question.description && (
-              <div className="pointer-events-none relative [&_a]:pointer-events-auto">
-                <div
+              <div>
+                <Link
                   ref={descRef}
-                  className="line-clamp-2 text-sm text-muted-foreground"
+                  href={href}
+                  className="line-clamp-2 block text-sm text-muted-foreground outline-none"
                 >
                   <TextEditorContent
                     content={question.description}
-                    className="text-sm leading-5 [&_*]:mt-0 [&_*]:leading-5"
+                    className="text-sm leading-5 [&_*]:mt-0 [&_*]:leading-5 [&_a]:pointer-events-none [&_a]:text-inherit [&_a]:no-underline"
                   />
-                </div>
+                </Link>
                 {isClamped && (
                   <Link
                     href={href}
                     aria-label={`Read full question: ${question.title}`}
-                    className="group/more pointer-events-auto relative z-10 mt-xxs inline-flex items-center gap-xxs rounded-sm text-xs font-medium text-primary outline-none hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-ring"
+                    className="group/more relative z-10 mt-xxs inline-flex items-center gap-xxs rounded-sm text-xs font-medium text-primary outline-none hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Read full question
                     <ArrowRight

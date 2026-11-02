@@ -69,17 +69,20 @@ export default function EditorToolBar({ editor }: EditorToolBarProps) {
   ];
 
   return (
-    <div className="sticky top-2xl z-50 mb-xxs space-x-xxs rounded-full border border-field-border bg-input/50 p-xs text-foreground">
-      {Options.map((option, i) => (
-        <Toggle
-          key={i}
-          size="sm"
-          pressed={option.preesed}
-          onPressedChange={option.onClick}
-        >
-          {option.icon}
-        </Toggle>
-      ))}
+    <div className="sticky top-2xl z-50 mb-xxs w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain rounded-full border border-field-border bg-input/50 text-foreground">
+      <div className="flex w-max flex-nowrap items-center gap-xxs p-xs">
+        {Options.map((option, i) => (
+          <Toggle
+            key={i}
+            size="sm"
+            pressed={option.preesed}
+            onPressedChange={option.onClick}
+            className="size-xl min-w-xl shrink-0 p-0"
+          >
+            {option.icon}
+          </Toggle>
+        ))}
+      </div>
     </div>
   );
 }
