@@ -8,7 +8,7 @@ import { Answer } from "@/db/schema/answers";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { startTransition, useActionState } from "react";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import DeleteAnswerModal from "./deleteAnswerModal";
@@ -24,21 +24,19 @@ export default function AnswerCard({
     };
   };
 }) {
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useProfile();
-
   const params = useParams<{ slug: string }>();
   const isAuthor = !isLoading && answer?.authorId === user?.id;
 
-  const onDelete = async () => {
-    setIsDeleting(true);
-    const res = await deleteAnswerAction(answer?.id as string, params?.slug);
+  const [res, handleDelete, isDeleting] = useActionState(
+    async () => deleteAnswerAction(answer.id, params.slug),
+    { errors: {}, success: false }
+  );
 
-    if (!res?.success) {
-      setDeleteError(("errors" in res && res?.errors?.root?.message) || "");
-      setIsDeleting(false);
-    }
+  const deleteError = ("errors" in res && res.errors?.root?.message) || "";
+
+  const onDelete = () => {
+    startTransition(() => handleDelete());
   };
 
   return (
