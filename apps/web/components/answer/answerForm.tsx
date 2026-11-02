@@ -53,7 +53,10 @@ export default function AnswerForm({
   };
 
   return (
-    <form id="answer-form" onSubmit={form.handleSubmit(onSubmit)}>
+    <form
+      id={answer ? `answer-form-${answer.id}` : "answer-form"}
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
       <FieldGroup>
         <FormEditor
           control={form.control}
@@ -64,7 +67,7 @@ export default function AnswerForm({
       <FieldError errors={[form.formState.errors.root]} />
       <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
         <Button type="submit" className="mt-sm" loading={isAddingAnswer}>
-          Submit
+          {answer ? "Save" : "Submit"}
         </Button>
         <Button
           type="button"

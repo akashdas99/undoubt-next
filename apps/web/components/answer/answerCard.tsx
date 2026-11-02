@@ -4,14 +4,13 @@ import { deleteAnswerAction } from "@/actions/answer";
 import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
-import { CalendarDays, Pencil } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
-import AnswerForm from "./answerForm";
 import DeleteAnswerModal from "./deleteAnswerModal";
+import EditAnswerModal from "./editAnswerModal";
 import { Answer } from "@/db/schema/answers";
 import UserImage from "../ui/userImage";
 
@@ -25,7 +24,6 @@ export default function AnswerCard({
     };
   };
 }) {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>("");
   const { data: user, isLoading } = useProfile();
@@ -40,7 +38,7 @@ export default function AnswerCard({
     if (!res?.success) {
       setDeleteError(("errors" in res && res?.errors?.root?.message) || "");
       setIsDeleting(false);
-    } else setIsEditing(false);
+    }
   };
 
   return (
@@ -56,17 +54,7 @@ export default function AnswerCard({
         </div>
         {isAuthor && (
           <div className="flex items-center gap-xs">
-            <Button
-              variant={"ghost"}
-              size="icon-sm"
-              className="group hover:bg-primary"
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              <Pencil
-                size={20}
-                className="text-foreground group-hover:text-background"
-              />
-            </Button>
+            <EditAnswerModal answer={answer} />
 
             <DeleteAnswerModal
               error={deleteError}
@@ -76,20 +64,9 @@ export default function AnswerCard({
           </div>
         )}
       </div>
-      <>
-        {isEditing ? (
-          <AnswerForm
-            answer={answer}
-            closeAnswerForm={() => setIsEditing(false)}
-          />
-        ) : (
-          <>
-            {answer?.description && (
-              <TextEditorContent content={answer?.description} />
-            )}
-          </>
-        )}
-      </>
+      {answer?.description && (
+        <TextEditorContent content={answer?.description} />
+      )}
     </div>
   );
 }

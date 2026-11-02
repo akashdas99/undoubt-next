@@ -47,7 +47,7 @@ const useTiptapEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "min-h-[calc(var(--spacing-3xl)*4)] w-full rounded-4xl border border-field-border bg-input/50 px-xl py-md text-base leading-normal transition-[color,box-shadow,background-color] outline-none focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/30 md:text-sm",
+          "min-h-[calc(var(--spacing-3xl)*4)] w-full rounded-4xl border border-field-border bg-input/50 p-xl text-sm leading-normal transition-[color,box-shadow,background-color] outline-none focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/30",
           className
         ),
       },
