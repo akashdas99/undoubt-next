@@ -4,15 +4,15 @@ import { deleteAnswerAction } from "@/actions/answer";
 import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
+import { Answer } from "@/db/schema/answers";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import TextEditorContent from "../ui/textEditorContent";
+import UserImage from "../ui/userImage";
 import DeleteAnswerModal from "./deleteAnswerModal";
 import EditAnswerModal from "./editAnswerModal";
-import { Answer } from "@/db/schema/answers";
-import UserImage from "../ui/userImage";
 
 export default function AnswerCard({
   answer,
