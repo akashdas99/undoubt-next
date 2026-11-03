@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} *.vercel-storage.com;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} https://vercel.com *.vercel-storage.com;
 `;
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
   //set csp header
   response.headers.set(
     "Content-Security-Policy",
-    contentSecurityPolicyHeaderValue,
+    contentSecurityPolicyHeaderValue
   );
 
   return response;
