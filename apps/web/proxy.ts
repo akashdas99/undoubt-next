@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./lib/session";
 
 const PROTECTED_ROUTES = ["/question", "/profile"];
+
 export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline' ;
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: https://*.blob.vercel-storage.com;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
