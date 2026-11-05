@@ -1,9 +1,19 @@
+import { EDITOR_IMAGE_MIN_PX } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import Image from "@tiptap/extension-image";
 import { BulletList } from "@tiptap/extension-list";
 import Heading from "@tiptap/extension-heading";
 import TextAlign from "@tiptap/extension-text-align";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+
+export function editorHtml(editor: {
+  getText: () => string;
+  getHTML: () => string;
+}) {
+  const html = editor.getHTML();
+  return editor.getText().trim() || html.includes("<img") ? html : "";
+}
 type EditorProps = {
   className?: string;
   onChange?: (text: string) => void;
@@ -42,6 +52,18 @@ const useTiptapEditor = ({
           class: "ml-sm list-disc",
         },
       }),
+      Image.configure({
+        HTMLAttributes: {
+          class: "h-auto max-w-full rounded-sm",
+        },
+        resize: {
+          enabled: true,
+          directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
+          minWidth: EDITOR_IMAGE_MIN_PX,
+          minHeight: EDITOR_IMAGE_MIN_PX,
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
     ],
     content: content,
     editorProps: {
@@ -55,7 +77,7 @@ const useTiptapEditor = ({
     immediatelyRender: false,
     editable: editable,
     onUpdate: ({ editor }) => {
-      if (onChange) onChange(editor.getText() ? editor.getHTML() : "");
+      if (onChange) onChange(editorHtml(editor));
     },
   });
 

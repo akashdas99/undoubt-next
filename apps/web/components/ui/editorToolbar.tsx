@@ -1,5 +1,6 @@
 "use client";
 import { Editor } from "@tiptap/react";
+import { useState } from "react";
 import {
   AlignCenter,
   AlignLeft,
@@ -12,12 +13,14 @@ import {
   Strikethrough,
 } from "lucide-react";
 import { Toggle } from "@workspace/ui/components/toggle";
+import EditorImageButton from "./editorImageButton";
 
 type EditorToolBarProps = {
   editor: Editor | null;
 };
 
 export default function EditorToolBar({ editor }: EditorToolBarProps) {
+  const [uploadError, setUploadError] = useState<string | null>(null);
   if (!editor) return null;
 
   const Options = [
@@ -69,20 +72,28 @@ export default function EditorToolBar({ editor }: EditorToolBarProps) {
   ];
 
   return (
-    <div className="sticky top-2xl z-50 mb-xxs w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain rounded-full border border-field-border bg-input/50 text-foreground">
-      <div className="flex w-max flex-nowrap items-center gap-xxs p-xs">
-        {Options.map((option, i) => (
-          <Toggle
-            key={i}
-            size="sm"
-            pressed={option.preesed}
-            onPressedChange={option.onClick}
-            className="size-xl min-w-xl shrink-0 p-0"
-          >
-            {option.icon}
-          </Toggle>
-        ))}
+    <div className="mb-xxs">
+      <div className="sticky top-2xl z-50 w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain rounded-full border border-field-border bg-input/50 text-foreground">
+        <div className="flex w-max flex-nowrap items-center gap-xxs p-xs">
+          {Options.map((option, i) => (
+            <Toggle
+              key={i}
+              size="sm"
+              pressed={option.preesed}
+              onPressedChange={option.onClick}
+              className="size-xl min-w-xl shrink-0 p-0"
+            >
+              {option.icon}
+            </Toggle>
+          ))}
+          <EditorImageButton editor={editor} onError={setUploadError} />
+        </div>
       </div>
+      {uploadError ? (
+        <p role="alert" className="px-sm pt-xxs text-sm text-destructive">
+          {uploadError}
+        </p>
+      ) : null}
     </div>
   );
 }

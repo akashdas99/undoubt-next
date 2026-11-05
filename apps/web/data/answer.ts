@@ -8,7 +8,7 @@ import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
 import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { desc, eq, sql } from "drizzle-orm";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 import { users } from "@/db/schema/users";
 
 export async function addAnswer(slug: string, answerData: AnswerType) {
@@ -32,7 +32,7 @@ export async function addAnswer(slug: string, answerData: AnswerType) {
   }
   await db.batch([
     db.insert(answers).values({
-      description: sanitizeHtml(parsed?.data?.description || ""),
+      description: sanitizeRichText(parsed?.data?.description || ""),
       authorId: userSession?.id,
       questionId: question?.id,
     }),
@@ -72,7 +72,7 @@ export async function updateAnswer(id: string, answerData: AnswerType) {
   await db
     .update(answers)
     .set({
-      description: sanitizeHtml(parsed?.data?.description),
+      description: sanitizeRichText(parsed?.data?.description),
     })
     .where(eq(answers.id, id));
   return successResponse();

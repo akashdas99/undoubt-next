@@ -16,7 +16,7 @@ import {
   QuestionType,
 } from "@workspace/validations/question";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 import { getSession } from "@/lib/session";
 
 export const getQuestions = async (
@@ -116,7 +116,7 @@ export async function addQuestion(questionData: QuestionType) {
     db.insert(questions).values({
       id: questionId,
       title: validatedQuestion?.title,
-      description: sanitizeHtml(validatedQuestion?.description || ""),
+      description: sanitizeRichText(validatedQuestion?.description || ""),
       authorId: userSession.id,
       slug: createSlug(validatedQuestion.title),
     }),
@@ -236,7 +236,7 @@ export async function editQuestion(questionData: EditQuestionType) {
     .update(questions)
     .set({
       title: validatedQuestion.title,
-      description: sanitizeHtml(validatedQuestion.description || ""),
+      description: sanitizeRichText(validatedQuestion.description || ""),
     })
     .where(eq(questions.id, validatedQuestion.id));
 
