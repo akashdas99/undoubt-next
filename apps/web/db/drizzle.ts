@@ -1,15 +1,23 @@
+import { DB_POOL_MAX } from "@/lib/constants";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { DB_POOL_MAX } from "@/lib/constants";
 
 const globalForDb = globalThis as unknown as { pool?: Pool };
 
-const pool =
-  globalForDb.pool ??
-  new Pool({
+function createPool() {
+  const pool = new Pool({
     connectionString: process.env.DATABASE_URI,
     max: DB_POOL_MAX,
   });
+
+  pool.on("error", (error) => {
+    console.error("Unexpected error on idle pg client:", error);
+  });
+
+  return pool;
+}
+
+const pool = globalForDb.pool ?? createPool();
 
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
 
