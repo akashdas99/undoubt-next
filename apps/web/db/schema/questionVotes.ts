@@ -1,4 +1,4 @@
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferSelectModel } from "drizzle-orm";
 import { index, integer, pgTable, uuid, unique } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../helpers/timestamps";
 import { questions } from "./questions";
@@ -26,19 +26,7 @@ export const questionVotes = pgTable(
     questionIdIdx: index("question_votes_question_id_idx").on(table.questionId),
     // Index for fast lookups by userId (for user's vote history)
     userIdIdx: index("question_votes_user_id_idx").on(table.userId),
-  }),
+  })
 );
-
-// Relations
-export const questionVotesRelations = relations(questionVotes, ({ one }) => ({
-  user: one(users, {
-    fields: [questionVotes.userId],
-    references: [users.id],
-  }),
-  question: one(questions, {
-    fields: [questionVotes.questionId],
-    references: [questions.id],
-  }),
-}));
 
 export type QuestionVote = InferSelectModel<typeof questionVotes>;
