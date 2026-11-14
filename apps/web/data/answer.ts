@@ -30,17 +30,17 @@ export async function addAnswer(slug: string, answerData: AnswerType) {
   if (!question?.id) {
     return errorResponse("Question not found");
   }
-  await db.batch([
-    db.insert(answers).values({
+  await db.transaction(async (tx) => {
+    await tx.insert(answers).values({
       description: sanitizeRichText(parsed?.data?.description || ""),
       authorId: userSession?.id,
       questionId: question?.id,
-    }),
-    db
+    });
+    await tx
       .update(questionStats)
       .set({ answersCount: sql`${questionStats.answersCount} + 1` })
-      .where(eq(questionStats.questionId, question.id)),
-  ]);
+      .where(eq(questionStats.questionId, question.id));
+  });
   return successResponse();
 }
 export async function updateAnswer(id: string, answerData: AnswerType) {
@@ -97,13 +97,13 @@ export async function deleteAnswer(id: string) {
   if (answer?.authorId !== userSession?.id) {
     return errorResponse("Not authorized to delete this answer");
   }
-  await db.batch([
-    db.delete(answers).where(eq(answers?.id, id)),
-    db
+  await db.transaction(async (tx) => {
+    await tx.delete(answers).where(eq(answers?.id, id));
+    await tx
       .update(questionStats)
       .set({ answersCount: sql`${questionStats.answersCount} - 1` })
-      .where(eq(questionStats.questionId, answer.questionId)),
-  ]);
+      .where(eq(questionStats.questionId, answer.questionId));
+  });
   return successResponse();
 }
 /**

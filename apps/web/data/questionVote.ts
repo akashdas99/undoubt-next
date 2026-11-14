@@ -6,8 +6,11 @@ import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
 import { and, eq, sql } from "drizzle-orm";
 
-const recomputeStats = (questionId: string) =>
-  db
+const recomputeStats = (
+  client: Pick<typeof db, "update">,
+  questionId: string
+) =>
+  client
     .update(questionStats)
     .set({
       likes: sql`(SELECT COUNT(*) FROM ${questionVotes} WHERE ${questionVotes.questionId} = ${questionId} AND ${questionVotes.vote} = 1)`,
@@ -45,17 +48,17 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
 
     // Handle vote removal
     if (voteType === "remove") {
-      await db.batch([
-        db
+      await db.transaction(async (tx) => {
+        await tx
           .delete(questionVotes)
           .where(
             and(
               eq(questionVotes.questionId, questionId),
-              eq(questionVotes.userId, user.id),
-            ),
-          ),
-        recomputeStats(questionId),
-      ]);
+              eq(questionVotes.userId, user.id)
+            )
+          );
+        await recomputeStats(tx, questionId);
+      });
       return successResponse({ message: "Vote removed" });
     }
 
@@ -63,8 +66,8 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
 
     // Upsert vote (insert or update if exists)
     // This handles the case where user changes from like to dislike or vice versa
-    await db.batch([
-      db
+    await db.transaction(async (tx) => {
+      await tx
         .insert(questionVotes)
         .values({
           questionId,
@@ -76,9 +79,9 @@ export async function voteOnQuestion(questionId: string, voteType: VoteType) {
           set: {
             vote: voteValue,
           },
-        }),
-      recomputeStats(questionId),
-    ]);
+        });
+      await recomputeStats(tx, questionId);
+    });
 
     return successResponse({
       message: `Question ${voteType === "like" ? "liked" : "disliked"}`,

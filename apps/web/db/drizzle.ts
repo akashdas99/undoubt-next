@@ -1,6 +1,16 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
-import "dotenv/config";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { DB_POOL_MAX } from "@/lib/constants";
 
-const sql = neon(process.env.DATABASE_URI!);
-export const db = drizzle({ client: sql });
+const globalForDb = globalThis as unknown as { pool?: Pool };
+
+const pool =
+  globalForDb.pool ??
+  new Pool({
+    connectionString: process.env.DATABASE_URI,
+    max: DB_POOL_MAX,
+  });
+
+if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
+
+export const db = drizzle({ client: pool });

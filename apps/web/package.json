@@ -14,7 +14,6 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@hookform/resolvers": "catalog:",
-    "@neondatabase/serverless": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tiptap/extension-bullet-list": "catalog:",
     "@tiptap/extension-heading": "catalog:",
@@ -42,6 +41,7 @@
     "nanoid": "catalog:",
     "next": "catalog:",
     "next-themes": "catalog:",
+    "pg": "catalog:",
     "postcss": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -60,6 +60,7 @@
     "@tailwindcss/postcss": "catalog:",
     "@tanstack/eslint-plugin-query": "catalog:",
     "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/sanitize-html": "catalog:",
