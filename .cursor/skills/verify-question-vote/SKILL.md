@@ -41,4 +41,4 @@ This note does not cover three or more users, two questions, a crash between the
 
 ## When the code changes
 
-Read the new statements. If a vote write and the stats write can still separate, the finding still applies. If the product stores totals in the same statement as the vote write, the finding no longer describes the code. Update this note only after reading the new functions.
+Read the new statements. If a vote write and the stats write can still separate, the finding still applies. Putting both writes in one statement does not clear it: a total recomputed from a statement snapshot can still miss a concurrent vote. The finding no longer describes the code only when the stored total is taken from the current stats row. Update this note only after reading the new functions.

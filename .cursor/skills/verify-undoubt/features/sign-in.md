@@ -22,7 +22,8 @@ Preconditions:
 - The account nav shows `Login`. If it shows a profile menu, the browser is already signed in. Stop and report that precondition.
 
 - **Open the form.** Go to `http://127.0.0.1:3000/login`. The heading `Welcome Back` is visible, with textboxes `Email` and `Password`, and buttons `Login` and `Explore as Guest`.
-- **Reject a bad password.** Fill `Email` with `verify-not-a-user@example.com` and `Password` with `wrong-password`, then choose `Login`. The page stays on `/login` and shows an error.
+- **Reject a bad password.** Fill `Email` with the guest account that `Explore as Guest` already uses, and `Password` with `wrong-password`, then choose `Login`. The page stays on `/login` and shows `Incorrect Password`. Do not read an env file. If that email is not already known, stop.
+- **Proof of the rejection.** Immediately after that error, and before `Explore as Guest`, save an accessibility snapshot to `evidence/sign-in/reject.aria.txt` and a screenshot to `evidence/sign-in/reject.png`. Both show the login page and `Incorrect Password`.
 - **Guest entry.** Choose `Explore as Guest`. The address becomes `/` and the account nav no longer shows `Login`. If the button does nothing, the guest account is not configured. Record that as a failed `sign-in-guest` and do not type a password from outside the app.
 - **Proof.** Save an accessibility snapshot to `evidence/sign-in/after.aria.txt` and a screenshot to `evidence/sign-in/after.png`.
 

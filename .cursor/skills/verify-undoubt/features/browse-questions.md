@@ -21,9 +21,9 @@ Preconditions:
 - Do not sign in during this recipe.
 
 - **Open the feed.** Go to `http://127.0.0.1:3000/`. The heading `Recent Questions` is visible. The page shows either a link whose name starts with `Read full question:` or the text `No Questions`.
-- **Open a question.** If a `Read full question:` link is present, choose the first one. The address becomes `/question/<slug>` and the same title is on the page.
+- **Open a question.** If a `Read full question:` link is present, choose the first one. Otherwise choose the first question title link by its accessible name, which is the title. The address becomes `/question/<slug>` and the same title is on the page.
 - **Empty feed.** If the text is `No Questions`, record that as the end state for `browse-empty`. Do not invent a question to make `browse-open-question` pass.
-- **Proof.** Save an accessibility snapshot to `evidence/browse-questions/home.aria.txt` and a screenshot to `evidence/browse-questions/home.png`. Both show `Recent Questions`.
+- **Proof.** Save an accessibility snapshot to `evidence/browse-questions/home.aria.txt` and a screenshot to `evidence/browse-questions/home.png` while the home feed is open. If a question was opened first, return to `http://127.0.0.1:3000/` before capturing. Both show `Recent Questions`.
 
 ## Gotchas
 

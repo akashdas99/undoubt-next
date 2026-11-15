@@ -22,7 +22,7 @@ Stable handles:
 - Home heading text `Recent Questions`
 - Question link accessible name `Read full question: <title>`
 - Empty feed text `No Questions`
-- Search button accessible name `Search questions` (narrow window) or name `Search` (wide window)
+- Search button accessible name `Search questions` below `md`, `Search` from `md` up to below `lg`, and `Search Ctrl K` at `lg` and wider
 - Search dialog name `Search`
 - Search box placeholder `Got a doubt? Just search it`
 - Header links `Ask` and `About` inside the nav named `Find and ask`
