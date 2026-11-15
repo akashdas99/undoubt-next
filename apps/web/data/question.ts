@@ -112,16 +112,16 @@ export async function addQuestion(questionData: QuestionType) {
   }
 
   const questionId = randomUUID();
-  await db.batch([
-    db.insert(questions).values({
+  await db.transaction(async (tx) => {
+    await tx.insert(questions).values({
       id: questionId,
       title: validatedQuestion?.title,
       description: sanitizeRichText(validatedQuestion?.description || ""),
       authorId: userSession.id,
       slug: createSlug(validatedQuestion.title),
-    }),
-    db.insert(questionStats).values({ questionId }),
-  ]);
+    });
+    await tx.insert(questionStats).values({ questionId });
+  });
   return successResponse();
 }
 export async function getQuestionBySlug(slug: string, userId?: string | null) {

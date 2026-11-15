@@ -1,6 +1,8 @@
 // Pagination constants
 export const QUESTIONS_PER_PAGE = 10;
 
+export const DB_POOL_MAX = 10;
+
 // Intersection Observer constants
 export const INTERSECTION_THRESHOLD = 0.1;
 
