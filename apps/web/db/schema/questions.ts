@@ -1,8 +1,5 @@
-import { relations } from "drizzle-orm";
 import { pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { createdAt, updatedAt } from "../helpers/timestamps";
-import { answers } from "./answers";
-import { questionStats } from "./questionStats";
 import { users } from "./users";
 
 export const questions = pgTable("questions", {
@@ -16,14 +13,3 @@ export const questions = pgTable("questions", {
   createdAt,
   updatedAt,
 });
-
-// Relations
-
-export const questionsRelations = relations(questions, ({ one, many }) => ({
-  author: one(users, {
-    fields: [questions.authorId],
-    references: [users.id],
-  }),
-  answers: many(answers), // One question has many answers
-  stats: one(questionStats),
-}));

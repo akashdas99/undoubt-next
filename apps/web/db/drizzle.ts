@@ -1,6 +1,24 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
-import "dotenv/config";
+import { DB_POOL_MAX } from "@/lib/constants";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
-const sql = neon(process.env.DATABASE_URI!);
-export const db = drizzle({ client: sql });
+const globalForDb = globalThis as unknown as { pool?: Pool };
+
+function createPool() {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URI,
+    max: DB_POOL_MAX,
+  });
+
+  pool.on("error", (error) => {
+    console.error("Unexpected error on idle pg client:", error);
+  });
+
+  return pool;
+}
+
+const pool = globalForDb.pool ?? createPool();
+
+if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
+
+export const db: NodePgDatabase = drizzle({ client: pool });
