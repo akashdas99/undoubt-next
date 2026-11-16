@@ -29,13 +29,14 @@ export async function POST(request: Request): Promise<NextResponse> {
           }),
           maximumSizeInBytes: 1024 * 1024,
           validUntil: Date.now() + 60 * 1000,
+          allowOverwrite: true,
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         // Get notified of client upload completion
         if (!tokenPayload) throw new Error("Could not upload file");
         const session = await getSessionFromToken(
-          JSON.parse(tokenPayload)?.session,
+          JSON.parse(tokenPayload)?.session
         );
 
         const [user] = await db
@@ -66,7 +67,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
-      { status: 400 }, // The webhook will retry 5 times waiting for a 200
+      { status: 400 } // The webhook will retry 5 times waiting for a 200
     );
   }
 }

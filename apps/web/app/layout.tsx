@@ -1,7 +1,6 @@
+import "@workspace/ui/globals.css";
 import type { Metadata } from "next";
-import "./globals.css";
-import Header from "@/components/common/header";
-import { Montserrat, Righteous } from "next/font/google";
+import { JetBrains_Mono, Montserrat, Righteous } from "next/font/google";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
@@ -12,13 +11,18 @@ export const metadata: Metadata = {
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-sans-family",
 });
 
 const righteous = Righteous({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-righteous",
+  variable: "--font-display-family",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-family",
 });
 
 export default function RootLayout({
@@ -27,11 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${righteous.variable}`}>
+    <html
+      lang="en"
+      className={`${montserrat.variable} ${righteous.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <Providers>
-          <div className="min-h-svh flex flex-col items-center font-montserrat">
-            <Header />
+          <div className="flex min-h-svh flex-col items-center font-sans">
             {children}
           </div>
         </Providers>

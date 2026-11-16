@@ -3,14 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { forgotPasswordAction } from "@/actions/auth";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { AuthHeading } from "@/components/auth/authHeading";
+import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormInput } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ForgotPasswordType } from "@/types/auth";
-import { ForgotPasswordSchema } from "@repo/validations/auth";
-import Link from "next/link";
+import { Button } from "@workspace/ui/components/button";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
+import { ForgotPasswordSchema } from "@workspace/validations/auth";
 import { startTransition, useActionState, useState } from "react";
-import { Button } from "../ui/button";
 
 export default function ForgotPasswordForm() {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -23,7 +24,7 @@ export default function ForgotPasswordForm() {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<ForgotPasswordType>({
@@ -40,57 +41,43 @@ export default function ForgotPasswordForm() {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
-          Check Your Email
-        </h1>
-        <p className="text-sm mb-4">
-          If an account exists with that email, a password reset link has been
-          sent.
-        </p>
-        <Link
-          href="/login"
-          className="text-sm text-primary hover:underline block"
-        >
-          Back to Login
-        </Link>
-      </div>
+      <>
+        <AuthHeading
+          title="Check Your Email"
+          description="If an account exists with that email, a password reset link has been sent."
+        />
+        <AuthSwitchLink to="/login" prompt="Ready to sign in?" />
+      </>
     );
   }
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
-        Forgot Password
-      </h1>
-      <p className="text-sm mb-4">
-        Enter your email address and we&apos;ll send you a link to reset your
-        password.
-      </p>
+    <>
+      <AuthHeading
+        title="Forgot Password"
+        description="Enter your email address and we'll send you a link to reset your password."
+      />
       <form id="forgot-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput
             control={form.control}
             name="email"
             label="Email"
-            placeholder="Email"
+            placeholder="you@example.com"
             autoComplete="email"
           />
         </FieldGroup>
         <FieldError errors={[form?.formState?.errors?.root]} />
         <Button
           type="submit"
-          className="mt-3 w-full"
+          size="lg"
+          className="mt-sm w-full"
           loading={loadingForgotPassword}
         >
           Send Reset Link
         </Button>
       </form>
-      <div className="mt-4 text-sm">
-        <Link className="text-primary underline font-semibold" href={"/login"}>
-          Back to Login
-        </Link>
-      </div>
-    </div>
+      <AuthSwitchLink to="/login" prompt="Remembered your password?" />
+    </>
   );
 }

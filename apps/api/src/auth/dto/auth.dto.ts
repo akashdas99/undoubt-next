@@ -3,7 +3,7 @@ import {
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
-} from '@repo/validations/auth';
+} from '@workspace/validations/auth';
 import { createZodDto } from 'nestjs-zod';
 
 // Shared schemas use workspace zod; nestjs-zod's types target @nest-zod/z.

@@ -14,23 +14,23 @@ import {
   EditQuestionType,
   QuestionSchema,
   QuestionType,
-} from "@repo/validations/question";
+} from "@workspace/validations/question";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 import { getSession } from "@/lib/session";
 
 export const getQuestions = async (
   keyword: string = "",
   limit: number = 10,
   page: number = 1,
-  userId?: string | null,
+  userId?: string | null
 ) => {
   // Build WHERE conditions for filtering
   const whereConditions = [];
   if (keyword) {
     const keywordCondition = or(
       ilike(questions.title, `%${keyword}%`),
-      ilike(questions.description, `%${keyword}%`),
+      ilike(questions.description, `%${keyword}%`)
     );
     if (keywordCondition) whereConditions.push(keywordCondition);
   }
@@ -112,16 +112,16 @@ export async function addQuestion(questionData: QuestionType) {
   }
 
   const questionId = randomUUID();
-  await db.batch([
-    db.insert(questions).values({
+  await db.transaction(async (tx) => {
+    await tx.insert(questions).values({
       id: questionId,
       title: validatedQuestion?.title,
-      description: sanitizeHtml(validatedQuestion?.description || ""),
+      description: sanitizeRichText(validatedQuestion?.description || ""),
       authorId: userSession.id,
       slug: createSlug(validatedQuestion.title),
-    }),
-    db.insert(questionStats).values({ questionId }),
-  ]);
+    });
+    await tx.insert(questionStats).values({ questionId });
+  });
   return successResponse();
 }
 export async function getQuestionBySlug(slug: string, userId?: string | null) {
@@ -148,13 +148,58 @@ export async function getQuestionBySlug(slug: string, userId?: string | null) {
     .from(questions)
     .innerJoin(
       users,
-      and(eq(questions.slug, slug), eq(questions.authorId, users.id)),
+      and(eq(questions.slug, slug), eq(questions.authorId, users.id))
     )
     .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
     .limit(1)
     .orderBy(desc(questions?.updatedAt));
 
   return question;
+}
+
+export async function getQuestionContentBySlug(slug: string) {
+  const [question] = await db
+    .select({
+      id: questions.id,
+      title: questions.title,
+      description: questions.description,
+      author: { name: users.name, profilePicture: users.profilePicture },
+      authorId: questions.authorId,
+      createdAt: questions.createdAt,
+      slug: questions.slug,
+    })
+    .from(questions)
+    .innerJoin(users, eq(questions.authorId, users.id))
+    .where(eq(questions.slug, slug))
+    .limit(1);
+
+  return question;
+}
+
+export async function getQuestionStatsBySlug(
+  slug: string,
+  userId?: string | null
+) {
+  const [stats] = await db
+    .select({
+      id: questions.id,
+      answersCount: questionStats.answersCount,
+      likes: questionStats.likes,
+      dislikes: questionStats.dislikes,
+      userVote: userId
+        ? sql<number | null>`(
+            SELECT ${questionVotes.vote} FROM ${questionVotes}
+            WHERE ${questionVotes.questionId} = ${questions.id}
+              AND ${questionVotes.userId} = ${userId}
+          )`
+        : sql<null>`NULL`,
+    })
+    .from(questions)
+    .innerJoin(questionStats, eq(questions.id, questionStats.questionId))
+    .where(eq(questions.slug, slug))
+    .limit(1);
+
+  return stats;
 }
 
 export async function editQuestion(questionData: EditQuestionType) {
@@ -173,7 +218,7 @@ export async function editQuestion(questionData: EditQuestionType) {
 
   // Check if question exists and belongs to user
   const [existingQuestion] = await db
-    .select({ authorId: questions.authorId })
+    .select({ authorId: questions.authorId, slug: questions.slug })
     .from(questions)
     .where(eq(questions.id, validatedQuestion.id))
     .limit(1);
@@ -191,11 +236,14 @@ export async function editQuestion(questionData: EditQuestionType) {
     .update(questions)
     .set({
       title: validatedQuestion.title,
-      description: sanitizeHtml(validatedQuestion.description || ""),
+      description: sanitizeRichText(validatedQuestion.description || ""),
     })
     .where(eq(questions.id, validatedQuestion.id));
 
-  return successResponse({ message: "Question updated successfully" });
+  return successResponse({
+    message: "Question updated successfully",
+    slug: existingQuestion.slug,
+  });
 }
 
 export async function deleteQuestion(questionData: DeleteQuestionType) {

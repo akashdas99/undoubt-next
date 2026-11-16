@@ -1,12 +1,12 @@
 import React from "react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 const QuestionLoadingCard = () => {
   return (
-    <div className="p-[1em] bordered-card flex flex-col gap-2">
-      <Skeleton className="w-full h-6" />
-      <Skeleton className="w-80 h-6" />
-      <Skeleton className="w-20 h-6" />
+    <div className="bordered-card flex flex-col gap-xs p-md">
+      <Skeleton className="h-xl w-full" />
+      <Skeleton className="h-xl w-(--container-narrow)" />
+      <Skeleton className="h-xl w-3xl" />
     </div>
   );
 };

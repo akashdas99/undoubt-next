@@ -1,9 +1,19 @@
+import { EDITOR_IMAGE_MIN_PX } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import Image from "@tiptap/extension-image";
 import { BulletList } from "@tiptap/extension-list";
 import Heading from "@tiptap/extension-heading";
 import TextAlign from "@tiptap/extension-text-align";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+
+export function editorHtml(editor: {
+  getText: () => string;
+  getHTML: () => string;
+}) {
+  const html = editor.getHTML();
+  return editor.getText().trim() || html.includes("<img") ? html : "";
+}
 type EditorProps = {
   className?: string;
   onChange?: (text: string) => void;
@@ -21,12 +31,12 @@ const useTiptapEditor = ({
       StarterKit.configure({
         codeBlock: {
           HTMLAttributes: {
-            class: "bg-foreground text-white p-2",
+            class: "bg-foreground p-xs text-white",
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: "list-decimal ml-3",
+            class: "ml-sm list-decimal",
           },
         },
       }),
@@ -39,7 +49,19 @@ const useTiptapEditor = ({
 
       BulletList.configure({
         HTMLAttributes: {
-          class: "list-disc ml-3",
+          class: "ml-sm list-disc",
+        },
+      }),
+      Image.configure({
+        HTMLAttributes: {
+          class: "h-auto max-w-full rounded-sm",
+        },
+        resize: {
+          enabled: true,
+          directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
+          minWidth: EDITOR_IMAGE_MIN_PX,
+          minHeight: EDITOR_IMAGE_MIN_PX,
+          alwaysPreserveAspectRatio: true,
         },
       }),
     ],
@@ -47,15 +69,15 @@ const useTiptapEditor = ({
     editorProps: {
       attributes: {
         class: cn(
-          "w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-          className,
+          "min-h-[calc(var(--spacing-3xl)*4)] w-full rounded-4xl border border-field-border bg-input/50 p-xl text-sm leading-normal transition-[color,box-shadow,background-color] outline-none focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/30",
+          className
         ),
       },
     },
     immediatelyRender: false,
     editable: editable,
     onUpdate: ({ editor }) => {
-      if (onChange) onChange(editor.getText() ? editor.getHTML() : "");
+      if (onChange) onChange(editorHtml(editor));
     },
   });
 

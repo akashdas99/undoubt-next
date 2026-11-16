@@ -6,9 +6,9 @@ import { questions } from "@/db/schema/questions";
 import { questionStats } from "@/db/schema/questionStats";
 import { errorResponse, successResponse } from "@/lib/response";
 import { getSession } from "@/lib/session";
-import { AnswerSchema, AnswerType } from "@repo/validations/answer";
+import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { desc, eq, sql } from "drizzle-orm";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 import { users } from "@/db/schema/users";
 
 export async function addAnswer(slug: string, answerData: AnswerType) {
@@ -30,17 +30,17 @@ export async function addAnswer(slug: string, answerData: AnswerType) {
   if (!question?.id) {
     return errorResponse("Question not found");
   }
-  await db.batch([
-    db.insert(answers).values({
-      description: sanitizeHtml(parsed?.data?.description || ""),
+  await db.transaction(async (tx) => {
+    await tx.insert(answers).values({
+      description: sanitizeRichText(parsed?.data?.description || ""),
       authorId: userSession?.id,
       questionId: question?.id,
-    }),
-    db
+    });
+    await tx
       .update(questionStats)
       .set({ answersCount: sql`${questionStats.answersCount} + 1` })
-      .where(eq(questionStats.questionId, question.id)),
-  ]);
+      .where(eq(questionStats.questionId, question.id));
+  });
   return successResponse();
 }
 export async function updateAnswer(id: string, answerData: AnswerType) {
@@ -72,7 +72,7 @@ export async function updateAnswer(id: string, answerData: AnswerType) {
   await db
     .update(answers)
     .set({
-      description: sanitizeHtml(parsed?.data?.description),
+      description: sanitizeRichText(parsed?.data?.description),
     })
     .where(eq(answers.id, id));
   return successResponse();
@@ -97,13 +97,13 @@ export async function deleteAnswer(id: string) {
   if (answer?.authorId !== userSession?.id) {
     return errorResponse("Not authorized to delete this answer");
   }
-  await db.batch([
-    db.delete(answers).where(eq(answers?.id, id)),
-    db
+  await db.transaction(async (tx) => {
+    await tx.delete(answers).where(eq(answers?.id, id));
+    await tx
       .update(questionStats)
       .set({ answersCount: sql`${questionStats.answersCount} - 1` })
-      .where(eq(questionStats.questionId, answer.questionId)),
-  ]);
+      .where(eq(questionStats.questionId, answer.questionId));
+  });
   return successResponse();
 }
 /**
@@ -116,7 +116,7 @@ export async function deleteAnswer(id: string) {
 export async function getAnswersByQuestionSlug(
   slug: string,
   limit: number = 50,
-  page: number = 1,
+  page: number = 1
 ) {
   const offset = limit * (page - 1);
   const answerList = await db

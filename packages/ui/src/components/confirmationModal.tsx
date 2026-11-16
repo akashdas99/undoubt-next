@@ -1,0 +1,72 @@
+"use client";
+
+import React from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog";
+import { Button } from "@workspace/ui/components/button";
+
+interface ConfirmationModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  title: string;
+  description: string;
+  confirmText?: string;
+  cancelText?: string;
+  isLoading?: boolean;
+  error?: string;
+}
+
+export function ConfirmationModal({
+  open,
+  onOpenChange,
+  onConfirm,
+  title,
+  description,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  isLoading = false,
+  error,
+}: ConfirmationModalProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="font-display font-normal">
+            {title}
+          </DialogTitle>
+          <DialogDescription className="font-sans">
+            {description}
+          </DialogDescription>
+        </DialogHeader>
+        {error && (
+          <p className="text-sm font-medium text-destructive">{error}</p>
+        )}
+        <DialogFooter className="font-sans">
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={onConfirm}
+            loading={isLoading}
+          >
+            {confirmText}
+          </Button>
+          <DialogClose
+            render={
+              <Button type="button" variant="outline" disabled={isLoading} />
+            }
+          >
+            {cancelText}
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

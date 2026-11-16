@@ -2,20 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./lib/session";
 
 const PROTECTED_ROUTES = ["/question", "/profile"];
+
 export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline' ;
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: https://*.blob.vercel-storage.com;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} *.vercel-storage.com;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} https://vercel.com *.vercel-storage.com;
 `;
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
@@ -28,7 +29,7 @@ export async function proxy(request: NextRequest) {
   //set csp header
   response.headers.set(
     "Content-Security-Policy",
-    contentSecurityPolicyHeaderValue,
+    contentSecurityPolicyHeaderValue
   );
 
   return response;

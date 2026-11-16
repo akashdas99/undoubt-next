@@ -1,15 +1,15 @@
 "use client";
 import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
-import { FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 
 import { Answer } from "@/db/schema/answers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnswerSchema, AnswerType } from "@repo/validations/answer";
+import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { useParams } from "next/navigation";
 import { startTransition, useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "@workspace/ui/components/button";
 import { FormEditor } from "../ui/form";
 
 export default function AnswerForm({
@@ -32,7 +32,7 @@ export default function AnswerForm({
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<AnswerType>({
@@ -53,7 +53,10 @@ export default function AnswerForm({
   };
 
   return (
-    <form id="answer-form" onSubmit={form.handleSubmit(onSubmit)}>
+    <form
+      id={answer ? `answer-form-${answer.id}` : "answer-form"}
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
       <FieldGroup>
         <FormEditor
           control={form.control}
@@ -61,19 +64,15 @@ export default function AnswerForm({
           label="Description"
         />
       </FieldGroup>
-      {form?.formState?.errors?.root?.message && (
-        <p className="text-[0.6rem] text-destructive font-medium">
-          {form?.formState?.errors?.root?.message}
-        </p>
-      )}
-      <div className="flex flex-wrap gap-x-2 mt-2 flex-col sm:flex-row">
-        <Button type="submit" className="mt-3" loading={isAddingAnswer}>
-          Submit
+      <FieldError errors={[form.formState.errors.root]} />
+      <div className="mt-xs flex flex-col flex-wrap gap-x-xs sm:flex-row">
+        <Button type="submit" className="mt-sm" loading={isAddingAnswer}>
+          {answer ? "Save" : "Submit"}
         </Button>
         <Button
           type="button"
           onClick={onClose}
-          className="mt-3"
+          className="mt-sm"
           variant={"outline"}
         >
           Cancel

@@ -2,7 +2,7 @@
 
 import { addAnswer, deleteAnswer, updateAnswer } from "@/data/answer";
 import { withTryCatchResponse } from "@/lib/utils";
-import { AnswerType } from "@repo/validations/answer";
+import { AnswerType } from "@workspace/validations/answer";
 import { updateTag } from "next/cache";
 
 export async function addAnswerAction(slug: string, answerData: AnswerType) {
@@ -19,7 +19,7 @@ export async function addAnswerAction(slug: string, answerData: AnswerType) {
 export async function updateAnswerAction(
   id: string,
   slug: string,
-  answerData: AnswerType,
+  answerData: AnswerType
 ) {
   const res = await withTryCatchResponse(updateAnswer(id, answerData));
   if (res?.success) {

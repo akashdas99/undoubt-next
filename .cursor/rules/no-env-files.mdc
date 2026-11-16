@@ -1,0 +1,12 @@
+---
+description: Never read or print env files or secrets
+alwaysApply: true
+---
+
+# Env files stay unread
+
+Never read, search, list, parse, or print `.env`, `.env.*`, credential files, or secret files. This includes the Read tool, Grep, Glob, and Shell (`Get-Content`, `type`, `node -e` against the file).
+
+Use env var names already present in code, such as `process.env.NEXT_PUBLIC_CDNHOST`. Ask the user when a real value is required.
+
+A failed or partial read still counts. Do not retry with another command.

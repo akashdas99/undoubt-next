@@ -1,4 +1,4 @@
-import PageLoader from "@/components/ui/pageLoader";
+import PageLoader from "@workspace/ui/components/pageLoader";
 import React from "react";
 
 const Loading = () => {

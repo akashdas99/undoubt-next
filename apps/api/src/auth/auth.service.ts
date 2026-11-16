@@ -6,8 +6,8 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { eq, or, users } from '@repo/db';
-import type { createPoolDb } from '@repo/db/client';
+import { eq, or, users } from '@workspace/db';
+import type { createPoolDb } from '@workspace/db/client';
 import bcryptjs from 'bcryptjs';
 import { createHash } from 'node:crypto';
 import { nanoid } from 'nanoid';

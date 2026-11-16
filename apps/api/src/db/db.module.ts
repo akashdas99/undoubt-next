@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { createPoolDb } from '@repo/db/client';
+import { createPoolDb } from '@workspace/db/client';
 import { DRIZZLE } from './db.constants.js';
 
 @Global()

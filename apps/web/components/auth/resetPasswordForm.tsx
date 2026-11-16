@@ -3,15 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { resetPasswordAction } from "@/actions/auth";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { AuthHeading } from "@/components/auth/authHeading";
+import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormPassword } from "@/components/ui/form";
 import { isEmpty } from "@/lib/functions";
 import { ResetPasswordType } from "@/types/auth";
-import { ResetPasswordSchema } from "@repo/validations/auth";
-import Link from "next/link";
+import { Button } from "@workspace/ui/components/button";
+import { FieldError, FieldGroup } from "@workspace/ui/components/field";
+import { ResetPasswordSchema } from "@workspace/validations/auth";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useState } from "react";
-import { Button } from "../ui/button";
 
 interface ResetPasswordFormProps {
   token: string;
@@ -29,7 +30,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       }
       return res;
     },
-    { errors: {}, success: false },
+    { errors: {}, success: false }
   );
 
   const form = useForm<ResetPasswordType>({
@@ -48,43 +49,43 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   if (showSuccess) {
     return (
-      <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-        <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>
-          Password Reset Successful
-        </h1>
-        <p className="text-sm mb-4">
-          Your password has been reset successfully. You can now log in with
-          your new password.
-        </p>
+      <>
+        <AuthHeading
+          title="Password Reset Successful"
+          description="Your password has been reset successfully. You can now log in with your new password."
+        />
         <Button
           onClick={() => router.push("/login")}
+          size="lg"
           className="w-full"
           type="button"
         >
           Go to Login
         </Button>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="bordered-card p-8 rounded-xl max-w-md w-11/12 my-auto">
-      <h1 className={`font-righteous text-3xl mb-3 md:mb-6`}>Reset Password</h1>
-      <p className="text-sm mb-4">Enter your new password below.</p>
+    <>
+      <AuthHeading
+        title="Reset Password"
+        description="Enter your new password below."
+      />
       <form id="reset-password-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormPassword
             control={form.control}
             name="password"
             label="New Password"
-            placeholder="New Password"
+            placeholder="At least 8 characters"
             autoComplete="new-password"
           />
           <FormPassword
             control={form.control}
             name="confirmPassword"
             label="Confirm Password"
-            placeholder="Confirm Password"
+            placeholder="Repeat your password"
             autoComplete="new-password"
           />
         </FieldGroup>
@@ -96,17 +97,14 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         />
         <Button
           type="submit"
-          className="mt-3 w-full"
+          size="lg"
+          className="mt-sm w-full"
           loading={loadingResetPassword}
         >
           Reset Password
         </Button>
       </form>
-      <div className="mt-4 text-sm">
-        <Link className="text-primary underline font-semibold" href={"/login"}>
-          Back to Login
-        </Link>
-      </div>
-    </div>
+      <AuthSwitchLink to="/login" prompt="Remembered your password?" />
+    </>
   );
 }

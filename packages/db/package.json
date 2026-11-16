@@ -1,5 +1,5 @@
 {
-  "name": "@repo/db",
+  "name": "@workspace/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -29,8 +29,8 @@
     "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.1",

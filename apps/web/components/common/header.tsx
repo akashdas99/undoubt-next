@@ -1,33 +1,116 @@
-import { Plus } from "lucide-react";
+import { isEmpty } from "@/lib/functions";
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@workspace/ui/components/button";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { UserImageSkeleton } from "../ui/userImage";
+import { ActiveHeaderNavLinks } from "./activeHeaderNavLinks";
+import { HeaderNavLinks } from "./headerNavLinks";
+import { Logo } from "./logo";
+import { MobileNav } from "./mobileNav";
 import { ProfileDropdown } from "./profileDropdown";
-import { SessionWrapper } from "./sessionWrapper";
+import { ProfileMenu } from "./profileMenu";
+import { ProfileWrapper } from "./profileWrapper";
 import SearchModal from "./searchModal";
+import { ThemeToggle } from "./themeToggle";
+
+function GuestAccountLinks() {
+  return (
+    <>
+      <Link
+        href="/login"
+        className={cn(buttonVariants({ variant: "outline" }))}
+      >
+        Login
+      </Link>
+      <Link
+        href="/register"
+        className={cn(buttonVariants({ variant: "default" }))}
+      >
+        Sign up
+      </Link>
+    </>
+  );
+}
+
+function GuestMenuLinks() {
+  return (
+    <div className="flex flex-col gap-sm">
+      <Link
+        href="/login"
+        className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+      >
+        Login
+      </Link>
+      <Link
+        href="/register"
+        className={cn(buttonVariants({ variant: "default" }), "w-full")}
+      >
+        Sign up
+      </Link>
+    </div>
+  );
+}
 
 export default async function Header() {
   return (
-    <header className="flex justify-center bg-foreground text-white w-full sticky z-20 top-0">
-      <div className="flex items-center p-3 gap-[20px] justify-between w-full my-auto max-w-[1450px]">
-        <Link
-          className={`font-righteous bg-primary rounded-tl-lg rounded-br-lg border-2 px-2 text-center text-xl`}
-          href="/"
+    <header className="sticky top-0 z-20 flex w-full justify-center px-md pt-sm pb-xs">
+      <div className="frosted-glass grid w-full max-w-[calc(var(--container-content)-(var(--spacing-md)*2))] grid-cols-[1fr_auto_1fr] items-center gap-xs rounded-full bg-background/50 p-xs text-card-foreground backdrop-blur-md lg:max-w-[calc(var(--container-content)+var(--spacing-xl)+var(--container-dialog))]">
+        <nav
+          aria-label="Find and ask"
+          className="flex items-center justify-start gap-xs"
         >
-          UNdoubt
-        </Link>
-        <div className="flex items-center gap-5 text-xs">
           <SearchModal />
-          <Link
-            href={"/question"}
-            prefetch={false}
-            className="flex rounded-full"
+          <Suspense fallback={<HeaderNavLinks variant="bar" />}>
+            <ActiveHeaderNavLinks variant="bar" />
+          </Suspense>
+        </nav>
+        <Logo className="justify-self-center" />
+        <div className="flex items-center justify-end gap-xs">
+          <Suspense fallback={null}>
+            <ProfileWrapper
+              render={(user) => (
+                <nav
+                  aria-label="Account"
+                  className="hidden items-center gap-xs md:flex"
+                >
+                  <ThemeToggle />
+                  {isEmpty(user) ? (
+                    <GuestAccountLinks />
+                  ) : (
+                    <ProfileDropdown user={user} />
+                  )}
+                </nav>
+              )}
+            />
+          </Suspense>
+          <Suspense
+            fallback={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                disabled
+                className="text-foreground md:hidden"
+              >
+                <Menu />
+              </Button>
+            }
           >
-            <Plus />
-          </Link>
-          <Suspense fallback={<UserImageSkeleton className="w-[36px]" />}>
-            <SessionWrapper
-              render={(sessionId) => <ProfileDropdown sessionId={sessionId} />}
+            <MobileNav
+              account={
+                <Suspense fallback={null}>
+                  <ProfileWrapper
+                    render={(user) =>
+                      isEmpty(user) || user == null ? (
+                        <GuestMenuLinks />
+                      ) : (
+                        <ProfileMenu user={user} />
+                      )
+                    }
+                  />
+                </Suspense>
+              }
             />
           </Suspense>
         </div>

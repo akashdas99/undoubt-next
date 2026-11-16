@@ -1,11 +1,11 @@
 "use client";
 
+import { Field, FieldError, FieldLabel } from "@workspace/ui/components/field";
+import { Input } from "@workspace/ui/components/input";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
-import { Input } from "./input";
 import Editor from "./editor";
-import { Field, FieldLabel, FieldError } from "./field";
 
 type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -79,18 +79,18 @@ export function FormPassword<T extends FieldValues>({
               placeholder={placeholder}
               autoComplete={autoComplete}
               aria-invalid={fieldState.invalid}
-              className="pr-10"
+              className="pr-2xl"
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute top-1/2 right-sm -translate-y-1/2 text-muted-foreground hover:text-foreground"
               onClick={() => setShowPassword(!showPassword)}
               tabIndex={-1}
             >
               {showPassword ? (
-                <EyeOff className="size-4" />
+                <EyeOff className="size-md" />
               ) : (
-                <Eye className="size-4" />
+                <Eye className="size-md" />
               )}
             </button>
           </div>
@@ -121,11 +121,7 @@ export function FormEditor<T extends FieldValues>({
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className={className}>
           {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
-          <Editor
-            content={field.value || ""}
-            onChange={field.onChange}
-            className="bg-white min-h-32"
-          />
+          <Editor content={field.value || ""} onChange={field.onChange} />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
       )}
