@@ -1,10 +1,8 @@
 import { cache } from "react";
-import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db/drizzle";
-import { users } from "@/db/schema/users";
-import { questions } from "@/db/schema/questions";
-import { answers } from "@/db/schema/answers";
-import { getSession } from "@/lib/session";
+import { answers, questions, users } from "@workspace/db";
+import { desc, eq, sql } from "drizzle-orm";
+import { getSession } from "@/lib/auth/session";
 
 export async function getUserById(userId: string) {
   const [user] = await db

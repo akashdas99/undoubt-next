@@ -6,7 +6,7 @@ import {
   editQuestion,
   getQuestionBySlug,
 } from "@/data/question";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { voteOnQuestion, VoteType } from "@/data/questionVote";
 import { withTryCatchResponse } from "@/lib/utils";
 import {

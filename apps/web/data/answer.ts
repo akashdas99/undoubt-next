@@ -1,15 +1,12 @@
 import { parseZodErrors } from "@/lib/utils";
 
 import { db } from "@/db/drizzle";
-import { answers } from "@/db/schema/answers";
-import { questions } from "@/db/schema/questions";
-import { questionStats } from "@/db/schema/questionStats";
-import { errorResponse, successResponse } from "@/lib/response";
-import { getSession } from "@/lib/session";
-import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
+import { answers, questionStats, questions, users } from "@workspace/db";
 import { desc, eq, sql } from "drizzle-orm";
+import { errorResponse, successResponse } from "@/lib/response";
+import { getSession } from "@/lib/auth/session";
+import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { sanitizeRichText } from "@/lib/sanitizeRichText";
-import { users } from "@/db/schema/users";
 
 export async function addAnswer(slug: string, answerData: AnswerType) {
   //validate answer

@@ -1,4 +1,3 @@
-import { logoutUserAction } from "@/actions/auth";
 import { cacheTags } from "@/lib/cache/tags";
 import { isEmpty } from "@/lib/functions";
 import { Button } from "@workspace/ui/components/button";
@@ -11,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
-import { LogOut, UserRoundCog } from "lucide-react";
+import { UserRoundCog } from "lucide-react";
+import LogoutMenuItem from "./logoutMenuItem";
 import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
@@ -73,14 +73,7 @@ export async function ProfileDropdown({ user }: { user?: ProfileUser | null }) {
         <DropdownMenuSeparator className="my-xs" />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            onClick={logoutUserAction}
-            variant="destructive"
-            className="mx-xxs my-xxs rounded-2xl"
-          >
-            <LogOut />
-            <span>Log out</span>
-          </DropdownMenuItem>
+          <LogoutMenuItem />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "./lib/session";
+import { apiOrigin } from "./lib/api/request";
+import { ACCESS_COOKIE } from "./lib/constants";
 
 const PROTECTED_ROUTES = ["/question", "/profile"];
 
@@ -16,7 +17,7 @@ export async function proxy(request: NextRequest) {
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} https://vercel.com *.vercel-storage.com;
+    connect-src 'self' ${process.env.NEXT_PUBLIC_BASEURL} ${apiOrigin()} https://vercel.com *.vercel-storage.com;
 `;
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
@@ -24,7 +25,7 @@ export async function proxy(request: NextRequest) {
     .trim();
 
   //create response based on request path
-  const response = await createResponse(request, nonce);
+  const response = createResponse(request, nonce);
 
   //set csp header
   response.headers.set(
@@ -54,13 +55,12 @@ export const config = {
   ],
 };
 
-const createResponse = async (request: NextRequest, nonce: string) => {
+const createResponse = (request: NextRequest, nonce: string) => {
   const { pathname } = request.nextUrl;
 
   if (PROTECTED_ROUTES.includes(pathname)) {
-    const session = await getSession();
-
-    if (!session) {
+    const token = request.cookies.get(ACCESS_COOKIE)?.value;
+    if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }

@@ -1,9 +1,7 @@
 import { db } from "@/db/drizzle";
-import { questionVotes } from "@/db/schema/questionVotes";
-import { questionStats } from "@/db/schema/questionStats";
-import { questions } from "@/db/schema/questions";
+import { questionStats, questionVotes, questions } from "@workspace/db";
 import { errorResponse, successResponse } from "@/lib/response";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { and, eq, sql } from "drizzle-orm";
 
 const recomputeStats = (

@@ -3,7 +3,7 @@ import {
   EDITOR_IMAGE_TYPES,
   EDITOR_IMAGE_UPLOAD_WINDOW_MS,
 } from "@/lib/constants";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 

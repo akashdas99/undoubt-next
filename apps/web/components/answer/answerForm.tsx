@@ -3,7 +3,7 @@ import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
 import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { isEmpty } from "@/lib/functions";
 
-import { Answer } from "@/db/schema/answers";
+import type { Answer } from "@workspace/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
 import { useParams } from "next/navigation";

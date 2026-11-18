@@ -1,11 +1,11 @@
 import { pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
-import { createdAt, updatedAt } from "../helpers/timestamps";
-import { users } from "./users";
+import { createdAt, updatedAt } from "../helpers/timestamps.js";
+import { users } from "./users.js";
 
 export const questions = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title", { length: 255 }).notNull(),
-  description: text("description").notNull(), // To contain HTML from rich text editor
+  description: text("description").notNull(),
   authorId: uuid("author_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),

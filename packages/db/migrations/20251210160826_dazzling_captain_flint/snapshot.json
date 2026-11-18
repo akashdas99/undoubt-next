@@ -1,0 +1,63 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "e2df851e-12ae-4f6d-a306-1046384b8430",
+  "prevIds": ["fef995d2-6c25-43c2-8a62-0a235079605e"],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": ["column", "public", "users", "reset_token"],
+      "writes": [
+        "s|col|public.users.reset_token",
+        "n|col|public.users.reset_token",
+        "e|col|public.users.reset_token"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public"]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": ["column", "public", "users", "reset_token_expiry"],
+      "writes": [
+        "s|col|public.users.reset_token_expiry",
+        "n|col|public.users.reset_token_expiry",
+        "e|col|public.users.reset_token_expiry"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public"]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "users",
+        "name": "reset_token",
+        "type": "varchar(255)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "users",
+        "name": "reset_token_expiry",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}

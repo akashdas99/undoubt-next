@@ -1,7 +1,7 @@
 import { getProfile, getUserById } from "@/data/user";
 import getQueryClient from "@/lib/getQueryClient";
 import { queryKeys } from "@/lib/queries/keys";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { withTryCatch } from "@/lib/utils";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 

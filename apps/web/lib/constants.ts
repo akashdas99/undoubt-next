@@ -19,6 +19,9 @@ export const EDITOR_IMAGE_MIN_PX = 48;
 export const EDITOR_IMAGE_MAX_PX = 1024;
 export const EDITOR_IMAGE_MAX_BYTES = 1024 * 1024;
 export const EDITOR_IMAGE_UPLOAD_WINDOW_MS = 60 * 1000;
+export const ACCESS_COOKIE = "access_token";
+export const DEFAULT_API_ORIGIN = "http://localhost:3001";
+
 export const EDITOR_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
