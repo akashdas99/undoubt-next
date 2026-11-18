@@ -1,70 +1,38 @@
 import {
   BadRequestException,
-  ConflictException,
-  Inject,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { eq, or, users } from '@workspace/db';
-import type { createPoolDb } from '@workspace/db/client';
+import { ConfigService } from '@nestjs/config';
+import { InjectDrizzle } from '@nestjs/drizzle';
+import { users, type Database } from '@workspace/db';
 import bcryptjs from 'bcryptjs';
-import { createHash } from 'node:crypto';
+import { eq, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
-import { DRIZZLE } from '../db/db.constants.js';
+import { createHash } from 'node:crypto';
+import {
+  duplicateFieldConflict,
+  isUniqueViolation,
+  uniqueViolationField,
+} from '../common/db-error.js';
 import { EmailService } from '../email/email/email.service.js';
-import { TokensService, type AccessToken } from './tokens/tokens.service.js';
+import {
+  INVALID_CREDENTIALS_MESSAGE,
+  REGISTER_DUPLICATE_MESSAGE,
+  REGISTER_UNIQUE_COLUMNS,
+} from '@/lib/constants.js';
 import {
   ForgotPasswordDto,
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
 } from './dto/auth.dto.js';
-
-const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password';
+import { TokensService, type AccessToken } from './tokens/tokens.service.js';
 
 /** One-way digest stored in the DB; the raw token is only sent in the reset link. */
 export function hashResetToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
-}
-
-/** Postgres `unique_violation` (concurrent duplicate insert after the pre-check SELECT). */
-function isUniqueViolation(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    (error as { code: string }).code === '23505'
-  );
-}
-
-/** Maps DB constraint detail to the same 409 field errors as the explicit pre-check. */
-function conflictFromUniqueViolation(error: unknown): ConflictException {
-  const detail =
-    typeof error === 'object' &&
-    error !== null &&
-    'detail' in error &&
-    typeof (error as { detail: unknown }).detail === 'string'
-      ? (error as { detail: string }).detail
-      : '';
-
-  if (detail.includes('user_name')) {
-    return new ConflictException({
-      errors: { userName: { message: 'UserName already exists' } },
-    });
-  }
-
-  return new ConflictException({
-    errors: { email: { message: 'Email already exists' } },
-  });
-}
-
-function webOrigin(): string {
-  const origin = process.env.WEB_ORIGIN;
-  if (!origin) {
-    throw new Error('WEB_ORIGIN is not set');
-  }
-  return origin;
 }
 
 @Injectable()
@@ -72,9 +40,10 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    @Inject(DRIZZLE) private readonly db: ReturnType<typeof createPoolDb>,
+    @InjectDrizzle() private readonly db: Database,
     private readonly tokens: TokensService,
     private readonly email: EmailService,
+    private readonly config: ConfigService,
   ) {}
 
   async register(validatedUser: RegisterDto): Promise<AccessToken> {
@@ -91,14 +60,13 @@ export class AuthService {
 
     if (conflict) {
       if (conflict.email === validatedUser.email) {
-        throw new ConflictException({
-          errors: { email: { message: 'Email already exists' } },
-        });
+        throw duplicateFieldConflict('email', REGISTER_DUPLICATE_MESSAGE.email);
       }
 
-      throw new ConflictException({
-        errors: { userName: { message: 'UserName already exists' } },
-      });
+      throw duplicateFieldConflict(
+        'userName',
+        REGISTER_DUPLICATE_MESSAGE.userName,
+      );
     }
 
     const hashedPassword = await bcryptjs.hash(validatedUser.password, 10);
@@ -125,7 +93,12 @@ export class AuthService {
       return this.tokens.issueAccessToken(registeredUser);
     } catch (error) {
       if (isUniqueViolation(error)) {
-        throw conflictFromUniqueViolation(error);
+        const field =
+          uniqueViolationField(error, REGISTER_UNIQUE_COLUMNS) ?? 'email';
+        throw duplicateFieldConflict(
+          field,
+          REGISTER_DUPLICATE_MESSAGE[field] ?? REGISTER_DUPLICATE_MESSAGE.email,
+        );
       }
       throw error; // connection errors, etc. — not a duplicate user
     }
@@ -181,7 +154,8 @@ export class AuthService {
       .set({ resetToken: hashResetToken(resetToken), resetTokenExpiry })
       .where(eq(users.id, user.id));
 
-    const resetLink = `${webOrigin()}/reset-password?token=${resetToken}`;
+    const webOrigin = this.config.getOrThrow<string>('WEB_ORIGIN');
+    const resetLink = `${webOrigin}/reset-password?token=${resetToken}`;
 
     // Do not await: response time should not reveal that the account exists.
     void this.email.sendPasswordReset(user.email, resetLink).catch((err) => {

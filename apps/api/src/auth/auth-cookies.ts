@@ -1,42 +1,52 @@
-import type { Response } from 'express';
+import '@fastify/cookie';
+import type { FastifyReply } from 'fastify';
+import {
+  ACCESS_COOKIE,
+  ACCESS_MAX_AGE_SECONDS,
+  LEGACY_REFRESH_COOKIE,
+} from '@/lib/constants.js';
 import { AccessToken } from './tokens/tokens.service.js';
 
-export const ACCESS_COOKIE = 'access_token';
+export { ACCESS_COOKIE };
 
-/** Legacy cookie name; cleared on logout so old sessions are dropped. */
-const LEGACY_REFRESH_COOKIE = 'refresh_token';
+export type AuthCookieOptions = {
+  secure: boolean;
+  domain?: string;
+};
 
-const ACCESS_MAX_AGE_MS = 15 * 60 * 1000;
-
-function cookieBase() {
-  const secure = process.env.NODE_ENV === 'production';
-  const domain = process.env.COOKIE_DOMAIN;
+function cookieBase(options: AuthCookieOptions) {
   return {
     httpOnly: true,
-    secure,
+    secure: options.secure,
     sameSite: 'lax' as const,
     path: '/',
-    ...(domain ? { domain } : {}),
+    ...(options.domain ? { domain: options.domain } : {}),
   };
 }
 
-function clearCookieOptions() {
-  const domain = process.env.COOKIE_DOMAIN;
+function clearCookieOptions(options: AuthCookieOptions) {
   return {
     path: '/',
-    ...(domain ? { domain } : {}),
+    ...(options.domain ? { domain: options.domain } : {}),
   };
 }
 
-export function setAuthCookies(res: Response, tokens: AccessToken) {
-  res.cookie(ACCESS_COOKIE, tokens.accessToken, {
-    ...cookieBase(),
-    maxAge: ACCESS_MAX_AGE_MS,
+export function setAuthCookies(
+  reply: FastifyReply,
+  tokens: AccessToken,
+  options: AuthCookieOptions,
+) {
+  reply.setCookie(ACCESS_COOKIE, tokens.accessToken, {
+    ...cookieBase(options),
+    maxAge: ACCESS_MAX_AGE_SECONDS,
   });
 }
 
-export function clearAuthCookies(res: Response) {
-  const options = clearCookieOptions();
-  res.clearCookie(ACCESS_COOKIE, options);
-  res.clearCookie(LEGACY_REFRESH_COOKIE, options);
+export function clearAuthCookies(
+  reply: FastifyReply,
+  options: AuthCookieOptions,
+) {
+  const clearOptions = clearCookieOptions(options);
+  reply.clearCookie(ACCESS_COOKIE, clearOptions);
+  reply.clearCookie(LEGACY_REFRESH_COOKIE, clearOptions);
 }

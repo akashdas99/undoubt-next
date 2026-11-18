@@ -1,9 +1,24 @@
-import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import type { Response } from 'express';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthService } from './auth.service.js';
-import { clearAuthCookies, setAuthCookies } from './auth-cookies.js';
+import {
+  ACCESS_COOKIE,
+  type AuthCookieOptions,
+  clearAuthCookies,
+  setAuthCookies,
+} from './auth-cookies.js';
+import { TokensService } from './tokens/tokens.service.js';
 import {
   ForgotPasswordDto,
   LoginDto,
@@ -14,17 +29,40 @@ import {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly tokens: TokensService,
+    private readonly config: ConfigService,
+  ) {}
+
+  private authCookieOptions(): AuthCookieOptions {
+    const domain = this.config.get<string>('COOKIE_DOMAIN');
+    return {
+      secure: this.config.get<string>('NODE_ENV') === 'production',
+      ...(domain ? { domain } : {}),
+    };
+  }
+
+  @Get('session')
+  @ApiOperation({ summary: 'Read the current session' })
+  async session(@Req() request: FastifyRequest) {
+    const token = request.cookies?.[ACCESS_COOKIE];
+    if (!token) {
+      return { data: null };
+    }
+    const viewer = await this.tokens.verifyAccessToken(token);
+    return { data: viewer };
+  }
 
   @Post('register')
   @HttpCode(201)
   @ApiOperation({ summary: 'Register a new account' })
   async register(
     @Body() body: RegisterDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     const tokens = await this.auth.register(body);
-    setAuthCookies(res, tokens);
+    setAuthCookies(reply, tokens, this.authCookieOptions());
   }
 
   @Post('login')
@@ -33,17 +71,17 @@ export class AuthController {
   @ApiOperation({ summary: 'Log in with email and password' })
   async login(
     @Body() body: LoginDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     const tokens = await this.auth.login(body);
-    setAuthCookies(res, tokens);
+    setAuthCookies(reply, tokens, this.authCookieOptions());
   }
 
   @Post('logout')
   @HttpCode(204)
   @ApiOperation({ summary: 'Clear session cookies' })
-  async logout(@Res({ passthrough: true }) res: Response) {
-    clearAuthCookies(res);
+  async logout(@Res({ passthrough: true }) reply: FastifyReply) {
+    clearAuthCookies(reply, this.authCookieOptions());
   }
 
   @Post('forgot-password')

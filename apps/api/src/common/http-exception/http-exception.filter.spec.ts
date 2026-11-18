@@ -7,7 +7,8 @@ import { HttpExceptionFilter } from './http-exception.filter.js';
 
 function createHost(response: {
   status: ReturnType<typeof vi.fn>;
-  json: ReturnType<typeof vi.fn>;
+  type: ReturnType<typeof vi.fn>;
+  send: ReturnType<typeof vi.fn>;
 }): ArgumentsHost {
   return {
     switchToHttp: () => ({
@@ -16,33 +17,36 @@ function createHost(response: {
   } as ArgumentsHost;
 }
 
+function replyMock() {
+  const send = vi.fn();
+  const type = vi.fn().mockReturnThis();
+  const status = vi.fn().mockReturnValue({ type, send });
+  return { status, type, send };
+}
+
 describe('HttpExceptionFilter', () => {
   const filter = new HttpExceptionFilter();
 
-  it('should be defined', () => {
-    expect(filter).toBeDefined();
-  });
-
-  it('responds with message for UnauthorizedException', () => {
-    const status = vi.fn().mockReturnThis();
-    const json = vi.fn();
-    const res = { status, json };
+  it('sends problem details for UnauthorizedException', () => {
+    const res = replyMock();
 
     filter.catch(
       new UnauthorizedException('Invalid credentials'),
       createHost(res),
     );
 
-    expect(status).toHaveBeenCalledWith(401);
-    expect(json).toHaveBeenCalledWith(
-      expect.objectContaining({ message: 'Invalid credentials' }),
-    );
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.type).toHaveBeenCalledWith('application/problem+json');
+    expect(res.send).toHaveBeenCalledWith({
+      type: 'about:blank',
+      title: 'Unauthorized',
+      status: 401,
+      detail: 'Invalid credentials',
+    });
   });
 
-  it('responds with errors for field-error ConflictException', () => {
-    const status = vi.fn().mockReturnThis();
-    const json = vi.fn();
-    const res = { status, json };
+  it('sends invalid-params for a field-error ConflictException', () => {
+    const res = replyMock();
 
     filter.catch(
       new ConflictException({
@@ -51,21 +55,27 @@ describe('HttpExceptionFilter', () => {
       createHost(res),
     );
 
-    expect(status).toHaveBeenCalledWith(409);
-    expect(json).toHaveBeenCalledWith({
-      message: 'Email already exists',
-      errors: { email: { message: 'Email already exists' } },
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.send).toHaveBeenCalledWith({
+      type: 'about:blank',
+      title: 'Conflict',
+      status: 409,
+      detail: 'Email already exists',
+      'invalid-params': [{ name: 'email', reason: 'Email already exists' }],
     });
   });
 
-  it('responds with 500 message for generic Error', () => {
-    const status = vi.fn().mockReturnThis();
-    const json = vi.fn();
-    const res = { status, json };
+  it('sends a generic problem for an unknown error', () => {
+    const res = replyMock();
 
     filter.catch(new Error('boom'), createHost(res));
 
-    expect(status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ message: 'Something went wrong' });
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.send).toHaveBeenCalledWith({
+      type: 'about:blank',
+      title: 'Internal Server Error',
+      status: 500,
+      detail: 'Something went wrong',
+    });
   });
 });

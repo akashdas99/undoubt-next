@@ -1,21 +1,35 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DrizzleModule } from '@nestjs/drizzle';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { AuthModule } from './auth/auth.module.js';
-import { DbModule } from './db/db.module.js';
-import { EmailModule } from './email/email.module.js';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { AuthModule } from './auth/auth.module.js';
+import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
+import { EmailModule } from './email/email.module.js';
+import { DB_POOL_MAX } from '@/lib/constants.js';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DrizzleModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        drizzle,
+        connection: {
+          connectionString: config.getOrThrow<string>('DATABASE_URI'),
+          max: DB_POOL_MAX,
+        },
+      }),
+    }),
     ThrottlerModule.forRoot([
       {
         ttl: 60_000,
         limit: 30,
       },
     ]),
-    DbModule,
     EmailModule,
     AuthModule,
   ],

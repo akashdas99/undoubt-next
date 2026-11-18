@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { SignJWT } from 'jose';
-
-const ACCESS_TTL = '15m';
+import { ConfigService } from '@nestjs/config';
+import { jwtVerify, SignJWT } from 'jose';
+import { ACCESS_TTL } from '@/lib/constants.js';
 
 export type AccessToken = {
   accessToken: string;
@@ -9,11 +9,10 @@ export type AccessToken = {
 
 @Injectable()
 export class TokensService {
+  constructor(private readonly config: ConfigService) {}
+
   private jwtKey() {
-    const secret = process.env.SECRET;
-    if (!secret) {
-      throw new Error('SECRET is not set');
-    }
+    const secret = this.config.getOrThrow<string>('SECRET');
     if (secret.length < 32) {
       throw new Error('SECRET must be at least 32 characters');
     }
@@ -37,5 +36,22 @@ export class TokensService {
       userName: user.userName,
     });
     return { accessToken };
+  }
+
+  async verifyAccessToken(
+    token: string,
+  ): Promise<{ id: string; userName: string } | null> {
+    try {
+      const { payload } = await jwtVerify(token, this.jwtKey());
+      if (
+        typeof payload.id !== 'string' ||
+        typeof payload.userName !== 'string'
+      ) {
+        return null;
+      }
+      return { id: payload.id, userName: payload.userName };
+    } catch {
+      return null;
+    }
   }
 }

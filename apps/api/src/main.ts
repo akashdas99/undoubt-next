@@ -1,16 +1,24 @@
-import 'dotenv/config';
+import cookie from '@fastify/cookie';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cookieParser from 'cookie-parser';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import { AppModule } from './app.module.js';
 import { ACCESS_COOKIE } from './auth/auth-cookies.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.use(cookieParser());
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+  await app.register(cookie);
 
-  const webOrigin = process.env.WEB_ORIGIN ?? 'http://localhost:3000';
+  const config = app.get(ConfigService);
+  const webOrigin = config.get<string>('WEB_ORIGIN') ?? 'http://localhost:3000';
   app.enableCors({
     origin: webOrigin,
     credentials: true,
@@ -32,6 +40,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
+  const port = config.get<number>('PORT') ?? 3001;
+  await app.listen(port, '0.0.0.0');
 }
 await bootstrap();

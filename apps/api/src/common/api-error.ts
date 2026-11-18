@@ -1,16 +1,30 @@
-export type FieldErrorMap = Record<string, { message: string }>;
+import { TITLE_BY_STATUS } from '@/lib/constants.js';
 
-export type ApiErrorBody = {
-  message: string;
-  errors?: FieldErrorMap | Array<{ path?: unknown; message?: unknown }>;
+export type InvalidParam = {
+  name: string;
+  reason: string;
 };
+
+export type ProblemDetails = {
+  type: 'about:blank';
+  title: string;
+  status: number;
+  detail: string;
+  'invalid-params'?: InvalidParam[];
+};
+
+function titleFor(status: number): string {
+  return TITLE_BY_STATUS[status] ?? 'Error';
+}
 
 function messageFromNestBody(message: unknown): string {
   if (typeof message === 'string') {
     return message;
   }
   if (Array.isArray(message)) {
-    const parts = message.filter((m): m is string => typeof m === 'string');
+    const parts = message.filter(
+      (part): part is string => typeof part === 'string',
+    );
     if (parts.length > 0) {
       return parts.join(', ');
     }
@@ -18,56 +32,84 @@ function messageFromNestBody(message: unknown): string {
   return 'Something went wrong';
 }
 
-function firstFieldMessage(errors: unknown): string | undefined {
-  if (errors === null || errors === undefined) {
-    return undefined;
+function fieldName(path: unknown): string | undefined {
+  if (typeof path === 'string' && path.length > 0) {
+    return path;
   }
-  if (Array.isArray(errors)) {
-    for (const issue of errors) {
-      if (issue && typeof issue === 'object') {
-        const msg = (issue as { message?: unknown }).message;
-        if (typeof msg === 'string') {
-          return msg;
-        }
-      }
-    }
-    return undefined;
+  if (typeof path === 'number') {
+    return String(path);
   }
-  if (typeof errors === 'object') {
-    for (const value of Object.values(errors as Record<string, unknown>)) {
-      if (value && typeof value === 'object') {
-        const msg = (value as { message?: unknown }).message;
-        if (typeof msg === 'string') {
-          return msg;
-        }
-      }
-    }
+  if (Array.isArray(path) && path.length > 0) {
+    return fieldName(path[0]);
   }
   return undefined;
 }
 
-export function errorBodyFromHttpException(
+function invalidParams(errors: unknown): InvalidParam[] | undefined {
+  if (Array.isArray(errors)) {
+    const params: InvalidParam[] = [];
+    for (const issue of errors) {
+      if (issue === null || typeof issue !== 'object') {
+        continue;
+      }
+      const record = issue as Record<string, unknown>;
+      const reason =
+        typeof record.reason === 'string'
+          ? record.reason
+          : typeof record.message === 'string'
+            ? record.message
+            : undefined;
+      const name = fieldName(record.name ?? record.path);
+      if (!reason || !name) {
+        continue;
+      }
+      params.push({ name, reason });
+    }
+    return params.length > 0 ? params : undefined;
+  }
+
+  if (errors === null || typeof errors !== 'object') {
+    return undefined;
+  }
+
+  const params: InvalidParam[] = [];
+  for (const [name, value] of Object.entries(errors)) {
+    if (
+      value !== null &&
+      typeof value === 'object' &&
+      'message' in value &&
+      typeof value.message === 'string'
+    ) {
+      params.push({ name, reason: value.message });
+    }
+  }
+  return params.length > 0 ? params : undefined;
+}
+
+export function problemFromException(
+  status: number,
   exceptionResponse: string | object,
-): ApiErrorBody {
+): ProblemDetails {
+  const title = titleFor(status);
   if (typeof exceptionResponse === 'string') {
-    return { message: exceptionResponse };
+    return { type: 'about:blank', title, status, detail: exceptionResponse };
   }
 
   const body = exceptionResponse as Record<string, unknown>;
-  const errors = body.errors;
-
-  if (errors !== undefined) {
-    const message =
-      firstFieldMessage(errors) ?? messageFromNestBody(body.message);
-    return {
-      message,
-      errors: errors as ApiErrorBody['errors'],
-    };
+  const params = invalidParams(body.errors);
+  const detail = params?.[0]?.reason ?? messageFromNestBody(body.message);
+  if (!params) {
+    return { type: 'about:blank', title, status, detail };
   }
-
-  return { message: messageFromNestBody(body.message) };
+  return {
+    type: 'about:blank',
+    title,
+    status,
+    detail,
+    'invalid-params': params,
+  };
 }
 
-export function internalServerErrorBody(): ApiErrorBody {
-  return { message: 'Something went wrong' };
+export function internalServerErrorProblem(): ProblemDetails {
+  return problemFromException(500, 'Something went wrong');
 }

@@ -1,8 +1,10 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { getDrizzleToken } from '@nestjs/drizzle';
 import { Test, TestingModule } from '@nestjs/testing';
 import bcryptjs from 'bcryptjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DRIZZLE } from '../db/db.constants.js';
+import { UNIQUE_VIOLATION } from '@/lib/constants.js';
 import { EmailService } from '../email/email/email.service.js';
 import { AuthService, hashResetToken } from './auth.service.js';
 import { TokensService } from './tokens/tokens.service.js';
@@ -25,6 +27,16 @@ describe('AuthService', () => {
     update: ReturnType<typeof vi.fn>;
   };
 
+  const config = {
+    getOrThrow: vi.fn((key: string) => {
+      if (key === 'WEB_ORIGIN') {
+        return 'http://localhost:3000';
+      }
+      throw new Error(`${key} is not set`);
+    }),
+    get: vi.fn(),
+  };
+
   beforeEach(async () => {
     tokens = {
       issueAccessToken: vi.fn().mockResolvedValue({ accessToken: 'jwt' }),
@@ -41,14 +53,14 @@ describe('AuthService', () => {
       insert: vi.fn(),
       update: vi.fn(),
     };
-    (db as { selectLimit: typeof selectLimit }).selectLimit = selectLimit;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: DRIZZLE, useValue: db },
+        { provide: getDrizzleToken(), useValue: db },
         { provide: TokensService, useValue: tokens },
         { provide: EmailService, useValue: email },
+        { provide: ConfigService, useValue: config },
       ],
     }).compile();
 
@@ -62,6 +74,32 @@ describe('AuthService', () => {
     db.select.mockReturnValue({ from });
     return { limit, where, from };
   }
+
+  describe('register', () => {
+    const newUser = {
+      name: 'Ada',
+      userName: 'ada',
+      email: 'a@b.com',
+      password: 'password-1',
+    };
+
+    it('maps Drizzle-wrapped unique violation on insert to 409', async () => {
+      mockSelectResult([]);
+      const returning = vi.fn().mockRejectedValue({
+        cause: {
+          code: UNIQUE_VIOLATION,
+          detail: 'Key (email)=(a@b.com) already exists.',
+        },
+      });
+      db.insert.mockReturnValue({
+        values: vi.fn().mockReturnValue({ returning }),
+      });
+
+      await expect(service.register(newUser)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+    });
+  });
 
   describe('login', () => {
     it('throws a generic error when the user is not found', async () => {
@@ -100,7 +138,6 @@ describe('AuthService', () => {
 
   describe('forgotPassword', () => {
     it('stores a hashed reset token in the database', async () => {
-      process.env.WEB_ORIGIN = 'http://localhost:3000';
       mockSelectResult([{ id: 'id-1', email: 'a@b.com' }]);
 
       const set = vi.fn();
@@ -141,7 +178,11 @@ describe('AuthService', () => {
         set: vi.fn().mockReturnValue({ where: updateWhere }),
       });
 
-      await service.resetPassword({ token, password: 'new-password-1' });
+      await service.resetPassword({
+        token,
+        password: 'new-password-1',
+        confirmPassword: 'new-password-1',
+      });
 
       expect(where).toHaveBeenCalled();
       expect(updateWhere).toHaveBeenCalled();
