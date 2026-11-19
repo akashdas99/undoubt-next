@@ -1,0 +1,57 @@
+---
+description: Undoubt conventions for apps/web and packages/ui.
+alwaysApply: true
+---
+
+# Undoubt
+
+## Secrets
+
+Never read, search, list, parse, or print `.env`, `.env.*`, credentials, or secrets (Read, Grep, Glob, Shell). A failed read still counts; do not retry. Use env names already in code, such as `process.env.NEXT_PUBLIC_CDNHOST`. Ask when a real value is required.
+
+## Dependencies
+
+External deps in every `package.json` use `catalog:` from `pnpm-workspace.yaml`. If missing, add the version to `catalog:` in alphabetical order, then reference `catalog:`. Workspace packages stay `workspace:*` and are not catalog entries.
+
+## Code shape
+
+- Import an existing helper, action, form mapper, or query. Extend it when the new case is the same behavior. Copy only when sharing would couple unrelated callers.
+- One React component per file, next to its caller. A skeleton that only represents that component may stay in the same file. `QuestionCardSkeleton` is its own module.
+- Reusable numbers, format strings, delays, and limits go in `apps/web/lib/constants.ts`. Leave a one-off inline (`0`, `1`, a local index).
+- `className` that mixes a base string with conditionals, props, or variants uses `cn()` (clsx + tailwind-merge). Pass the `className` prop last. Web: `import { cn } from "@/lib/utils"`. UI package: `import { cn } from "@workspace/ui/lib/utils"`. No template strings, concatenation, or `.filter(Boolean).join(" ")` for Tailwind classes.
+
+## Tokens
+
+Source: `packages/ui/src/styles/globals.css`. No `tailwind.config.js` theme keys. No `@utility` for tokens.
+
+- `@theme inline` is pointers only: `--color-*` → `var(--primary)`, fonts → `var(--font-*-family)`. `bg-primary` is `var(--primary)` on the element.
+- `@theme` holds overridable values: spacing, radius, `--shadow-card`, display type, `--container-*`. Same variables override at `48rem` and `64rem`.
+- Colors are oklch on `:root` / `.dark`. Never `--color-primary: var(--primary)` in `@theme`.
+- Spacing and radius live in `@theme`, not `@theme inline`. No `clamp()` on padding or radius. `--text-display` / `--text-title` use `clamp()`; `text-sm` / `text-xs` do not.
+- `--shadow-card` in `@theme` (inset `var(--card-specular)`). Dark mode may retarget it. Use `shadow-card` on cards and the sticky header.
+- Fonts: `font-sans` / `font-display`. Never `--font-sans: var(--font-sans)` or `--shadow-card: var(--card-shadow)`.
+
+Spacing is t-shirt only in `apps/web` and `packages/ui`: `xxs` 4, `xs` 8, `sm` 12→16, `md` 16→20, `lg` 20→24, `xl` 24→32, `2xl` 32→40, `3xl` 48. Write `p-sm` once, not `md:p-md`. No numeric spacing utilities (`p-4`, `gap-3`, `w-10`). No semantic spacing names. Card padding is `p-md`. Header is `p-sm`.
+
+Widths: `max-w-content` 64rem, `max-w-form` 36rem, `max-w-dialog` 28rem, `max-w-narrow` 20rem. Not `max-w-sm` / `max-w-md` / `max-w-xl` for page layout.
+
+Radius steps `--radius` 8→10→12px. `rounded-card` → `--radius-4xl`, `rounded-panel` → `--radius-3xl`, `rounded-full` is static. Do not override `--radius-card` in media queries.
+
+## apps/web
+
+Next docs: `apps/web/node_modules/next/dist/docs/`. Read and Glob cannot open `node_modules`; use PowerShell `Get-Content` or `Select-String`. Paths with brackets (`[slug]`) need the Read tool or `Get-Content -LiteralPath`.
+
+`cacheComponents: true`. Cookie, `getSession()`, and non-static `params` reads sit in `<Suspense>` or `loading.tsx`. Hidden pages keep state; reset it in the navigation handler before `router.push` / `replace`, or in a `useLayoutEffect` cleanup (ref-gated when only some exits should reset). See `questionForm.tsx`. The Tiptap editor syncs when `content` changes after mount; keep that effect. `[slug]/loading.tsx` also covers nested routes such as edit; nested segments need their own `loading.tsx`. The guard is `proxy.ts` and matches exact paths only, so nested pages check the session themselves. `"use client"` only when the file uses state, effects, handlers, or browser APIs.
+
+- Data: `data/*.ts` (Drizzle). Question edit and delete check ownership. Slugs do not change on edit.
+- Actions: `actions/*.ts` via `withTryCatchResponse`. `successResponse` / `errorResponse` in `lib/response.ts`. Root errors are `errors.root`.
+- Session: `getSession()` in `lib/session.ts` returns `{ id, userName } | null`. `sessionWrapper.tsx` reads the session only. `profileWrapper.tsx` hydrates `useProfile()` (`enabled = false`) from the header in `(main)/layout.tsx`.
+- Zod: `packages/validations`.
+- React Query: `lib/queries/*.ts`, keys in `lib/queries/keys.ts`. `useUpdateQuestionCache()` patches list and detail caches.
+- Vote slot: `questionCardFooter.tsx` takes `renderVote`. Home passes `questionVoteButton.tsx`. Detail passes `hydratedQuestionVote.tsx`.
+- Cards: `homeQuestionCard.tsx` (clamped) and `questionDetailCard.tsx` (full) both use `questionCardHeader.tsx`. Edit and delete are `questionCardActions.tsx`.
+- Forms: `components/ui/form.tsx` (`FormInput`, `FormPassword`, `FormEditor` → Tiptap `components/ui/editor.tsx`).
+- Shared UI: `@workspace/ui/components/*` (button, card, combobox, confirmationModal, dialog, dropdown-menu, field, input, input-group, label, pageLoader, separator, skeleton, textarea, toggle).
+- Dates: `lib/date.ts`.
+
+Routes: `(main)` `/`, `/about`, `/profile`, `/question`, `/question/[slug]`, `/question/[slug]/edit` (author check). Add and edit share `questionForm.tsx`. `(auth)` `/login`, `/register`, `/forgot-password`, `/reset-password`.
