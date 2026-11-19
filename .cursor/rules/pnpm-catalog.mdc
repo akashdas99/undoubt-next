@@ -1,0 +1,22 @@
+---
+description: Resolve external dependencies from the pnpm catalog instead of pinning versions in package.json.
+alwaysApply: true
+---
+
+# Dependencies use the catalog
+
+Source of truth: the `catalog:` map in `pnpm-workspace.yaml`. Every external dependency and devDependency in every `package.json` uses `catalog:`.
+
+- If the package is already in the catalog, reference it. Do not copy a different version range into `package.json`.
+- If it is missing, add its version to `catalog:` in alphabetical order, then set the dependency to `catalog:`.
+- Workspace packages stay `workspace:*`. Do not put them in the catalog.
+
+```json
+"@nestjs/common": "catalog:",
+"@workspace/db": "workspace:*"
+```
+
+```yaml
+catalog:
+  "@nestjs/common": ^12.0.1
+```
