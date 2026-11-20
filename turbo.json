@@ -13,13 +13,11 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
-        "SECRET",
-        "RESEND_API_KEY",
-        "EMAIL_FROM",
         "DATABASE_URI",
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_BASEURL",
-        "COOKIE_DOMAIN"
+        "PROXY_SECRET",
+        "VERCEL"
       ]
     },
     "api#build": {
@@ -27,14 +25,14 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"],
       "env": [
-        "PORT",
+        "COOKIE_DOMAIN",
         "DATABASE_URI",
-        "SECRET",
-        "RESEND_API_KEY",
         "EMAIL_FROM",
-        "NEXT_PUBLIC_BASEURL",
-        "WEB_ORIGIN",
-        "COOKIE_DOMAIN"
+        "PORT",
+        "PROXY_SECRET",
+        "RESEND_API_KEY",
+        "SECRET",
+        "WEB_ORIGIN"
       ]
     },
     "lint": {

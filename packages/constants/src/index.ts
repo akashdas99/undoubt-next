@@ -16,5 +16,7 @@ export const BCRYPT_COST = 10;
 
 export const THROTTLE_WINDOW_MS = 60_000;
 export const THROTTLE_DEFAULT_LIMIT = 30;
+export const CLIENT_IP_HEADER = "x-client-ip";
+export const PROXY_SECRET_HEADER = "x-proxy-secret";
 export const LOGIN_THROTTLE_LIMIT = 10;
 export const SENSITIVE_THROTTLE_LIMIT = 5;

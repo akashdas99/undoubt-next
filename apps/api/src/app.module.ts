@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DrizzleModule } from '@nestjs/drizzle';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthModule } from './auth/auth.module.js';
 import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
+import { ProxyThrottlerGuard } from './common/throttler/proxy-throttler.guard.js';
 import { EmailModule } from './email/email.module.js';
 import {
   DB_POOL_MAX,
@@ -40,7 +41,7 @@ import {
   providers: [
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: ProxyThrottlerGuard,
     },
     {
       provide: APP_PIPE,

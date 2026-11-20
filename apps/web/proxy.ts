@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiOrigin } from "./lib/api/request";
-import { ACCESS_COOKIE } from "@workspace/constants";
+import {
+  ACCESS_COOKIE,
+  CLIENT_IP_HEADER,
+  PROXY_SECRET_HEADER,
+} from "@workspace/constants";
 
 const PROTECTED_ROUTES = ["/question", "/profile"];
 
@@ -67,6 +71,24 @@ const createResponse = (request: NextRequest, nonce: string) => {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
+
+  /* eslint-disable drizzle/enforce-delete-with-where -- Web Headers API */
+  requestHeaders.delete(CLIENT_IP_HEADER);
+  requestHeaders.delete(PROXY_SECRET_HEADER);
+  /* eslint-enable drizzle/enforce-delete-with-where */
+  if (
+    pathname.startsWith("/auth/") &&
+    process.env.PROXY_SECRET &&
+    process.env.VERCEL
+  ) {
+    const clientIp =
+      request.headers.get("x-real-ip")?.trim() ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    if (clientIp) {
+      requestHeaders.set(CLIENT_IP_HEADER, clientIp);
+      requestHeaders.set(PROXY_SECRET_HEADER, process.env.PROXY_SECRET);
+    }
+  }
 
   return NextResponse.next({
     request: {

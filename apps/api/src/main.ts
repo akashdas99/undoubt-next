@@ -1,4 +1,5 @@
 import cookie from '@fastify/cookie';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -16,6 +17,13 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   await app.register(cookie);
+
+  if (!process.env.PROXY_SECRET) {
+    Logger.warn(
+      'PROXY_SECRET is not set; rate limits use the direct peer IP',
+      'Bootstrap',
+    );
+  }
 
   const config = app.get(ConfigService);
   const webOrigin = config.getOrThrow<string>('WEB_ORIGIN');
