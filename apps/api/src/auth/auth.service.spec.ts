@@ -4,6 +4,7 @@ import { getDrizzleToken } from '@nestjs/drizzle';
 import { Test, TestingModule } from '@nestjs/testing';
 import bcryptjs from 'bcryptjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BCRYPT_COST } from '@workspace/constants';
 import { UNIQUE_VIOLATION } from '@/lib/constants.js';
 import { EmailService } from '../email/email/email.service.js';
 import { AuthService, hashResetToken } from './auth.service.js';
@@ -115,7 +116,7 @@ describe('AuthService', () => {
     });
 
     it('throws the same generic error when the password is wrong', async () => {
-      const password = await bcryptjs.hash('correct', 10);
+      const password = await bcryptjs.hash('correct', BCRYPT_COST);
       mockSelectResult([{ id: 'id-1', userName: 'alice', password }]);
 
       await expect(
@@ -124,7 +125,7 @@ describe('AuthService', () => {
     });
 
     it('issues a token when credentials are valid', async () => {
-      const password = await bcryptjs.hash('correct', 10);
+      const password = await bcryptjs.hash('correct', BCRYPT_COST);
       mockSelectResult([{ id: 'id-1', userName: 'alice', password }]);
 
       await service.login({ email: 'a@b.com', password: 'correct' });
@@ -173,7 +174,8 @@ describe('AuthService', () => {
         },
       ]);
 
-      const updateWhere = vi.fn().mockResolvedValue(undefined);
+      const returning = vi.fn().mockResolvedValue([{ id: 'id-1' }]);
+      const updateWhere = vi.fn().mockReturnValue({ returning });
       db.update.mockReturnValue({
         set: vi.fn().mockReturnValue({ where: updateWhere }),
       });

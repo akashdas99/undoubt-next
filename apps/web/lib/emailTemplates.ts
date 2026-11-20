@@ -1,3 +1,5 @@
+import { RESET_TOKEN_LIFETIME_MINUTES } from "@workspace/constants";
+
 export function getPasswordResetEmailHtml(resetLink: string): string {
   return `
     <!DOCTYPE html>
@@ -35,7 +37,7 @@ export function getPasswordResetEmailHtml(resetLink: string): string {
 
           <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e4e4e7;">
             <p style="margin: 0 0 10px; color: #71717a; font-size: 14px; line-height: 1.5;">
-              This link will expire in 5 minutes for security reasons.
+              This link will expire in ${RESET_TOKEN_LIFETIME_MINUTES} minutes for security reasons.
             </p>
 
             <p style="margin: 0; color: #71717a; font-size: 14px; line-height: 1.5;">

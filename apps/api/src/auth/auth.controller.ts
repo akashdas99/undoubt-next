@@ -9,9 +9,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthService } from './auth.service.js';
+import {
+  LOGIN_THROTTLE_LIMIT,
+  SENSITIVE_THROTTLE_LIMIT,
+  THROTTLE_WINDOW_MS,
+} from '@workspace/constants';
 import {
   ACCESS_COOKIE,
   type AuthCookieOptions,
@@ -43,6 +48,7 @@ export class AuthController {
     };
   }
 
+  @SkipThrottle()
   @Get('session')
   @ApiOperation({ summary: 'Read the current session' })
   async session(@Req() request: FastifyRequest) {
@@ -67,7 +73,9 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(204)
-  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Throttle({
+    default: { limit: LOGIN_THROTTLE_LIMIT, ttl: THROTTLE_WINDOW_MS },
+  })
   @ApiOperation({ summary: 'Log in with email and password' })
   async login(
     @Body() body: LoginDto,
@@ -86,7 +94,9 @@ export class AuthController {
 
   @Post('forgot-password')
   @HttpCode(204)
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Throttle({
+    default: { limit: SENSITIVE_THROTTLE_LIMIT, ttl: THROTTLE_WINDOW_MS },
+  })
   @ApiOperation({ summary: 'Request a password reset email' })
   async forgotPassword(@Body() body: ForgotPasswordDto) {
     await this.auth.forgotPassword(body);
@@ -94,7 +104,9 @@ export class AuthController {
 
   @Post('reset-password')
   @HttpCode(204)
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Throttle({
+    default: { limit: SENSITIVE_THROTTLE_LIMIT, ttl: THROTTLE_WINDOW_MS },
+  })
   @ApiOperation({ summary: 'Reset password with token' })
   async resetPassword(@Body() body: ResetPasswordDto) {
     await this.auth.resetPassword(body);

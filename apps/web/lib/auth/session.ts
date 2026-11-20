@@ -1,6 +1,6 @@
 import { apiRequest } from "@/lib/api/request";
 import { authEndpoints } from "@/lib/auth/endpoints";
-import { ACCESS_COOKIE } from "@/lib/constants";
+import { ACCESS_COOKIE } from "@workspace/constants";
 import { cookies } from "next/headers";
 import { cache } from "react";
 

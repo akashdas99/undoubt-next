@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiOrigin } from "./lib/api/request";
-import { ACCESS_COOKIE } from "./lib/constants";
+import { ACCESS_COOKIE } from "@workspace/constants";
 
 const PROTECTED_ROUTES = ["/question", "/profile"];
 

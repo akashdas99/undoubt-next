@@ -10,5 +10,6 @@ FROM oven/bun:1
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /out .
+COPY --from=build /app/apps/api/dist ./dist
 EXPOSE 3001
 CMD ["bun", "dist/main.js"]

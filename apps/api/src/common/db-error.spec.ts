@@ -61,6 +61,19 @@ describe('uniqueViolationField', () => {
       ),
     ).toBe('email');
   });
+
+  it('ignores column names that appear only in the rejected value', () => {
+    expect(
+      uniqueViolationField(
+        {
+          code: UNIQUE_VIOLATION,
+          constraint: 'users_email_unique',
+          detail: 'Key (email)=(user_name) already exists.',
+        },
+        map,
+      ),
+    ).toBe('email');
+  });
 });
 
 describe('duplicateFieldConflict', () => {

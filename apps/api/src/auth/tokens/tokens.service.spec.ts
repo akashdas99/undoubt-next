@@ -1,5 +1,7 @@
+import { MIN_SECRET_LENGTH } from '@workspace/constants';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { SignJWT } from 'jose';
 import { TokensService } from './tokens.service.js';
 
 function configWithSecret(secret: string | undefined) {
@@ -25,7 +27,7 @@ describe('TokensService', () => {
         TokensService,
         {
           provide: ConfigService,
-          useValue: configWithSecret('a'.repeat(32)),
+          useValue: configWithSecret('a'.repeat(MIN_SECRET_LENGTH)),
         },
       ],
     }).compile();
@@ -53,7 +55,29 @@ describe('TokensService', () => {
     await expect(service.verifyAccessToken('not-a-token')).resolves.toBeNull();
   });
 
-  it('rejects a SECRET shorter than 32 characters', async () => {
+  it('returns null for a valid token signed with a different secret', async () => {
+    const wrongKey = new TextEncoder().encode('b'.repeat(MIN_SECRET_LENGTH));
+    const token = await new SignJWT({ id: 'user-id', userName: 'ada' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('15m')
+      .sign(wrongKey);
+
+    await expect(service.verifyAccessToken(token)).resolves.toBeNull();
+  });
+
+  it('returns null for an expired token signed with the configured secret', async () => {
+    const key = new TextEncoder().encode('a'.repeat(MIN_SECRET_LENGTH));
+    const token = await new SignJWT({ id: 'user-id', userName: 'ada' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime(Math.floor(Date.now() / 1000) - 60)
+      .sign(key);
+
+    await expect(service.verifyAccessToken(token)).resolves.toBeNull();
+  });
+
+  it(`rejects a SECRET shorter than ${MIN_SECRET_LENGTH} characters`, async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokensService,
@@ -67,6 +91,8 @@ describe('TokensService', () => {
 
     await expect(
       shortSecretService.issueAccessToken({ id: 'id', userName: 'user' }),
-    ).rejects.toThrow('SECRET must be at least 32 characters');
+    ).rejects.toThrow(
+      `SECRET must be at least ${MIN_SECRET_LENGTH} characters`,
+    );
   });
 });

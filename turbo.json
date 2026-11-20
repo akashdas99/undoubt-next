@@ -6,7 +6,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "web#build": {
       "dependsOn": ["^build"],
@@ -17,7 +17,6 @@
         "RESEND_API_KEY",
         "EMAIL_FROM",
         "DATABASE_URI",
-        "API_URL",
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_BASEURL",
         "COOKIE_DOMAIN"
@@ -45,7 +44,7 @@
       "dependsOn": ["^format"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typecheck", "^build"]
     },
     "dev": {
       "dependsOn": ["^build"],

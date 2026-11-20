@@ -1,3 +1,4 @@
+import { RESET_TOKEN_LIFETIME_MINUTES } from '@workspace/constants';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
@@ -20,7 +21,7 @@ export class EmailService {
       from: this.from,
       to,
       subject: 'Reset your password',
-      html: `<p><a href="${resetLink}">Reset password</a></p><p>This link expires in 5 minutes.</p>`,
+      html: `<p><a href="${resetLink}">Reset password</a></p><p>This link expires in ${RESET_TOKEN_LIFETIME_MINUTES} minutes.</p>`,
     });
     if (error) {
       this.logger.error('Resend API error', error);

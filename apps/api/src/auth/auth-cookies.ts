@@ -1,7 +1,7 @@
 import '@fastify/cookie';
 import type { FastifyReply } from 'fastify';
+import { ACCESS_COOKIE } from '@workspace/constants';
 import {
-  ACCESS_COOKIE,
   ACCESS_MAX_AGE_SECONDS,
   LEGACY_REFRESH_COOKIE,
 } from '@/lib/constants.js';

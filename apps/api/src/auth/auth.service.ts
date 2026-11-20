@@ -6,9 +6,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDrizzle } from '@nestjs/drizzle';
+import { BCRYPT_COST, RESET_TOKEN_LIFETIME_MS } from '@workspace/constants';
 import { users, type Database } from '@workspace/db';
 import bcryptjs from 'bcryptjs';
-import { eq, or } from 'drizzle-orm';
+import { and, eq, gt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { createHash } from 'node:crypto';
 import {
@@ -29,6 +30,10 @@ import {
   ResetPasswordDto,
 } from './dto/auth.dto.js';
 import { TokensService, type AccessToken } from './tokens/tokens.service.js';
+
+/** Cost-10 hash compared when no user row exists, so login timing does not reveal that. */
+const DUMMY_PASSWORD_HASH =
+  '$2b$10$dwHSdW0u09fUi9QmB3WLY.qndYKEKi0MCUt8xQj4Yb9cbnCmMLx5e';
 
 /** One-way digest stored in the DB; the raw token is only sent in the reset link. */
 export function hashResetToken(token: string): string {
@@ -69,7 +74,10 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcryptjs.hash(validatedUser.password, 10);
+    const hashedPassword = await bcryptjs.hash(
+      validatedUser.password,
+      BCRYPT_COST,
+    );
 
     // Two parallel sign-ups can both pass the SELECT; turn insert 23505 into 409, not 500.
     try {
@@ -116,6 +124,7 @@ export class AuthService {
       .limit(1);
 
     if (!user) {
+      await bcryptjs.compare(validatedUser.password, DUMMY_PASSWORD_HASH);
       throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
     }
 
@@ -147,7 +156,7 @@ export class AuthService {
     }
 
     const resetToken = nanoid(32);
-    const resetTokenExpiry = new Date(Date.now() + 300_000);
+    const resetTokenExpiry = new Date(Date.now() + RESET_TOKEN_LIFETIME_MS);
 
     await this.db
       .update(users)
@@ -187,15 +196,30 @@ export class AuthService {
       });
     }
 
-    const hashedPassword = await bcryptjs.hash(validatedData.password, 10);
+    const hashedPassword = await bcryptjs.hash(
+      validatedData.password,
+      BCRYPT_COST,
+    );
 
-    await this.db
+    const updated = await this.db
       .update(users)
       .set({
         password: hashedPassword,
         resetToken: null,
         resetTokenExpiry: null,
       })
-      .where(eq(users.id, user.id));
+      .where(
+        and(
+          eq(users.resetToken, tokenHash),
+          gt(users.resetTokenExpiry, new Date()),
+        ),
+      )
+      .returning({ id: users.id });
+
+    if (updated.length === 0) {
+      throw new BadRequestException({
+        errors: { token: { message: 'Invalid or expired reset token' } },
+      });
+    }
   }
 }

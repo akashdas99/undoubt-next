@@ -36,9 +36,21 @@ export function uniqueViolationField(
   if (!pg) {
     return undefined;
   }
-  const haystack = `${pg.detail ?? ''} ${pg.constraint ?? ''}`;
+  const violated = new Set<string>();
+  if (pg.constraint) {
+    violated.add(pg.constraint);
+  }
+  const keyList = pg.detail?.match(/Key \(([^)]+)\)/)?.[1];
+  if (keyList) {
+    for (const part of keyList.split(',')) {
+      const column = part.trim().replaceAll('"', '');
+      if (column) {
+        violated.add(column);
+      }
+    }
+  }
   for (const [column, field] of Object.entries(columnToField)) {
-    if (haystack.includes(column)) {
+    if (violated.has(column)) {
       return field;
     }
   }

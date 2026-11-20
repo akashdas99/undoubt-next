@@ -18,7 +18,7 @@ async function bootstrap() {
   await app.register(cookie);
 
   const config = app.get(ConfigService);
-  const webOrigin = config.get<string>('WEB_ORIGIN') ?? 'http://localhost:3000';
+  const webOrigin = config.getOrThrow<string>('WEB_ORIGIN');
   app.enableCors({
     origin: webOrigin,
     credentials: true,

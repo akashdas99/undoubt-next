@@ -19,10 +19,11 @@
     "dev": "tsc --watch",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "pnpm --filter @workspace/constants build && drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@workspace/constants": "workspace:*",
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {

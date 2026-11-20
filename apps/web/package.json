@@ -26,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "@vercel/blob": "catalog:",
+    "@workspace/constants": "workspace:*",
     "@workspace/db": "workspace:*",
     "@workspace/ui": "workspace:*",
     "@workspace/validations": "workspace:*",

@@ -8,7 +8,11 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthModule } from './auth/auth.module.js';
 import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
 import { EmailModule } from './email/email.module.js';
-import { DB_POOL_MAX } from '@/lib/constants.js';
+import {
+  DB_POOL_MAX,
+  THROTTLE_DEFAULT_LIMIT,
+  THROTTLE_WINDOW_MS,
+} from '@workspace/constants';
 
 @Module({
   imports: [
@@ -26,8 +30,8 @@ import { DB_POOL_MAX } from '@/lib/constants.js';
     }),
     ThrottlerModule.forRoot([
       {
-        ttl: 60_000,
-        limit: 30,
+        ttl: THROTTLE_WINDOW_MS,
+        limit: THROTTLE_DEFAULT_LIMIT,
       },
     ]),
     EmailModule,

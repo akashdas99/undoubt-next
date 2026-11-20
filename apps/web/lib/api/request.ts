@@ -1,18 +1,25 @@
-import { DEFAULT_API_ORIGIN } from "@/lib/constants";
-
 export type ApiResult<T> =
   | { response: T; error: null }
   | { response: null; error: unknown };
 
 export function apiResult<T>(ok: boolean, body: unknown): ApiResult<T> {
   if (!ok) {
-    return { response: null, error: body };
+    return {
+      response: null,
+      error: body || { message: "Request failed" },
+    };
   }
   return { response: body as T, error: null };
 }
 
 export function apiOrigin() {
-  const configured = process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_ORIGIN;
+  if (typeof window !== "undefined") {
+    return "";
+  }
+  const configured = process.env.NEXT_PUBLIC_API_URL;
+  if (!configured) {
+    throw new Error("NEXT_PUBLIC_API_URL is required");
+  }
   return configured.replace(/\/$/, "");
 }
 

@@ -1,4 +1,4 @@
-import { DB_POOL_MAX } from "@/lib/constants";
+import { DB_POOL_MAX } from "@workspace/constants";
 import type { Database } from "@workspace/db";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";

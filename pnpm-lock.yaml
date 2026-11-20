@@ -382,6 +382,9 @@ importers:
       '@nestjs/throttler':
         specifier: 'catalog:'
         version: 6.8.0(@nestjs/common@12.5.0(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.5.0)(reflect-metadata@0.2.2)
+      '@workspace/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@workspace/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -512,6 +515,9 @@ importers:
       '@vercel/blob':
         specifier: 'catalog:'
         version: 2.6.1
+      '@workspace/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@workspace/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -637,8 +643,26 @@ importers:
         specifier: 'catalog:'
         version: 5.9.2
 
+  packages/constants:
+    devDependencies:
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.4(jiti@2.7.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
+
   packages/db:
     dependencies:
+      '@workspace/constants':
+        specifier: workspace:*
+        version: link:../constants
       drizzle-orm:
         specifier: 'catalog:'
         version: 1.0.0-rc.5(@neondatabase/serverless@1.1.0)(@types/pg@8.23.1)(pg@8.23.1)(zod@4.4.3)

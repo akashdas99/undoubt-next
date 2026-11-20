@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { jwtVerify, SignJWT } from 'jose';
+import { MIN_SECRET_LENGTH } from '@workspace/constants';
 import { ACCESS_TTL } from '@/lib/constants.js';
 
 export type AccessToken = {
@@ -13,8 +14,10 @@ export class TokensService {
 
   private jwtKey() {
     const secret = this.config.getOrThrow<string>('SECRET');
-    if (secret.length < 32) {
-      throw new Error('SECRET must be at least 32 characters');
+    if (secret.length < MIN_SECRET_LENGTH) {
+      throw new Error(
+        `SECRET must be at least ${MIN_SECRET_LENGTH} characters`,
+      );
     }
     return new TextEncoder().encode(secret);
   }
