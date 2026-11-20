@@ -1,9 +1,6 @@
 import { randomUUID } from "crypto";
 import { db } from "@/db/drizzle";
-import { questions } from "@/db/schema/questions";
-import { questionVotes } from "@/db/schema/questionVotes";
-import { questionStats } from "@/db/schema/questionStats";
-import { users } from "@/db/schema/users";
+import { questionStats, questionVotes, questions, users } from "@workspace/db";
 import { errorResponse, successResponse } from "@/lib/response";
 import createSlug, { parseZodErrors } from "@/lib/utils";
 import { withPagination } from "@/lib/withPagination";
@@ -17,7 +14,7 @@ import {
 } from "@workspace/validations/question";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { sanitizeRichText } from "@/lib/sanitizeRichText";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 
 export const getQuestions = async (
   keyword: string = "",

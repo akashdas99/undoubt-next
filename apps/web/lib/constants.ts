@@ -1,8 +1,6 @@
 // Pagination constants
 export const QUESTIONS_PER_PAGE = 10;
 
-export const DB_POOL_MAX = 10;
-
 // Intersection Observer constants
 export const INTERSECTION_THRESHOLD = 0.1;
 
@@ -19,6 +17,7 @@ export const EDITOR_IMAGE_MIN_PX = 48;
 export const EDITOR_IMAGE_MAX_PX = 1024;
 export const EDITOR_IMAGE_MAX_BYTES = 1024 * 1024;
 export const EDITOR_IMAGE_UPLOAD_WINDOW_MS = 60 * 1000;
+
 export const EDITOR_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",

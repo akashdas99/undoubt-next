@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { User } from "@/db/schema/users";
+import { User } from "@workspace/db";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queries/keys";
 

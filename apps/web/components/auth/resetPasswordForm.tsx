@@ -2,17 +2,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { resetPasswordAction } from "@/actions/auth";
+import { authEndpoints } from "@/lib/auth/endpoints";
+import { postForm } from "@/lib/api/form";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormPassword } from "@/components/ui/form";
-import { isEmpty } from "@/lib/functions";
 import { ResetPasswordType } from "@/types/auth";
 import { Button } from "@workspace/ui/components/button";
 import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { ResetPasswordSchema } from "@workspace/validations/auth";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState, useState } from "react";
+import { useState } from "react";
 
 interface ResetPasswordFormProps {
   token: string;
@@ -22,30 +22,24 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [res, handleResetPassword, loadingResetPassword] = useActionState(
-    async (_: unknown, userData: ResetPasswordType) => {
-      const res = await resetPasswordAction(userData);
-      if (!isEmpty(res) && "success" in res && res?.success) {
-        setShowSuccess(true);
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
-
-  const form = useForm<ResetPasswordType>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordType>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
       token,
       password: "",
       confirmPassword: "",
     },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
 
-  const onSubmit = (values: ResetPasswordType) => {
-    startTransition(() => handleResetPassword(values));
-  };
+  const onSubmit = (values: ResetPasswordType) =>
+    postForm(authEndpoints.resetPassword, values, setError, () => {
+      setShowSuccess(true);
+    });
 
   if (showSuccess) {
     return (
@@ -72,34 +66,29 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         title="Reset Password"
         description="Enter your new password below."
       />
-      <form id="reset-password-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="reset-password-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormPassword
-            control={form.control}
+            control={control}
             name="password"
             label="New Password"
             placeholder="At least 8 characters"
             autoComplete="new-password"
           />
           <FormPassword
-            control={form.control}
+            control={control}
             name="confirmPassword"
             label="Confirm Password"
             placeholder="Repeat your password"
             autoComplete="new-password"
           />
         </FieldGroup>
-        <FieldError
-          errors={[
-            form?.formState?.errors?.root,
-            form?.formState?.errors?.token,
-          ]}
-        />
+        <FieldError errors={[errors.root, errors.token]} />
         <Button
           type="submit"
           size="lg"
           className="mt-sm w-full"
-          loading={loadingResetPassword}
+          loading={isSubmitting}
         >
           Reset Password
         </Button>

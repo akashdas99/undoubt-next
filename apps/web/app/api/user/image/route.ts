@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
-import { users } from "@/db/schema/users";
-import { getSessionFromToken, getSessionToken } from "@/lib/session";
+import { users } from "@workspace/db";
+import { getSession } from "@/lib/auth/session";
 import { copy } from "@vercel/blob";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { eq } from "drizzle-orm";
@@ -18,14 +18,14 @@ export async function POST(request: Request): Promise<NextResponse> {
       onBeforeGenerateToken: async (pathname) => {
         // Generate a client token for the browser to upload the file
 
-        const session = await getSessionToken();
+        const session = await getSession();
         if (!session || !pathname.startsWith("public/"))
           throw new Error("Could not upload file");
 
         return {
           allowedContentTypes: ["image/*"],
           tokenPayload: JSON.stringify({
-            session,
+            userId: session.id,
           }),
           maximumSizeInBytes: 1024 * 1024,
           validUntil: Date.now() + 60 * 1000,
@@ -35,16 +35,16 @@ export async function POST(request: Request): Promise<NextResponse> {
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         // Get notified of client upload completion
         if (!tokenPayload) throw new Error("Could not upload file");
-        const session = await getSessionFromToken(
-          JSON.parse(tokenPayload)?.session
-        );
+        const userId = JSON.parse(tokenPayload)?.userId;
+        if (typeof userId !== "string")
+          throw new Error("Could not upload file");
 
         const [user] = await db
           .select({
             id: users.id,
           })
           .from(users)
-          .where(eq(users.id, session.id))
+          .where(eq(users.id, userId))
           .limit(1);
 
         if (!user) throw new Error("User not found");
@@ -59,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           .set({
             profilePicture: copiedBlog?.pathname,
           })
-          .where(eq(users.id, session.id));
+          .where(eq(users.id, userId));
       },
     });
 

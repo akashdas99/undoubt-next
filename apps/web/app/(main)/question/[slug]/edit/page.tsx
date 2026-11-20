@@ -1,6 +1,6 @@
 import QuestionForm from "@/components/question/questionForm";
 import { getQuestionBySlug } from "@/data/question";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 

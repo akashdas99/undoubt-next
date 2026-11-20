@@ -2,37 +2,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { registerUserAction } from "@/actions/auth";
+import { authEndpoints } from "@/lib/auth/endpoints";
+import { postForm } from "@/lib/api/form";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormInput, FormPassword } from "@/components/ui/form";
-import { isEmpty } from "@/lib/functions";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { RegisterType } from "@/types/auth";
 import { Button } from "@workspace/ui/components/button";
 import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { RegisterSchema } from "@workspace/validations/auth";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState } from "react";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();
   const invalidateProfile = useInvalidateProfile();
 
-  const [res, handleRegister, loadingSignup] = useActionState(
-    async (_: unknown, userData: RegisterType) => {
-      const res = await registerUserAction(userData);
-      if (!isEmpty(res) && "success" in res && res?.success) {
-        router.replace("/");
-        router.refresh();
-        invalidateProfile();
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
-
-  const form = useForm<RegisterType>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterType>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: "",
@@ -40,34 +31,36 @@ const RegisterForm: React.FC = () => {
       userName: "",
       password: "",
     },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
 
-  const onSubmit = (values: RegisterType) => {
-    startTransition(() => handleRegister(values));
-  };
+  const onSubmit = (values: RegisterType) =>
+    postForm(authEndpoints.register, values, setError, () => {
+      router.replace("/");
+      router.refresh();
+      invalidateProfile();
+    });
 
   return (
     <>
       <AuthHeading title="Register Account" />
-      <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="register-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup className="grid-cols-2 gap-x-sm md:grid">
           <FormInput
-            control={form.control}
+            control={control}
             name="name"
             label="Name"
             placeholder="Full name"
             autoComplete="name"
           />
           <FormInput
-            control={form.control}
+            control={control}
             name="userName"
             label="Username"
             placeholder="yourname"
             autoComplete="username"
           />
           <FormInput
-            control={form.control}
+            control={control}
             name="email"
             label="Email"
             placeholder="you@example.com"
@@ -75,7 +68,7 @@ const RegisterForm: React.FC = () => {
             className="col-span-2"
           />
           <FormPassword
-            control={form.control}
+            control={control}
             name="password"
             label="Password"
             placeholder="At least 8 characters"
@@ -83,12 +76,12 @@ const RegisterForm: React.FC = () => {
             className="col-span-2"
           />
         </FieldGroup>
-        <FieldError errors={[form?.formState?.errors?.root]} />
+        <FieldError errors={[errors.root]} />
         <Button
           type="submit"
           size="lg"
           className="col-span-2 mt-lg w-full justify-self-center"
-          loading={loadingSignup}
+          loading={isSubmitting}
         >
           Create Account
         </Button>

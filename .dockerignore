@@ -1,0 +1,10 @@
+node_modules
+.git
+.turbo
+**/.next
+**/dist
+coverage
+.harness
+.env
+.env.*
+*.pem

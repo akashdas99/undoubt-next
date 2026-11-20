@@ -1,13 +1,14 @@
 "use client";
 
-import { logoutUserAction } from "@/actions/auth";
 import { Button } from "@workspace/ui/components/button";
 import { LogOut, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
 import type { ProfileUser } from "./profileWrapper";
+import { useLogout } from "./useLogout";
 
 export function ProfileMenu({ user }: { user: ProfileUser }) {
+  const logout = useLogout();
   return (
     <div className="flex flex-col gap-sm">
       <div className="flex items-center gap-sm rounded-panel bg-card p-sm">
@@ -31,7 +32,7 @@ export function ProfileMenu({ user }: { user: ProfileUser }) {
       <Button
         variant="ghost"
         className="w-full justify-start rounded-2xl px-md text-destructive hover:text-destructive"
-        onClick={logoutUserAction}
+        onClick={logout}
       >
         <LogOut />
         Log out

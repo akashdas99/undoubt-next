@@ -1,6 +1,6 @@
 "use client";
 
-import { Answer } from "@/db/schema/answers";
+import type { Answer } from "@workspace/db";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,

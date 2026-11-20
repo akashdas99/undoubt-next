@@ -1,0 +1,311 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "32d5a187-db78-41ca-9202-e3a966d2e2c1",
+  "prevIds": ["e2df851e-12ae-4f6d-a306-1046384b8430"],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": ["table", "public", "question_votes"],
+      "writes": [
+        "s|tbl|public.question_votes",
+        "n|tbl|public.question_votes",
+        "e|tbl|public.question_votes",
+        "n|rel|public.question_votes",
+        "n|type|public.question_votes",
+        "n|rel|public.question_votes_pkey",
+        "n|rel|public.question_votes_user_id_question_id_unique"
+      ],
+      "reads": ["n|sch|public"]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "question_votes",
+        "question_votes_question_id_idx"
+      ],
+      "writes": [
+        "s|idx|public.question_votes_question_id_idx",
+        "n|idx|public.question_votes_question_id_idx",
+        "e|idx|public.question_votes_question_id_idx",
+        "n|rel|public.question_votes_question_id_idx"
+      ],
+      "reads": [
+        "n|tbl|public.question_votes",
+        "n|sch|public",
+        "n|col|public.question_votes.question_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "question_votes",
+        "question_votes_user_id_idx"
+      ],
+      "writes": [
+        "s|idx|public.question_votes_user_id_idx",
+        "n|idx|public.question_votes_user_id_idx",
+        "e|idx|public.question_votes_user_id_idx",
+        "n|rel|public.question_votes_user_id_idx"
+      ],
+      "reads": [
+        "n|tbl|public.question_votes",
+        "n|sch|public",
+        "n|col|public.question_votes.user_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": ["table", "public", "question_votes"],
+      "writes": [
+        "s|fk|public.question_votes.question_votes_question_id_questions_id_fk",
+        "n|fk|public.question_votes.question_votes_question_id_questions_id_fk",
+        "e|fk|public.question_votes.question_votes_question_id_questions_id_fk",
+        "n|con|public.question_votes.question_votes_question_id_questions_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.question_votes",
+        "n|sch|public",
+        "n|tbl|public.questions",
+        "n|sch|public",
+        "n|col|public.question_votes.question_id",
+        "n|col|public.questions.id",
+        "e|uniqueness|public.questions.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": ["table", "public", "question_votes"],
+      "writes": [
+        "s|fk|public.question_votes.question_votes_user_id_users_id_fk",
+        "n|fk|public.question_votes.question_votes_user_id_users_id_fk",
+        "e|fk|public.question_votes.question_votes_user_id_users_id_fk",
+        "n|con|public.question_votes.question_votes_user_id_users_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.question_votes",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.question_votes.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "question_votes",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "id",
+        "type": "uuid",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_id",
+        "type": "uuid",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "user_id",
+        "type": "uuid",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "vote",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "created_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "updated_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_question_id_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "question_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_user_id_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "user_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_question_id_questions_id_fk",
+        "nameExplicit": false,
+        "columns": ["question_id"],
+        "schemaTo": "public",
+        "tableTo": "questions",
+        "columnsTo": ["id"],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_user_id_users_id_fk",
+        "nameExplicit": false,
+        "columns": ["user_id"],
+        "schemaTo": "public",
+        "tableTo": "users",
+        "columnsTo": ["id"],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_pkey",
+        "columns": ["id"],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_votes",
+        "name": "question_votes_user_id_question_id_unique",
+        "nameExplicit": false,
+        "columns": ["user_id", "question_id"],
+        "nullsNotDistinct": false,
+        "entityType": "uniques"
+      }
+    }
+  ]
+}

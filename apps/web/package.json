@@ -26,6 +26,8 @@
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "@vercel/blob": "catalog:",
+    "@workspace/constants": "workspace:*",
+    "@workspace/db": "workspace:*",
     "@workspace/ui": "workspace:*",
     "@workspace/validations": "workspace:*",
     "bcryptjs": "catalog:",
@@ -36,7 +38,6 @@
     "drizzle-orm": "catalog:",
     "eslint-plugin-drizzle": "catalog:",
     "html-react-parser": "catalog:",
-    "jose": "catalog:",
     "lucide-react": "catalog:",
     "nanoid": "catalog:",
     "next": "catalog:",
@@ -46,7 +47,6 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
-    "resend": "catalog:",
     "sanitize-html": "catalog:",
     "slugify": "catalog:",
     "tailwind-merge": "catalog:",
@@ -67,7 +67,6 @@
     "@types/three": "catalog:",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
-    "drizzle-kit": "catalog:",
     "eslint": "catalog:",
     "typescript": "catalog:"
   }

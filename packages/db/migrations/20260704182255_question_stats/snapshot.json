@@ -1,0 +1,143 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "c1e9258d-ec55-46a2-97be-3be45a6275dc",
+  "prevIds": ["32d5a187-db78-41ca-9202-e3a966d2e2c1"],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": ["table", "public", "question_stats"],
+      "writes": [
+        "s|tbl|public.question_stats",
+        "n|tbl|public.question_stats",
+        "e|tbl|public.question_stats",
+        "n|rel|public.question_stats",
+        "n|type|public.question_stats",
+        "n|rel|public.question_stats_pkey"
+      ],
+      "reads": ["n|sch|public"]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": ["table", "public", "question_stats"],
+      "writes": [
+        "s|fk|public.question_stats.question_stats_question_id_questions_id_fk",
+        "n|fk|public.question_stats.question_stats_question_id_questions_id_fk",
+        "e|fk|public.question_stats.question_stats_question_id_questions_id_fk",
+        "n|con|public.question_stats.question_stats_question_id_questions_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.question_stats",
+        "n|sch|public",
+        "n|tbl|public.questions",
+        "n|sch|public",
+        "n|col|public.question_stats.question_id",
+        "n|col|public.questions.id",
+        "e|uniqueness|public.questions.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "question_stats",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "question_id",
+        "type": "uuid",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "likes",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "dislikes",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "answers_count",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "question_stats_question_id_questions_id_fk",
+        "nameExplicit": false,
+        "columns": ["question_id"],
+        "schemaTo": "public",
+        "tableTo": "questions",
+        "columnsTo": ["id"],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "question_stats",
+        "name": "question_stats_pkey",
+        "columns": ["question_id"],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}

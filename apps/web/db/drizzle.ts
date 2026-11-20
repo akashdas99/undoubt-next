@@ -1,5 +1,6 @@
-import { DB_POOL_MAX } from "@/lib/constants";
-import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
+import { DB_POOL_MAX } from "@workspace/constants";
+import type { Database } from "@workspace/db";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 const globalForDb = globalThis as unknown as { pool?: Pool };
@@ -21,4 +22,4 @@ const pool = globalForDb.pool ?? createPool();
 
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
 
-export const db: NodePgDatabase = drizzle({ client: pool });
+export const db: Database = drizzle({ client: pool });

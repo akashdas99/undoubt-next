@@ -2,11 +2,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { loginUserAction } from "@/actions/auth";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormInput, FormPassword } from "@/components/ui/form";
-import { isEmpty } from "@/lib/functions";
+import { authEndpoints } from "@/lib/auth/endpoints";
+import { postForm } from "@/lib/api/form";
 import { useInvalidateProfile } from "@/lib/queries/user";
 import { LoginType } from "@/types/auth";
 import { Button } from "@workspace/ui/components/button";
@@ -14,46 +14,45 @@ import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { LoginSchema } from "@workspace/validations/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState, useState } from "react";
+import { useState } from "react";
 
 export default function LoginForm() {
   const router = useRouter();
   const invalidateProfile = useInvalidateProfile();
-  const [isGuest, setIsGuest] = useState<boolean>();
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
 
-  const [res, handleLogin, loadingLogin] = useActionState(
-    async (_: unknown, userData: LoginType) => {
-      const res = await loginUserAction(userData);
-      if (!isEmpty(res) && "success" in res && res?.success) {
-        router.replace("/");
-        router.refresh();
-        invalidateProfile();
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
-
-  const form = useForm<LoginType>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
 
-  const onSubmit = (values: LoginType) => {
-    setIsGuest(false);
-    startTransition(() => handleLogin(values));
-  };
+  const onSubmit = (values: LoginType) =>
+    postForm(authEndpoints.login, values, setError, () => {
+      router.replace("/");
+      router.refresh();
+      invalidateProfile();
+    });
 
   const onGuestLogin = async () => {
     const email = process.env.NEXT_PUBLIC_GUEST_EMAIL;
     const password = process.env.NEXT_PUBLIC_GUEST_PASSWORD;
-    setIsGuest(true);
-    if (email && password) {
-      startTransition(() => handleLogin({ email, password }));
+    if (!email || !password) {
+      return;
+    }
+    setIsGuestLoading(true);
+    try {
+      await onSubmit({ email, password });
+    } catch (error) {
+      console.error(error);
+      setIsGuestLoading(false);
     }
   };
 
@@ -63,17 +62,17 @@ export default function LoginForm() {
         title="Welcome Back"
         description="Continue exploring answers, discussions, and solutions."
       />
-      <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="login-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput
-            control={form.control}
+            control={control}
             name="email"
             label="Email"
             placeholder="you@example.com"
             autoComplete="email"
           />
           <FormPassword
-            control={form.control}
+            control={control}
             name="password"
             label="Password"
             placeholder="Your password"
@@ -88,13 +87,13 @@ export default function LoginForm() {
             Forgot Password?
           </Link>
         </div>
-        <FieldError errors={[form?.formState?.errors?.root]} />
+        <FieldError errors={[errors.root]} />
         <div className="mt-lg flex flex-col gap-sm">
           <Button
             type="submit"
             size="lg"
             className="w-full"
-            loading={!isGuest && loadingLogin}
+            loading={isSubmitting}
           >
             Login
           </Button>
@@ -104,7 +103,7 @@ export default function LoginForm() {
             size="lg"
             className="w-full"
             onClick={onGuestLogin}
-            loading={isGuest && loadingLogin}
+            loading={isGuestLoading}
           >
             Explore as Guest
           </Button>

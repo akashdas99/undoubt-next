@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth/session";
 
 type Session = Awaited<ReturnType<typeof getSession>>;
 

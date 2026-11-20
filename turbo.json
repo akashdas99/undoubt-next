@@ -6,13 +6,34 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "web#build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["SECRET", "RESEND_API_KEY", "EMAIL_FROM", "DATABASE_URI"]
+      "env": [
+        "DATABASE_URI",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_BASEURL",
+        "PROXY_SECRET",
+        "VERCEL"
+      ]
+    },
+    "api#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**"],
+      "env": [
+        "COOKIE_DOMAIN",
+        "DATABASE_URI",
+        "EMAIL_FROM",
+        "PORT",
+        "PROXY_SECRET",
+        "RESEND_API_KEY",
+        "SECRET",
+        "WEB_ORIGIN"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -21,9 +42,10 @@
       "dependsOn": ["^format"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typecheck", "^build"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }

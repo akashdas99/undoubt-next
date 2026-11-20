@@ -17,7 +17,7 @@ External deps in every `package.json` use `catalog:` from `pnpm-workspace.yaml`.
 
 - Import an existing helper, action, form mapper, or query. Extend it when the new case is the same behavior. Copy only when sharing would couple unrelated callers.
 - One React component per file, next to its caller. A skeleton that only represents that component may stay in the same file. `QuestionCardSkeleton` is its own module.
-- Reusable numbers, format strings, delays, and limits go in `apps/web/lib/constants.ts`. Leave a one-off inline (`0`, `1`, a local index).
+- Reusable numbers, format strings, delays, and limits: values shared across api, db, or web go in `packages/constants/src/index.ts` and import from `@workspace/constants`; web-only values go in `apps/web/lib/constants.ts`. Never define the same constant in both places. Leave a one-off inline (`0`, `1`, a local index).
 - `className` that mixes a base string with conditionals, props, or variants uses `cn()` (clsx + tailwind-merge). Pass the `className` prop last. Web: `import { cn } from "@/lib/utils"`. UI package: `import { cn } from "@workspace/ui/lib/utils"`. No template strings, concatenation, or `.filter(Boolean).join(" ")` for Tailwind classes.
 
 ## Tokens

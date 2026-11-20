@@ -4,7 +4,7 @@ import { deleteAnswerAction } from "@/actions/answer";
 import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
-import { Answer } from "@/db/schema/answers";
+import type { Answer } from "@workspace/db";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";

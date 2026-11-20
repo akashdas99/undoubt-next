@@ -2,42 +2,36 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { forgotPasswordAction } from "@/actions/auth";
+import { authEndpoints } from "@/lib/auth/endpoints";
+import { postForm } from "@/lib/api/form";
 import { AuthHeading } from "@/components/auth/authHeading";
 import { AuthSwitchLink } from "@/components/auth/authSwitchLink";
 import { FormInput } from "@/components/ui/form";
-import { isEmpty } from "@/lib/functions";
 import { ForgotPasswordType } from "@/types/auth";
 import { Button } from "@workspace/ui/components/button";
 import { FieldError, FieldGroup } from "@workspace/ui/components/field";
 import { ForgotPasswordSchema } from "@workspace/validations/auth";
-import { startTransition, useActionState, useState } from "react";
+import { useState } from "react";
 
 export default function ForgotPasswordForm() {
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [res, handleForgotPassword, loadingForgotPassword] = useActionState(
-    async (_: unknown, userData: ForgotPasswordType) => {
-      const res = await forgotPasswordAction(userData);
-      if (!isEmpty(res) && "success" in res && res?.success) {
-        setShowSuccess(true);
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
-
-  const form = useForm<ForgotPasswordType>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordType>({
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
       email: "",
     },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
 
-  const onSubmit = (values: ForgotPasswordType) => {
-    startTransition(() => handleForgotPassword(values));
-  };
+  const onSubmit = (values: ForgotPasswordType) =>
+    postForm(authEndpoints.forgotPassword, values, setError, () => {
+      setShowSuccess(true);
+    });
 
   if (showSuccess) {
     return (
@@ -57,22 +51,22 @@ export default function ForgotPasswordForm() {
         title="Forgot Password"
         description="Enter your email address and we'll send you a link to reset your password."
       />
-      <form id="forgot-password-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="forgot-password-form" onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <FormInput
-            control={form.control}
+            control={control}
             name="email"
             label="Email"
             placeholder="you@example.com"
             autoComplete="email"
           />
         </FieldGroup>
-        <FieldError errors={[form?.formState?.errors?.root]} />
+        <FieldError errors={[errors.root]} />
         <Button
           type="submit"
           size="lg"
           className="mt-sm w-full"
-          loading={loadingForgotPassword}
+          loading={isSubmitting}
         >
           Send Reset Link
         </Button>
