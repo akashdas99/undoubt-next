@@ -26,6 +26,7 @@ describe('AuthService', () => {
     select: ReturnType<typeof vi.fn>;
     insert: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
+    transaction: ReturnType<typeof vi.fn>;
   };
 
   const config = {
@@ -53,6 +54,9 @@ describe('AuthService', () => {
       select: vi.fn(() => ({ from: selectFrom })),
       insert: vi.fn(),
       update: vi.fn(),
+      transaction: vi.fn(
+        async (callback: (tx: typeof db) => Promise<unknown>) => callback(db),
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({

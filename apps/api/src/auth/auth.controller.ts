@@ -10,26 +10,26 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthService } from './auth.service.js';
 import {
   LOGIN_THROTTLE_LIMIT,
   SENSITIVE_THROTTLE_LIMIT,
   THROTTLE_WINDOW_MS,
 } from '@workspace/constants';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import {
   ACCESS_COOKIE,
   type AuthCookieOptions,
   clearAuthCookies,
   setAuthCookies,
 } from './auth-cookies.js';
-import { TokensService } from './tokens/tokens.service.js';
+import { AuthService } from './auth.service.js';
 import {
   ForgotPasswordDto,
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
 } from './dto/auth.dto.js';
+import { TokensService } from './tokens/tokens.service.js';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -56,8 +56,8 @@ export class AuthController {
     if (!token) {
       return { data: null };
     }
-    const viewer = await this.tokens.verifyAccessToken(token);
-    return { data: viewer };
+    const user = await this.tokens.verifyAccessToken(token);
+    return { data: user };
   }
 
   @Post('register')

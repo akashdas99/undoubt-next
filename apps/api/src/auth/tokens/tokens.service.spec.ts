@@ -39,7 +39,7 @@ describe('TokensService', () => {
     expect(service).toBeDefined();
   });
 
-  it('returns the viewer for a token it signed', async () => {
+  it('returns the user for a token it signed', async () => {
     const { accessToken } = await service.issueAccessToken({
       id: 'user-id',
       userName: 'ada',

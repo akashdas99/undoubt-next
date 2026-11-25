@@ -1,0 +1,177 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "90107268-bd00-425c-a719-be4a13e70dd9",
+  "prevIds": ["c1e9258d-ec55-46a2-97be-3be45a6275dc"],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": ["table", "public", "user_stats"],
+      "writes": [
+        "s|tbl|public.user_stats",
+        "n|tbl|public.user_stats",
+        "e|tbl|public.user_stats",
+        "n|rel|public.user_stats",
+        "n|type|public.user_stats",
+        "n|rel|public.user_stats_pkey"
+      ],
+      "reads": ["n|sch|public"]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "user_stats",
+        "user_stats_contribution_idx"
+      ],
+      "writes": [
+        "s|idx|public.user_stats_contribution_idx",
+        "n|idx|public.user_stats_contribution_idx",
+        "e|idx|public.user_stats_contribution_idx",
+        "n|rel|public.user_stats_contribution_idx"
+      ],
+      "reads": ["n|tbl|public.user_stats", "n|sch|public"]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": ["table", "public", "user_stats"],
+      "writes": [
+        "s|fk|public.user_stats.user_stats_user_id_users_id_fkey",
+        "n|fk|public.user_stats.user_stats_user_id_users_id_fkey",
+        "e|fk|public.user_stats.user_stats_user_id_users_id_fkey",
+        "n|con|public.user_stats.user_stats_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.user_stats",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.user_stats.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "user_stats",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "user_id",
+        "type": "uuid",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "question_count",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "answer_count",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "0",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "user_stats_contribution_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "\"question_count\" + \"answer_count\"",
+            "isExpression": true,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "user_stats_user_id_users_id_fkey",
+        "nameExplicit": false,
+        "columns": ["user_id"],
+        "schemaTo": "public",
+        "tableTo": "users",
+        "columnsTo": ["id"],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "user_stats_pkey",
+        "columns": ["user_id"],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "user_stats",
+        "name": "user_stats_counts_non_negative",
+        "value": "\"question_count\" >= 0 AND \"answer_count\" >= 0",
+        "entityType": "checks"
+      }
+    }
+  ]
+}

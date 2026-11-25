@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectDrizzle } from '@nestjs/drizzle';
 import { BCRYPT_COST, RESET_TOKEN_LIFETIME_MS } from '@workspace/constants';
-import { users, type Database } from '@workspace/db';
+import { userStats, users, type Database } from '@workspace/db';
 import bcryptjs from 'bcryptjs';
 import { and, eq, gt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
@@ -81,22 +81,28 @@ export class AuthService {
 
     // Two parallel sign-ups can both pass the SELECT; turn insert 23505 into 409, not 500.
     try {
-      const [registeredUser] = await this.db
-        .insert(users)
-        .values({
-          name: validatedUser.name,
-          userName: validatedUser.userName,
-          email: validatedUser.email,
-          password: hashedPassword,
-        })
-        .returning({
-          id: users.id,
-          userName: users.userName,
-        });
+      const registeredUser = await this.db.transaction(async (tx) => {
+        const [created] = await tx
+          .insert(users)
+          .values({
+            name: validatedUser.name,
+            userName: validatedUser.userName,
+            email: validatedUser.email,
+            password: hashedPassword,
+          })
+          .returning({
+            id: users.id,
+            userName: users.userName,
+          });
 
-      if (!registeredUser) {
-        throw new BadRequestException('Failed to create user');
-      }
+        if (!created) {
+          throw new BadRequestException('Failed to create user');
+        }
+
+        await tx.insert(userStats).values({ userId: created.id });
+
+        return created;
+      });
 
       return this.tokens.issueAccessToken(registeredUser);
     } catch (error) {

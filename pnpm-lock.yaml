@@ -424,6 +424,12 @@ importers:
       rxjs:
         specifier: 'catalog:'
         version: 7.8.2
+      sanitize-html:
+        specifier: 'catalog:'
+        version: 2.17.6
+      slugify:
+        specifier: 'catalog:'
+        version: 1.6.9
     devDependencies:
       '@nestjs/cli':
         specifier: 'catalog:'
@@ -443,6 +449,9 @@ importers:
       '@types/pg':
         specifier: 'catalog:'
         version: 8.23.1
+      '@types/sanitize-html':
+        specifier: 'catalog:'
+        version: 2.16.1
       '@types/supertest':
         specifier: 'catalog:'
         version: 7.2.1
