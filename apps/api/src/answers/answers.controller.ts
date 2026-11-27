@@ -9,13 +9,9 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import {
-  OptionalSession,
-  SessionGuard,
-} from '../common/session/session.guard.js';
+import { Public } from '../common/session/session.guard.js';
 import { CurrentUser, type RequestUser } from '../common/session/user.js';
 import { AnswerDto, ListAnswersQueryDto } from './dto/answer.dto.js';
 import { AnswersService } from './answers.service.js';
@@ -26,6 +22,7 @@ export class AnswersController {
   constructor(private readonly answers: AnswersService) {}
 
   @Get('questions/:slug/answers')
+  @Public()
   @ApiOperation({ summary: 'Answers for a question' })
   list(@Param('slug') slug: string, @Query() query: ListAnswersQueryDto) {
     return this.answers.listByQuestionSlug(slug, query.limit, query.cursor);
@@ -33,7 +30,6 @@ export class AnswersController {
 
   @Post('questions/:slug/answers')
   @HttpCode(201)
-  @UseGuards(SessionGuard)
   @ApiOperation({ summary: 'Add an answer' })
   create(
     @CurrentUser() user: RequestUser,
@@ -45,7 +41,6 @@ export class AnswersController {
 
   @Patch('answers/:id')
   @HttpCode(204)
-  @UseGuards(SessionGuard)
   @ApiOperation({ summary: 'Update an answer' })
   update(
     @CurrentUser() user: RequestUser,
@@ -57,7 +52,6 @@ export class AnswersController {
 
   @Delete('answers/:id')
   @HttpCode(204)
-  @UseGuards(SessionGuard)
   @ApiOperation({ summary: 'Delete an answer' })
   remove(
     @CurrentUser() user: RequestUser,

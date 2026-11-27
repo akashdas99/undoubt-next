@@ -13,8 +13,10 @@ import { TokensService } from '../../auth/tokens/tokens.service.js';
 import type { RequestWithUser } from './user.js';
 
 const OPTIONAL_SESSION = 'optionalSession';
+const PUBLIC_ROUTE = 'publicRoute';
 
 export const OptionalSession = () => SetMetadata(OPTIONAL_SESSION, true);
+export const Public = () => SetMetadata(PUBLIC_ROUTE, true);
 
 @Injectable()
 export class SessionGuard implements CanActivate {
@@ -24,6 +26,13 @@ export class SessionGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_ROUTE, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
     const optional = this.reflector.getAllAndOverride<boolean>(
       OPTIONAL_SESSION,
       [context.getHandler(), context.getClass()],
