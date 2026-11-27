@@ -16,7 +16,12 @@ import type {
 import { and, desc, eq, ilike, or, sql } from 'drizzle-orm';
 import type { RequestUser } from '../common/session/user.js';
 import { createSlug } from '../lib/create-slug.js';
-import { beforeCursor, decodeCursor, encodeCursor } from '../lib/cursor.js';
+import {
+  beforeCursor,
+  decodeCursor,
+  encodeCursor,
+  selectCursorTimestamp,
+} from '../lib/cursor.js';
 import { sanitizeRichText } from '../lib/sanitize-rich-text.js';
 import { adjustUserStats } from '../users/adjust-user-stats.js';
 
@@ -76,7 +81,7 @@ export class QuestionsService {
     const rows = await this.db
       .select({
         ...questionColumns,
-        updatedAt: questions.updatedAt,
+        updatedAt: selectCursorTimestamp(questions.updatedAt),
         answersCount: questionStats.answersCount,
         likes: questionStats.likes,
         dislikes: questionStats.dislikes,
@@ -211,14 +216,33 @@ export class QuestionsService {
     const questionId = questionData.id;
 
     return this.db.transaction(async (tx) => {
-      // 1. Plain read (no lock): who wrote answers on this question?
+      const forbidden = {
+        statusCode: 404,
+        error: 'QUESTION_NOT_FOUND_OR_FORBIDDEN',
+        message:
+          'Question not found or you do not have permission to delete it',
+      };
+
+      // Lock the question before reading answers so an insert waits on this row.
+      const [locked] = await tx
+        .select({ id: questions.id })
+        .from(questions)
+        .where(
+          and(eq(questions.id, questionId), eq(questions.authorId, user.id)),
+        )
+        .for('update');
+
+      if (!locked) throw new NotFoundException(forbidden);
+
+      // Lock the answer rows so a concurrent delete cannot change this set.
       const answerAuthors = await tx
         .select({ authorId: answers.authorId })
         .from(answers)
-        .where(eq(answers.questionId, questionId));
+        .where(eq(answers.questionId, questionId))
+        .for('update');
 
-      // 2. Delete the question first. The WHERE enforces ownership.
-      //    The cascade removes the answers (and the stats row, if it cascades too).
+      // Delete the question. The WHERE enforces ownership.
+      // The cascade removes the answers (and the stats row, if it cascades too).
       const [removed] = await tx
         .delete(questions)
         .where(
@@ -226,15 +250,9 @@ export class QuestionsService {
         )
         .returning({ slug: questions.slug });
 
-      if (!removed)
-        throw new NotFoundException({
-          statusCode: 404,
-          error: 'QUESTION_NOT_FOUND_OR_FORBIDDEN',
-          message:
-            'Question not found or you do not have permission to delete it',
-        });
+      if (!removed) throw new NotFoundException(forbidden);
 
-      // 3. adjustUserStats merges duplicates and sorts, so just pass raw entries.
+      // adjustUserStats merges duplicates and sorts, so just pass raw entries.
       await adjustUserStats(tx, [
         { userId: user.id, questionDelta: -1 },
         ...answerAuthors.map(({ authorId }) => ({

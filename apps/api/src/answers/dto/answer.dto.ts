@@ -7,6 +7,6 @@ export class AnswerDto extends createZodDto(AnswerSchema) {}
 export class ListAnswersQueryDto extends createZodDto(
   z.object({
     cursor: z.string().optional(),
-    limit: z.coerce.number().int().positive().default(50),
+    limit: z.coerce.number().int().positive().max(100).default(50),
   }),
 ) {}

@@ -14,7 +14,12 @@ import {
 import type { AnswerType } from '@workspace/validations/answer';
 import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { RequestUser } from '../common/session/user.js';
-import { beforeCursor, decodeCursor, encodeCursor } from '../lib/cursor.js';
+import {
+  beforeCursor,
+  decodeCursor,
+  encodeCursor,
+  selectCursorTimestamp,
+} from '../lib/cursor.js';
 import { sanitizeRichText } from '../lib/sanitize-rich-text.js';
 import { adjustUserStats } from '../users/adjust-user-stats.js';
 
@@ -38,6 +43,7 @@ export class AnswersService {
         questionId: answers.questionId,
         createdAt: answers.createdAt,
         updatedAt: answers.updatedAt,
+        cursorUpdatedAt: selectCursorTimestamp(answers.updatedAt),
         author: {
           name: users.name,
           profilePicture: users.profilePicture,
@@ -51,13 +57,21 @@ export class AnswersService {
       .limit(limit + 1);
 
     const hasNext = rows.length > limit;
-    const data = hasNext ? rows.slice(0, limit) : rows;
-    const last = data.at(-1);
+    const page = hasNext ? rows.slice(0, limit) : rows;
+    const last = page.at(-1);
 
     return {
-      data,
+      data: page.map(
+        ({ cursorUpdatedAt: _cursorUpdatedAt, ...answer }) => answer,
+      ),
       pagination: {
-        nextCursor: hasNext && last ? encodeCursor(last) : null,
+        nextCursor:
+          hasNext && last
+            ? encodeCursor({
+                updatedAt: last.cursorUpdatedAt,
+                id: last.id,
+              })
+            : null,
       },
     };
   }
@@ -101,9 +115,13 @@ export class AnswersService {
   }
 
   async update(user: RequestUser, id: string, answerData: AnswerType) {
+    const description = sanitizeRichText(answerData.description || '');
+    if (!description.trim())
+      throw new BadRequestException('Answer cannot be empty');
+
     const [updated] = await this.db
       .update(answers)
-      .set({ description: sanitizeRichText(answerData.description) })
+      .set({ description })
       .where(and(eq(answers.id, id), eq(answers.authorId, user.id)))
       .returning({ id: answers.id });
 

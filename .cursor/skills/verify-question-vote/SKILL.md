@@ -29,13 +29,14 @@ Logged-out callers are rejected by `SessionGuard`. A missing question returns be
 ## Coverage
 
 - `apps/api/src/questions/questions.service.ts`: `vote`, `voteDelta`
+- `apps/web/data/questionVote.ts`: `voteOnQuestion`
 - `packages/db/src/schema/questionVotes.ts`: `userQuestionUnique`
 
-Last read with the delta update in the working tree. A change to `vote` or `voteDelta` means this note may no longer describe the code.
+Last read with the delta update in the working tree. A change to `vote`, `voteDelta`, or `voteOnQuestion` means this note may no longer describe the code.
 
 ## Recorded finding
 
-The count-snapshot loss (two concurrent likes each storing 1) applied to `recomputeStats`. That function is gone. This delta path was not measured in PostgreSQL. A crash after the vote write and before the stats update can still leave the row and the total apart, because they are two statements in one transaction. PostgreSQL rolls both back if the transaction does not commit.
+The count-snapshot loss (two concurrent likes each storing 1) applied to `recomputeStats`. That function is gone. This delta path was not measured in PostgreSQL. The vote write and the stats update share one transaction, which preserves committed consistency if a crash prevents commit.
 
 ## When the code changes
 

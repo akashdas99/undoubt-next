@@ -13,8 +13,6 @@ function cdnHostname() {
   }
 }
 
-const imageHost = cdnHostname();
-
 function pixelSize(value: string | undefined) {
   if (!value || !/^\d+$/.test(value)) return undefined;
   const px = Math.min(
@@ -26,6 +24,7 @@ function pixelSize(value: string | undefined) {
 
 function isAllowedImageSrc(src: string | undefined) {
   if (!src) return false;
+  const imageHost = cdnHostname();
   try {
     const url = new URL(src);
     return (
