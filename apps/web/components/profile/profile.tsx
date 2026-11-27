@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import { getProfile } from "@/data/user";
+import { httpMethod } from "@/lib/api/request";
+import { serverReq } from "@/lib/api/with-session";
+import { userEndpoints } from "@/lib/domain/endpoints";
+import type { ProfileUser } from "@/lib/queries/user";
 import UserImage from "../ui/userImage";
 import ImageUpload from "./imageUpload";
 
@@ -19,7 +22,12 @@ function ProfileRow({
 }
 
 export default async function Profile() {
-  const data = await getProfile();
+  const { response: data } = await serverReq<ProfileUser>(userEndpoints.me, {
+    method: httpMethod.get,
+  });
+  if (!data) {
+    throw new Error("Session not found");
+  }
 
   return (
     <div className="mx-auto my-xl w-full max-w-content px-xl">

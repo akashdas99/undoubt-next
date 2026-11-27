@@ -1,11 +1,11 @@
-import { getProfile, getUserById } from "@/data/user";
 import getQueryClient from "@/lib/getQueryClient";
 import { queryKeys } from "@/lib/queries/keys";
+import type { ProfileUser } from "@/lib/queries/user";
 import { getSession } from "@/lib/auth/session";
-import { withTryCatch } from "@/lib/utils";
+import { httpMethod } from "@/lib/api/request";
+import { serverReq } from "@/lib/api/with-session";
+import { userEndpoints } from "@/lib/domain/endpoints";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
-export type ProfileUser = Awaited<ReturnType<typeof getUserById>>;
 
 export async function ProfileWrapper({
   render,
@@ -17,8 +17,10 @@ export async function ProfileWrapper({
 
   let user: ProfileUser | null = null;
   if (session?.id) {
-    const { result } = await withTryCatch(getProfile());
-    user = result ?? null;
+    const { response } = await serverReq<ProfileUser>(userEndpoints.me, {
+      method: httpMethod.get,
+    });
+    user = response ?? null;
   }
 
   queryClient.setQueryData(queryKeys.users.profile(), user);

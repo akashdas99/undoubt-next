@@ -1,13 +1,13 @@
 "use client";
-import { addAnswerAction, updateAnswerAction } from "@/actions/answer";
 import { FieldError, FieldGroup } from "@workspace/ui/components/field";
-import { isEmpty } from "@/lib/functions";
+import { patchForm, postForm } from "@/lib/api/form";
+import { answerEndpoints } from "@/lib/domain/endpoints";
 
 import type { Answer } from "@workspace/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnswerSchema, AnswerType } from "@workspace/validations/answer";
-import { useParams } from "next/navigation";
-import { startTransition, useActionState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@workspace/ui/components/button";
 import { FormEditor } from "../ui/form";
@@ -20,31 +20,45 @@ export default function AnswerForm({
   answer?: Answer;
 }) {
   const params = useParams<{ slug: string }>();
-
-  const [res, handleAddAnswer, isAddingAnswer] = useActionState(
-    async (_: unknown, userData: AnswerType) => {
-      const res = await (answer
-        ? updateAnswerAction(answer?.id, params?.slug, userData)
-        : addAnswerAction(params?.slug, userData));
-
-      if (!isEmpty(res) && "success" in res && res?.success) {
-        closeAnswerForm();
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
+  const router = useRouter();
+  const [isAddingAnswer, setIsAddingAnswer] = useState(false);
 
   const form = useForm<AnswerType>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
       description: answer?.description || "",
     },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
 
-  const onSubmit = (values: AnswerType) => {
-    startTransition(() => handleAddAnswer(values));
+  const onSubmit = async (userData: AnswerType) => {
+    const slug = params?.slug;
+    if (!slug) return;
+
+    setIsAddingAnswer(true);
+    try {
+      const onSuccess = () => {
+        closeAnswerForm();
+        router.refresh();
+      };
+
+      if (answer) {
+        await patchForm(
+          answerEndpoints.update(answer.id),
+          userData,
+          form.setError,
+          onSuccess
+        );
+      } else {
+        await postForm(
+          answerEndpoints.create(slug),
+          userData,
+          form.setError,
+          onSuccess
+        );
+      }
+    } finally {
+      setIsAddingAnswer(false);
+    }
   };
 
   const onClose = () => {

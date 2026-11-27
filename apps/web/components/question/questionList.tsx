@@ -1,6 +1,8 @@
-import { getQuestions } from "@/data/question";
 import getQueryClient from "@/lib/getQueryClient";
 import { QUESTIONS_PER_PAGE } from "@/lib/constants";
+import { serverReq } from "@/lib/api/with-session";
+import { fetchQuestionPage } from "@/lib/queries/questions";
+import { queryKeys } from "@/lib/queries/keys";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import InfiniteQuestionList from "./infiniteQuestionList";
 
@@ -11,23 +13,14 @@ interface QuestionListProps {
 const QuestionList: React.FC<QuestionListProps> = async ({ userId }) => {
   const queryClient = getQueryClient();
 
-  // Prefetch the infinite query on the server
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ["questions", "list", "", userId],
-    queryFn: async () => {
-      const result = await getQuestions("", QUESTIONS_PER_PAGE, 1, userId);
-      return {
-        data: result.data.map((q) => ({
-          ...q,
-          createdAt:
-            q.createdAt instanceof Date
-              ? q.createdAt.toISOString()
-              : q.createdAt,
-        })),
-        pagination: result.pagination,
-      };
-    },
-    initialPageParam: 1,
+    queryKey: queryKeys.questions.list("", userId),
+    queryFn: () =>
+      fetchQuestionPage(serverReq, {
+        keyword: "",
+        limit: QUESTIONS_PER_PAGE,
+      }),
+    initialPageParam: null as string | null,
   });
 
   return (

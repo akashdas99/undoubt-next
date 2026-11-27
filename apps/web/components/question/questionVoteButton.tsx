@@ -1,6 +1,7 @@
 "use client";
 
-import { voteOnQuestionAction } from "@/actions/question";
+import { apiRequest, httpMethod } from "@/lib/api/request";
+import { questionEndpoints } from "@/lib/domain/endpoints";
 import { isEmpty } from "@/lib/functions";
 import { useQuestion, useUpdateQuestionCache } from "@/lib/queries/questions";
 import { useProfile } from "@/lib/queries/user";
@@ -44,7 +45,6 @@ export default function QuestionVoteButton({
   const currentLikes = question ? question.likes : likes;
   const currentDislikes = question ? question.dislikes : dislikes;
   const currentVote = question ? question.userVote : userVote;
-
   const updateQuestionsCache = (newVote: 1 | -1) => {
     const changes = calculateVoteChanges(newVote, currentVote);
 
@@ -62,10 +62,12 @@ export default function QuestionVoteButton({
 
     updateQuestionsCache(newVote);
 
-    await voteOnQuestionAction(
-      questionId,
-      isRemoving ? "remove" : newVote === 1 ? "like" : "dislike"
-    );
+    await apiRequest(questionEndpoints.vote(questionId), {
+      method: httpMethod.post,
+      body: {
+        voteType: isRemoving ? "remove" : newVote === 1 ? "like" : "dislike",
+      },
+    });
   };
 
   return (

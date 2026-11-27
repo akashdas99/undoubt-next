@@ -1,4 +1,3 @@
-import { SessionWrapper } from "@/components/common/sessionWrapper";
 import { Suspense } from "react";
 import QuestionDetailCard from "./questionDetailCard";
 import QuestionDetailFooter, {
@@ -15,11 +14,7 @@ export default async function QuestionSection({
   return (
     <QuestionDetailCard slug={slug}>
       <Suspense fallback={<QuestionDetailFooterSkeleton />}>
-        <SessionWrapper
-          render={(session) => (
-            <QuestionDetailFooter slug={slug} userId={session?.id ?? null} />
-          )}
-        />
+        <QuestionDetailFooter slug={slug} />
       </Suspense>
     </QuestionDetailCard>
   );

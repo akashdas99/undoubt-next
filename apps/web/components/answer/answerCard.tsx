@@ -1,14 +1,16 @@
 "use client";
 
-import { deleteAnswerAction } from "@/actions/answer";
+import { deleteRequest } from "@/lib/api/form";
+import { parseFormErrors } from "@/lib/api/formErrors";
+import { answerEndpoints } from "@/lib/domain/endpoints";
 import { formatShortDate } from "@/lib/date";
 import { useProfile } from "@/lib/queries/user";
 
 import type { Answer } from "@workspace/db";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { CalendarDays } from "lucide-react";
-import { useParams } from "next/navigation";
-import { startTransition, useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import TextEditorContent from "../ui/textEditorContent";
 import UserImage from "../ui/userImage";
 import DeleteAnswerModal from "./deleteAnswerModal";
@@ -25,18 +27,22 @@ export default function AnswerCard({
   };
 }) {
   const { data: user, isLoading } = useProfile();
-  const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const isAuthor = !isLoading && answer?.authorId === user?.id;
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
-  const [res, handleDelete, isDeleting] = useActionState(
-    async () => deleteAnswerAction(answer.id, params.slug),
-    { errors: {}, success: false }
-  );
-
-  const deleteError = ("errors" in res && res.errors?.root?.message) || "";
-
-  const onDelete = () => {
-    startTransition(() => handleDelete());
+  const onDelete = async () => {
+    setIsDeleting(true);
+    setDeleteError("");
+    const { error } = await deleteRequest(answerEndpoints.delete(answer.id));
+    setIsDeleting(false);
+    if (error) {
+      const errors = parseFormErrors(error);
+      setDeleteError(errors.root?.message ?? "Something went wrong");
+      return;
+    }
+    router.refresh();
   };
 
   return (

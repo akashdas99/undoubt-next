@@ -4,13 +4,19 @@ import { AnswerListSkeleton } from "@/components/answer/answerListSkeleton";
 import { QuestionCardSkeleton } from "@/components/question/questionCardSkeleton";
 import QuestionDeleteModal from "@/components/question/questionDeleteModal";
 import QuestionSection from "@/components/question/questionSection";
-import { getAllQuestions, getQuestionBySlug } from "@/data/question";
+import { apiRequest, httpMethod } from "@/lib/api/request";
+import { serverReq } from "@/lib/api/with-session";
+import { questionEndpoints } from "@/lib/domain/endpoints";
+import type { Question } from "@/lib/queries/questions";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
 export async function generateStaticParams() {
-  const questions = await getAllQuestions();
-  return questions.map((question) => ({ slug: question?.slug }));
+  const { response } = await apiRequest<{ slug: string }[]>(
+    questionEndpoints.slugs,
+    { method: httpMethod.get }
+  );
+  return (response ?? []).map((question) => ({ slug: question.slug }));
 }
 export async function generateMetadata({
   params,
@@ -18,7 +24,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const question = await getQuestionBySlug(slug);
+  const { response: question } = await serverReq<Question>(
+    questionEndpoints.bySlug(slug),
+    { method: httpMethod.get }
+  );
 
   if (!question) {
     return {
