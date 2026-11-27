@@ -9,13 +9,9 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import {
-  OptionalSession,
-  SessionGuard,
-} from '../common/session/session.guard.js';
+import { OptionalSession } from '../common/session/session.guard.js';
 import {
   CurrentUser,
   OptionalUser,
@@ -31,7 +27,6 @@ import { QuestionsService } from './questions.service.js';
 
 @ApiTags('questions')
 @Controller('questions')
-@UseGuards(SessionGuard)
 export class QuestionsController {
   constructor(private readonly questions: QuestionsService) {}
 

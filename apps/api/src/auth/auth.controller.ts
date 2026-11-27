@@ -22,6 +22,7 @@ import {
   clearAuthCookies,
   setAuthCookies,
 } from './auth-cookies.js';
+import { Public } from '../common/session/session.guard.js';
 import { AuthService } from './auth.service.js';
 import {
   ForgotPasswordDto,
@@ -32,6 +33,7 @@ import {
 import { TokensService } from './tokens/tokens.service.js';
 
 @ApiTags('auth')
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(

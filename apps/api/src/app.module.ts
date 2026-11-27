@@ -12,6 +12,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AnswersModule } from './answers/answers.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { SessionGuard } from './common/session/session.guard.js';
 import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
 import { ProxyThrottlerGuard } from './common/throttler/proxy-throttler.guard.js';
 import { EmailModule } from './email/email.module.js';
@@ -48,6 +49,10 @@ import { UsersModule } from './users/users.module.js';
     {
       provide: APP_GUARD,
       useClass: ProxyThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: SessionGuard,
     },
     {
       provide: APP_PIPE,
