@@ -164,19 +164,22 @@ undoubt-next/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/akashdas99/undoubt-next.git
    cd undoubt-next
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-   
+
    Create a `.env` file in the root directory:
+
    ```env
    ##### Database
    DATABASE_URI=your_postgresql_connection_string
@@ -186,6 +189,12 @@ undoubt-next/
 
    ##### Application URLs
    NEXT_PUBLIC_BASEURL=http://localhost:3000
+   NEXT_PUBLIC_API_URL=http://localhost:3001
+
+   ##### Nest API (apps/api)
+   WEB_ORIGIN=http://localhost:3000
+   # Share session across web + API in staging/production (e.g. .yourdomain.com)
+   # COOKIE_DOMAIN=.yourdomain.com
 
    ##### Vercel Blob Storage
    BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
@@ -195,18 +204,32 @@ undoubt-next/
    ```
 
 4. **Run database migrations**
+
    ```bash
    npx drizzle-kit push
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
 
 6. **Open your browser**
-   
+
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Web app and Nest API
+
+The browser calls Nest at `NEXT_PUBLIC_API_URL` with `credentials: "include"`. In production, set `COOKIE_DOMAIN` on the API (e.g. `.yourdomain.com`) so `access_token` is sent to both the web host and the API host. Set `WEB_ORIGIN` to the exact web app URL for CORS.
+
+| Variable              | Where | Purpose                                                                                                        |
+| --------------------- | ----- | -------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL` | web   | Base URL for all API fetches (client and server)                                                               |
+| `WEB_ORIGIN`          | api   | Allowed CORS origin (`credentials: true`)                                                                      |
+| `COOKIE_DOMAIN`       | api   | Required when web and API are sibling subdomains (local two-port dev needs a shared dev domain or single host) |
+
+The browser always calls `NEXT_PUBLIC_API_URL` directly. Next does not proxy API paths.
 
 ---
 

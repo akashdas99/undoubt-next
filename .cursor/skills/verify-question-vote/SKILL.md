@@ -15,29 +15,28 @@ Harm: readers see the wrong total, and a later vote can preserve that wrong tota
 
 ## What the code does
 
-`voteOnQuestion` in `apps/web/data/questionVote.ts` does two statements inside `db.transaction`:
+`QuestionsService.vote` in `apps/api/src/questions/questions.service.ts` runs one transaction:
 
-1. Insert, update, or delete that user's `question_votes` row (`onConflictDoUpdate` on `userId, questionId`, or the delete in the remove branch).
-2. `recomputeStats` writes `likes` and `dislikes` from `SELECT COUNT(*)` of that question's rows.
+1. `SELECT ... FROM question_stats WHERE question_id = ? FOR UPDATE` locks that question's stats row.
+2. It reads this user's current `question_votes.vote`, if any.
+3. It inserts, updates, or deletes that vote only when the value changes. Repeating the same vote returns before either write.
+4. It sets `likes = likes + delta` and `dislikes = dislikes + delta` on the locked stats row. A new like is `+1` like. A like changed to a dislike is `-1` like and `+1` dislike. A remove subtracts the previous side.
 
-The count sees the user's own new vote and only votes that other transactions have already committed. Commit then stores that count. The count query does not read the stats row, so a stats-row lock wait does not recompute it.
+The stored total comes from the current stats row. The old count-snapshot finding does not describe this function. The unique key still keeps one vote row per user.
 
-Logged-out callers and a missing question return before either statement. They do not change votes or totals.
+Logged-out callers are rejected by `SessionGuard`. A missing question returns before the transaction.
 
 ## Coverage
 
-- `apps/web/data/questionVote.ts`: `voteOnQuestion`, `recomputeStats`
-- `apps/web/db/schema/questionVotes.ts`: `userQuestionUnique`
+- `apps/api/src/questions/questions.service.ts`: `vote`, `voteDelta`
+- `apps/web/data/questionVote.ts`: `voteOnQuestion`
+- `packages/db/src/schema/questionVotes.ts`: `userQuestionUnique`
 
-Last read at commit `09776611625ffc6f3e8b6c7884cdfac92ca75d3c`. A change to `voteOnQuestion` or `recomputeStats` means this note may no longer describe the code.
+Last read with the delta update in the working tree. A change to `vote`, `voteDelta`, or `voteOnQuestion` means this note may no longer describe the code.
 
 ## Recorded finding
 
-Ada and Kai both like the same question before either transaction commits. Each count sees one like, because the other's vote is not committed yet. Ada's transaction commits and stores 1 like. Kai's transaction commits and stores 1 like. Two like rows exist, and the question shows 1 like.
-
-The same shape applies to dislike, and to a like racing a remove.
-
-This note does not cover three or more users, two questions, a crash between the two statements, or a measurement of PostgreSQL. It describes the two statement snapshots above. The unique key still keeps one vote row per user. This finding was not measured in the database.
+The count-snapshot loss (two concurrent likes each storing 1) applied to `recomputeStats`. That function is gone. This delta path was not measured in PostgreSQL. The vote write and the stats update share one transaction, which preserves committed consistency if a crash prevents commit.
 
 ## When the code changes
 

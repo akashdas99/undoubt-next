@@ -25,3 +25,8 @@ export const DeleteQuestionSchema = z.object({
   }),
 });
 export type DeleteQuestionType = z.infer<typeof DeleteQuestionSchema>;
+
+export const VoteBodySchema = z.object({
+  voteType: z.enum(["like", "dislike", "remove"]),
+});
+export type VoteBodyType = z.infer<typeof VoteBodySchema>;

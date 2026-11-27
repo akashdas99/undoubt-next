@@ -8,5 +8,6 @@ import { TokensService } from './tokens/tokens.service.js';
   imports: [EmailModule],
   controllers: [AuthController],
   providers: [AuthService, TokensService],
+  exports: [TokensService],
 })
 export class AuthModule {}

@@ -1,19 +1,22 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { DrizzleModule } from '@nestjs/drizzle';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { ZodValidationPipe } from 'nestjs-zod';
-import { AuthModule } from './auth/auth.module.js';
-import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
-import { ProxyThrottlerGuard } from './common/throttler/proxy-throttler.guard.js';
-import { EmailModule } from './email/email.module.js';
 import {
   DB_POOL_MAX,
   THROTTLE_DEFAULT_LIMIT,
   THROTTLE_WINDOW_MS,
 } from '@workspace/constants';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { ZodValidationPipe } from 'nestjs-zod';
+import { AnswersModule } from './answers/answers.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { HttpExceptionFilter } from './common/http-exception/http-exception.filter.js';
+import { ProxyThrottlerGuard } from './common/throttler/proxy-throttler.guard.js';
+import { EmailModule } from './email/email.module.js';
+import { QuestionsModule } from './questions/questions.module.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -37,6 +40,9 @@ import {
     ]),
     EmailModule,
     AuthModule,
+    QuestionsModule,
+    AnswersModule,
+    UsersModule,
   ],
   providers: [
     {

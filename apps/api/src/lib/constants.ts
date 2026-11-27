@@ -5,6 +5,7 @@ export const ACCESS_MAX_AGE_SECONDS = 15 * 60;
 export const ACCESS_TTL = '15m';
 
 export const INVALID_CREDENTIALS_MESSAGE = 'Invalid email or password';
+export const LOGIN_REQUIRED_MESSAGE = 'You must be logged in';
 
 export const REGISTER_UNIQUE_COLUMNS = {
   user_name: 'userName',
