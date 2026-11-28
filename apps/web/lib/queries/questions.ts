@@ -10,6 +10,7 @@ import { queryKeys } from "@/lib/queries/keys";
 import { QUESTIONS_PER_PAGE } from "@/lib/constants";
 import {
   type InfiniteData,
+  type QueryClient,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
@@ -75,10 +76,37 @@ export async function fetchQuestionPage(
     questionEndpoints.list,
     { method: httpMethod.get, searchParams }
   );
-  if (error || !response) {
-    return { data: [], pagination: { nextCursor: null } };
+  if (error) {
+    throw error;
+  }
+  if (!response) {
+    throw new Error("Could not load questions");
   }
   return response;
+}
+
+export function readCachedUserVote(
+  queryClient: QueryClient,
+  questionId: string,
+  slug?: string
+): number | null | undefined {
+  if (slug) {
+    const detail = queryClient.getQueryData<Question>(
+      queryKeys.questions.detail(slug)
+    );
+    if (detail?.id === questionId) return detail.userVote;
+  }
+
+  const lists = queryClient.getQueriesData<InfiniteQuestions>({
+    queryKey: queryKeys.questions.lists(),
+  });
+  for (const [, data] of lists) {
+    for (const page of data?.pages ?? []) {
+      const match = page.data?.find((question) => question.id === questionId);
+      if (match) return match.userVote;
+    }
+  }
+  return undefined;
 }
 
 export function useUpdateQuestionCache() {

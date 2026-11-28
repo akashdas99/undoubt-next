@@ -3,8 +3,14 @@
 import { apiRequest, httpMethod } from "@/lib/api/request";
 import { questionEndpoints } from "@/lib/domain/endpoints";
 import { isEmpty } from "@/lib/functions";
-import { useQuestion, useUpdateQuestionCache } from "@/lib/queries/questions";
+import { enqueueQuestionVote } from "@/lib/questionVoteQueue";
+import {
+  readCachedUserVote,
+  useQuestion,
+  useUpdateQuestionCache,
+} from "@/lib/queries/questions";
 import { useProfile } from "@/lib/queries/user";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -39,34 +45,50 @@ export default function QuestionVoteButton({
   slug,
 }: QuestionVoteButtonProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { updateQuestion } = useUpdateQuestionCache();
   const { data: user } = useProfile();
   const { data: question } = useQuestion(slug ?? "");
   const currentLikes = question ? question.likes : likes;
   const currentDislikes = question ? question.dislikes : dislikes;
   const currentVote = question ? question.userVote : userVote;
-  const updateQuestionsCache = (newVote: 1 | -1) => {
-    const changes = calculateVoteChanges(newVote, currentVote);
 
-    updateQuestion(questionId, (question) => ({
-      likes: Math.max(0, question.likes + changes.likesDelta),
-      dislikes: Math.max(0, question.dislikes + changes.dislikesDelta),
-      userVote: changes.userVote,
-    }));
-  };
+  const handleVote = (newVote: 1 | -1) => {
+    if (isEmpty(user)) {
+      router.push("/login");
+      return;
+    }
 
-  const handleVote = async (newVote: 1 | -1) => {
-    if (isEmpty(user)) return router.push("/login");
+    const fallbackVote = currentVote;
+    enqueueQuestionVote(questionId, async () => {
+      const previous =
+        readCachedUserVote(queryClient, questionId, slug) ?? fallbackVote;
+      const changes = calculateVoteChanges(newVote, previous);
+      updateQuestion(questionId, (cached) => ({
+        likes: Math.max(0, cached.likes + changes.likesDelta),
+        dislikes: Math.max(0, cached.dislikes + changes.dislikesDelta),
+        userVote: changes.userVote,
+      }));
 
-    const isRemoving = currentVote === newVote;
+      const { error } = await apiRequest(questionEndpoints.vote(questionId), {
+        method: httpMethod.post,
+        body: {
+          voteType:
+            changes.userVote === null
+              ? "remove"
+              : newVote === 1
+                ? "like"
+                : "dislike",
+        },
+      });
 
-    updateQuestionsCache(newVote);
+      if (!error) return;
 
-    await apiRequest(questionEndpoints.vote(questionId), {
-      method: httpMethod.post,
-      body: {
-        voteType: isRemoving ? "remove" : newVote === 1 ? "like" : "dislike",
-      },
+      updateQuestion(questionId, (cached) => ({
+        likes: Math.max(0, cached.likes - changes.likesDelta),
+        dislikes: Math.max(0, cached.dislikes - changes.dislikesDelta),
+        userVote: previous,
+      }));
     });
   };
 
