@@ -1,6 +1,9 @@
-import { apiRequest, httpMethod } from "@/lib/api/request";
-import { answerEndpoints } from "@/lib/domain/endpoints";
-import AnswerCard from "./answerCard";
+import { apiRequest } from "@/lib/api/request";
+import getQueryClient from "@/lib/getQueryClient";
+import { fetchAnswerPage } from "@/lib/queries/answers";
+import { queryKeys } from "@/lib/queries/keys";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import AnswerListPages from "./answerListPages";
 
 export default async function AnswerList({
   params,
@@ -8,37 +11,17 @@ export default async function AnswerList({
   params: Promise<{ slug: string }>;
 }) {
   const { slug = "" } = await params;
-  const { response: list } = await apiRequest<{
-    data: Array<{
-      id: string;
-      description: string;
-      authorId: string;
-      questionId: string;
-      createdAt: Date | string;
-      updatedAt: Date | string;
-      author: { name: string; profilePicture: string | null };
-    }>;
-  }>(answerEndpoints.list(slug), { method: httpMethod.get });
-  const answers = list?.data;
+  const queryClient = getQueryClient();
+
+  await queryClient.infiniteQuery({
+    queryKey: queryKeys.answers.list(slug),
+    queryFn: () => fetchAnswerPage(apiRequest, slug, null),
+    initialPageParam: null as string | null,
+  });
 
   return (
-    <>
-      {answers?.length === 0 ? (
-        <p>No Answer</p>
-      ) : (
-        <div className="flex flex-col gap-md">
-          {answers?.map((answer) => (
-            <AnswerCard
-              key={answer.id}
-              answer={{
-                ...answer,
-                createdAt: new Date(answer.createdAt),
-                updatedAt: new Date(answer.updatedAt),
-              }}
-            />
-          ))}
-        </div>
-      )}
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AnswerListPages slug={slug} />
+    </HydrationBoundary>
   );
 }

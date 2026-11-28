@@ -2,6 +2,7 @@
 
 import { deleteRequest } from "@/lib/api/form";
 import { parseFormErrors } from "@/lib/api/formErrors";
+import { invalidateQuestionContent } from "@/lib/cache/invalidateQuestion";
 import { questionEndpoints } from "@/lib/domain/endpoints";
 import { useUpdateQuestionCache } from "@/lib/queries/questions";
 import { useUIStoreSelector } from "@/store/useUIStore";
@@ -27,6 +28,7 @@ export default function QuestionDeleteModal({
 
   const handleDeleteConfirm = async () => {
     const questionId = deleteModal?.questionId;
+    const slug = deleteModal?.slug;
     if (!questionId) return;
 
     setDeleteLoading(true);
@@ -43,6 +45,10 @@ export default function QuestionDeleteModal({
 
     removeQuestion(questionId);
     closeDeleteModal();
+
+    if (slug) {
+      await invalidateQuestionContent(slug);
+    }
 
     if (redirectOnDelete) {
       router.push("/");

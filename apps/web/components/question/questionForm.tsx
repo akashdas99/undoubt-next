@@ -2,6 +2,7 @@
 
 import { FormEditor, FormInput } from "@/components/ui/form";
 import { patchForm, postForm } from "@/lib/api/form";
+import { invalidateQuestionContent } from "@/lib/cache/invalidateQuestion";
 import { questionEndpoints } from "@/lib/domain/endpoints";
 import { useUpdateQuestionCache } from "@/lib/queries/questions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -74,6 +75,7 @@ export default function QuestionForm({
     try {
       if (!question) {
         await postForm(questionEndpoints.create, data, form.setError, () => {
+          form.reset({ title: "", description: "" });
           router.replace("/");
           router.refresh();
         });
@@ -84,12 +86,15 @@ export default function QuestionForm({
         questionEndpoints.update(question.id),
         data,
         form.setError,
-        () => {
+        async () => {
           updateQuestion(question.id, {
             title: data.title,
             description: data.description ?? "",
           });
           shouldResetRef.current = true;
+          await invalidateQuestionContent(question.slug, {
+            revalidateUrl: true,
+          });
           router.replace(questionHref);
           router.refresh();
         }

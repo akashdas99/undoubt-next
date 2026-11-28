@@ -15,6 +15,11 @@ export const queryKeys = {
     detail: (slug: string) => [...queryKeys.questions.details(), slug] as const,
   },
 
+  answers: {
+    all: () => ["answers"] as const,
+    list: (slug: string) => [...queryKeys.answers.all(), "list", slug] as const,
+  },
+
   users: {
     all: () => ["users"] as const,
     // Session profile for useProfile / SSR hydrate (no userId param)

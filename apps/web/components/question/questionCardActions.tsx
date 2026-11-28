@@ -51,7 +51,7 @@ export default function QuestionCardActions({
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
-            onClick={() => openDeleteModal(question.id)}
+            onClick={() => openDeleteModal(question.id, question.slug)}
           >
             <Trash /> Delete
           </DropdownMenuItem>
