@@ -1,11 +1,13 @@
 "use client";
 
-import { deleteQuestionAction } from "@/actions/question";
+import { deleteRequest } from "@/lib/api/form";
+import { parseFormErrors } from "@/lib/api/formErrors";
+import { invalidateQuestionContent } from "@/lib/cache/invalidateQuestion";
+import { questionEndpoints } from "@/lib/domain/endpoints";
 import { useUpdateQuestionCache } from "@/lib/queries/questions";
-import { useRouter } from "next/navigation";
-import { ConfirmationModal } from "@workspace/ui/components/confirmationModal";
 import { useUIStoreSelector } from "@/store/useUIStore";
-import { startTransition } from "react";
+import { ConfirmationModal } from "@workspace/ui/components/confirmationModal";
+import { useRouter } from "next/navigation";
 
 type QuestionDeleteModalProps = {
   redirectOnDelete?: boolean;
@@ -24,29 +26,34 @@ export default function QuestionDeleteModal({
     );
   const router = useRouter();
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     const questionId = deleteModal?.questionId;
+    const slug = deleteModal?.slug;
     if (!questionId) return;
 
     setDeleteLoading(true);
 
-    startTransition(async () => {
-      const res = await deleteQuestionAction({ id: questionId }, false);
+    const { error } = await deleteRequest(questionEndpoints.delete(questionId));
 
-      setDeleteLoading(false);
+    setDeleteLoading(false);
 
-      if (!res?.success) {
-        setDeleteError(("errors" in res && res?.errors?.id?.message) || "");
-        return;
-      }
+    if (error) {
+      const errors = parseFormErrors(error);
+      setDeleteError(errors.id?.message ?? errors.root?.message ?? "");
+      return;
+    }
 
-      removeQuestion(questionId);
-      closeDeleteModal();
+    removeQuestion(questionId);
+    closeDeleteModal();
 
-      if (redirectOnDelete) {
-        router.push("/");
-      }
-    });
+    if (slug) {
+      await invalidateQuestionContent(slug);
+    }
+
+    if (redirectOnDelete) {
+      router.push("/");
+    }
+    router.refresh();
   };
 
   return (

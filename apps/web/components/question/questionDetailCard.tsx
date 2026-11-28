@@ -1,5 +1,7 @@
-import { getQuestionContentBySlug } from "@/data/question";
+import { apiRequest, httpMethod } from "@/lib/api/request";
 import { cacheTags } from "@/lib/cache/tags";
+import { questionEndpoints } from "@/lib/domain/endpoints";
+import type { QuestionContent } from "@/lib/queries/questions";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { cacheLife, cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
@@ -17,23 +19,15 @@ export default async function QuestionDetailCard({
   cacheTag(cacheTags.questions.content(slug));
   cacheLife("days");
 
-  const question = await getQuestionContentBySlug(slug);
+  const { response: question } = await apiRequest<QuestionContent>(
+    questionEndpoints.content(slug),
+    { method: httpMethod.get }
+  );
   if (!question) notFound();
-
-  const headerQuestion = {
-    id: question.id,
-    authorId: question.authorId,
-    slug: question.slug,
-    author: question.author,
-    createdAt:
-      question.createdAt instanceof Date
-        ? question.createdAt.toISOString()
-        : question.createdAt,
-  };
 
   return (
     <Card size="sm" className="relative">
-      <QuestionCardHeader question={headerQuestion} />
+      <QuestionCardHeader question={question} />
       <CardContent>
         <div className="space-y-xs">
           <div className="text-lg leading-tight font-semibold">

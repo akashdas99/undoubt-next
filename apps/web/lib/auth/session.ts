@@ -1,7 +1,6 @@
-import { apiRequest } from "@/lib/api/request";
+import { httpMethod } from "@/lib/api/request";
+import { serverReq } from "@/lib/api/with-session";
 import { authEndpoints } from "@/lib/auth/endpoints";
-import { ACCESS_COOKIE } from "@workspace/constants";
-import { cookies } from "next/headers";
 import { cache } from "react";
 
 export type Viewer = {
@@ -12,19 +11,8 @@ export type Viewer = {
 type SessionResponse = { data: Viewer | null };
 
 export const getSession = cache(async (): Promise<Viewer | null> => {
-  const token = (await cookies()).get(ACCESS_COOKIE)?.value;
-  if (!token) {
-    return null;
-  }
-  const { response } = await apiRequest<SessionResponse>(
-    authEndpoints.session,
-    {
-      method: "GET",
-      cookie: `${ACCESS_COOKIE}=${token}`,
-    }
-  );
-  if (response === null) {
-    return null;
-  }
-  return response.data;
+  const { response } = await serverReq<SessionResponse>(authEndpoints.session, {
+    method: httpMethod.get,
+  });
+  return response?.data ?? null;
 });

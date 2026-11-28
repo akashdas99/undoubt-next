@@ -15,7 +15,7 @@ import LogoutMenuItem from "./logoutMenuItem";
 import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
-import type { ProfileUser } from "./profileWrapper";
+import type { ProfileUser } from "@/lib/queries/user";
 
 export async function ProfileDropdown({ user }: { user?: ProfileUser | null }) {
   "use cache";

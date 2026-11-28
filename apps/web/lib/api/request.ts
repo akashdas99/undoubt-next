@@ -13,9 +13,6 @@ export function apiResult<T>(ok: boolean, body: unknown): ApiResult<T> {
 }
 
 export function apiOrigin() {
-  if (typeof window !== "undefined") {
-    return "";
-  }
   const configured = process.env.NEXT_PUBLIC_API_URL;
   if (!configured) {
     throw new Error("NEXT_PUBLIC_API_URL is required");
@@ -23,16 +20,50 @@ export function apiOrigin() {
   return configured.replace(/\/$/, "");
 }
 
-type ApiRequestInit = {
-  method: "GET" | "POST";
+export const httpMethod = {
+  get: "GET",
+  post: "POST",
+  patch: "PATCH",
+  delete: "DELETE",
+} as const;
+
+export type ApiMethod = (typeof httpMethod)[keyof typeof httpMethod];
+
+export type ApiRequestInit = {
+  method: ApiMethod;
   body?: unknown;
   cookie?: string;
+  searchParams?: Record<string, string | number | undefined>;
 };
+
+export type ApiRequest = <T>(
+  path: string,
+  init: ApiRequestInit
+) => Promise<ApiResult<T>>;
+
+function requestUrl(
+  path: string,
+  searchParams?: Record<string, string | number | undefined>
+) {
+  const base = `${apiOrigin()}${path}`;
+  if (!searchParams) {
+    return base;
+  }
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (value !== undefined) {
+      params.append(key, String(value));
+    }
+  }
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
 
 export async function apiRequest<T>(
   path: string,
   init: ApiRequestInit
 ): Promise<ApiResult<T>> {
+  const url = requestUrl(path, init.searchParams);
   try {
     const headers: Record<string, string> = {};
     if (init.body !== undefined) {
@@ -41,7 +72,7 @@ export async function apiRequest<T>(
     if (init.cookie) {
       headers.cookie = init.cookie;
     }
-    const response = await fetch(`${apiOrigin()}${path}`, {
+    const response = await fetch(url, {
       method: init.method,
       credentials: init.cookie ? "omit" : "include",
       headers,
@@ -56,6 +87,9 @@ export async function apiRequest<T>(
 }
 
 async function readJson(response: Response): Promise<unknown> {
+  if (response.status === 204) {
+    return null;
+  }
   try {
     return await response.json();
   } catch {

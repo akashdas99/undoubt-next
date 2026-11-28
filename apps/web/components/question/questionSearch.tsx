@@ -10,7 +10,7 @@ import { Input } from "@workspace/ui/components/input";
 export default function QuestionSearch({ onClick }: { onClick?: () => void }) {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchQuestion: string = useDebounce(searchValue, 300);
-  const { data, isLoading } = useQuestionsByKeyword(searchQuestion);
+  const { data, isLoading, isError } = useQuestionsByKeyword(searchQuestion);
 
   const handleChange = async (search: string) => {
     setSearchValue(search);
@@ -34,6 +34,10 @@ export default function QuestionSearch({ onClick }: { onClick?: () => void }) {
         ) : isLoading ? (
           <div className="flex h-(--container-narrow) items-center justify-center">
             <Loader2 className="animate-spin" />
+          </div>
+        ) : isError ? (
+          <div className="flex h-(--container-narrow) items-center justify-center">
+            <div className="text-center">Could not search questions.</div>
           </div>
         ) : data?.length === 0 ? (
           <div className="flex h-(--container-narrow) items-center justify-center">

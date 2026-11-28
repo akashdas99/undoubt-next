@@ -1,7 +1,9 @@
 "use client";
 
-import { addQuestionAction, editQuestionAction } from "@/actions/question";
 import { FormEditor, FormInput } from "@/components/ui/form";
+import { patchForm, postForm } from "@/lib/api/form";
+import { invalidateQuestionContent } from "@/lib/cache/invalidateQuestion";
+import { questionEndpoints } from "@/lib/domain/endpoints";
 import { useUpdateQuestionCache } from "@/lib/queries/questions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@workspace/ui/components/button";
@@ -15,14 +17,7 @@ import {
   QuestionType,
 } from "@workspace/validations/question";
 import { useRouter } from "next/navigation";
-import {
-  startTransition,
-  useActionState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type EditableQuestion = {
@@ -40,26 +35,9 @@ export default function QuestionForm({
   const router = useRouter();
   const { updateQuestion } = useUpdateQuestionCache();
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const shouldResetRef = useRef(false);
   const questionHref = question ? `/question/${question.slug}` : "/";
-
-  const [res, submitQuestion, isSubmitting] = useActionState(
-    async (_: unknown, data: QuestionType | EditQuestionType) => {
-      if (!question) return addQuestionAction(data as QuestionType);
-
-      const res = await editQuestionAction(data as EditQuestionType);
-      if (res?.success) {
-        updateQuestion(question.id, {
-          title: data.title,
-          description: data.description ?? "",
-        });
-        shouldResetRef.current = true;
-        router.replace(questionHref);
-      }
-      return res;
-    },
-    { errors: {}, success: false }
-  );
 
   const form = useForm<QuestionType | EditQuestionType>({
     resolver: zodResolver(question ? EditQuestionSchema : QuestionSchema),
@@ -70,7 +48,6 @@ export default function QuestionForm({
           description: question.description || "",
         }
       : { title: "", description: "" },
-    errors: ("errors" in res && res?.errors) || undefined,
   });
   const { isDirty } = form.formState;
 
@@ -93,8 +70,38 @@ export default function QuestionForm({
     return () => window.removeEventListener("beforeunload", warnBeforeUnload);
   }, [isDirty]);
 
-  const onSubmit = (values: QuestionType | EditQuestionType) => {
-    startTransition(() => submitQuestion(values));
+  const onSubmit = async (data: QuestionType | EditQuestionType) => {
+    setIsSubmitting(true);
+    try {
+      if (!question) {
+        await postForm(questionEndpoints.create, data, form.setError, () => {
+          form.reset({ title: "", description: "" });
+          router.replace("/");
+          router.refresh();
+        });
+        return;
+      }
+
+      await patchForm(
+        questionEndpoints.update(question.id),
+        data,
+        form.setError,
+        async () => {
+          updateQuestion(question.id, {
+            title: data.title,
+            description: data.description ?? "",
+          });
+          shouldResetRef.current = true;
+          await invalidateQuestionContent(question.slug, {
+            revalidateUrl: true,
+          });
+          router.replace(questionHref);
+          router.refresh();
+        }
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const leave = () => {

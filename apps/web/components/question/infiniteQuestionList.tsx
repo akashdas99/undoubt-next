@@ -2,6 +2,7 @@
 
 import { INTERSECTION_THRESHOLD } from "@/lib/constants";
 import { useQuestionsInfinite } from "@/lib/queries/questions";
+import { Button } from "@workspace/ui/components/button";
 import { useEffect, useRef } from "react";
 import HomeQuestionCard from "./homeQuestionCard";
 import QuestionDeleteModal from "./questionDeleteModal";
@@ -15,15 +16,28 @@ export default function InfiniteQuestionList({
 }: InfiniteQuestionListProps) {
   const observerRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    useQuestionsInfinite("", userId);
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+    isFetchNextPageError,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  } = useQuestionsInfinite("", userId);
 
   const questions = data?.pages?.flatMap((page) => page.data) ?? [];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetching) {
+        if (
+          entries[0]?.isIntersecting &&
+          hasNextPage &&
+          !isFetching &&
+          !isFetchNextPageError
+        ) {
           fetchNextPage();
         }
       },
@@ -35,9 +49,19 @@ export default function InfiniteQuestionList({
     }
 
     return () => observer.disconnect();
-  }, [hasNextPage, isFetching, fetchNextPage]);
+  }, [hasNextPage, isFetching, isFetchNextPageError, fetchNextPage]);
 
   if (questions.length === 0 && !isLoading) {
+    if (isError) {
+      return (
+        <div className="flex flex-col items-center gap-sm">
+          <p>Could not load questions</p>
+          <Button type="button" variant="outline" onClick={() => refetch()}>
+            Try again
+          </Button>
+        </div>
+      );
+    }
     return <p>No Questions</p>;
   }
 
@@ -55,6 +79,17 @@ export default function InfiniteQuestionList({
             <div className="flex items-center justify-center gap-xs">
               <div className="size-xl animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
               <span>Loading more questions...</span>
+            </div>
+          ) : isFetchNextPageError ? (
+            <div className="flex flex-col items-center gap-sm">
+              <p>Could not load more questions</p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fetchNextPage()}
+              >
+                Try again
+              </Button>
             </div>
           ) : (
             <div className="h-2xl" />

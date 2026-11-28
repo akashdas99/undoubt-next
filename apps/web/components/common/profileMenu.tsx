@@ -4,7 +4,7 @@ import { Button } from "@workspace/ui/components/button";
 import { LogOut, UserRoundCog } from "lucide-react";
 import Link from "next/link";
 import UserImage from "../ui/userImage";
-import type { ProfileUser } from "./profileWrapper";
+import type { ProfileUser } from "@/lib/queries/user";
 import { useLogout } from "./useLogout";
 
 export function ProfileMenu({ user }: { user: ProfileUser }) {

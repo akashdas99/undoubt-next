@@ -1,4 +1,7 @@
-import { getQuestionStatsBySlug } from "@/data/question";
+import { httpMethod } from "@/lib/api/request";
+import { serverReq } from "@/lib/api/with-session";
+import { questionEndpoints } from "@/lib/domain/endpoints";
+import type { QuestionStats } from "@/lib/queries/questions";
 import { CardFooter } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { notFound } from "next/navigation";
@@ -14,14 +17,11 @@ export function QuestionDetailFooterSkeleton() {
   );
 }
 
-export default async function QuestionDetailFooter({
-  slug,
-  userId,
-}: {
-  slug: string;
-  userId: string | null;
-}) {
-  const stats = await getQuestionStatsBySlug(slug, userId);
+export default async function QuestionDetailFooter({ slug }: { slug: string }) {
+  const { response: stats } = await serverReq<QuestionStats>(
+    questionEndpoints.stats(slug),
+    { method: httpMethod.get }
+  );
   if (!stats) notFound();
 
   const vote = {

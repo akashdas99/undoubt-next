@@ -4,13 +4,14 @@ import { useMulti } from "./useMulti";
 interface DeleteModalState {
   isOpen: boolean;
   questionId: string | null;
+  slug: string | null;
   isDeleting: boolean;
   error: string;
 }
 
 interface UIStore {
   deleteModal: DeleteModalState;
-  openDeleteModal: (questionId: string) => void;
+  openDeleteModal: (questionId: string, slug: string) => void;
   closeDeleteModal: () => void;
   setDeleteLoading: (isDeleting: boolean) => void;
   setDeleteError: (error: string) => void;
@@ -20,14 +21,16 @@ export const useUIStore = create<UIStore>((set) => ({
   deleteModal: {
     isOpen: false,
     questionId: null,
+    slug: null,
     isDeleting: false,
     error: "",
   },
-  openDeleteModal: (questionId) =>
+  openDeleteModal: (questionId, slug) =>
     set({
       deleteModal: {
         isOpen: true,
         questionId,
+        slug,
         isDeleting: false,
         error: "",
       },
@@ -37,6 +40,7 @@ export const useUIStore = create<UIStore>((set) => ({
       deleteModal: {
         isOpen: false,
         questionId: null,
+        slug: null,
         isDeleting: false,
         error: "",
       },

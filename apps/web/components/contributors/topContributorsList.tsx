@@ -1,17 +1,28 @@
-import { getTopContributors } from "@/data/user";
+import { apiRequest, httpMethod } from "@/lib/api/request";
+import { userEndpoints } from "@/lib/domain/endpoints";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import ContributorCard from "./contributorCard";
 
 const TopContributorsList: React.FC = async () => {
-  const contributors = await getTopContributors(10);
+  const { response } = await apiRequest<
+    Array<{
+      id: string;
+      name: string;
+      userName: string;
+      profilePicture: string | null;
+      createdAt: string | Date;
+      questionCount: number;
+      answerCount: number;
+    }>
+  >(userEndpoints.top, { method: httpMethod.get, searchParams: { limit: 10 } });
+  const contributors = response ?? [];
 
-  // Filter out users with 0 contributions
   const activeContributors = contributors.filter(
     (user) => user.questionCount > 0 || user.answerCount > 0
   );
 
   if (activeContributors.length === 0) {
-    return null; // Don't show the section if there are no contributors
+    return null;
   }
 
   return (
